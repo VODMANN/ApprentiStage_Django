@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription</title>
+</head>
+<body>
+  <h1>Inscription</h1>
+  
+  <form method="POST" action="">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    
+    <div id="etudiant_fields" style="display:none;">
+      {{ etudiant_form.as_p }}
+    </div>
+    
+    <div id="enseignant_fields" style="display:none;">
+      {{ enseignant_form.as_p }}
+    </div>
+    
+    <div id="secretaire_fields" style="display:none;">
+      {{ secretaire_form.as_p }}
+    </div>
+    
+    <button type="submit">S'inscrire</button>
+  </form>
+
+  <script>
+    // Fonction pour afficher les champs du formulaire correspondant au type d'utilisateur sélectionné
+    function showFields() {
+      const userType = document.getElementById('id_user_type').value;
+      
+      document.getElementById('etudiant_fields').style.display = 'none';
+      document.getElementById('enseignant_fields').style.display = 'none';
+      document.getElementById('secretaire_fields').style.display = 'none';
+      
+      if (userType === 'etudiant') {
+        document.getElementById('etudiant_fields').style.display = 'block';
+      } else if (userType === 'enseignant') {
+        document.getElementById('enseignant_fields').style.display = 'block';
+      } else if (userType === 'secretaire') {
+        document.getElementById('secretaire_fields').style.display = 'block';
+      }
+    }
+
+    // Ajout d'un écouteur d'événement pour changer les champs du formulaire lorsque le type d'utilisateur est modifié
+    document.getElementById('id_user_type').addEventListener('change', showFields);
+
+    // Appel initial de la fonction pour afficher les champs corrects
+    showFields();
+  </script>
+</body>
+</html>
