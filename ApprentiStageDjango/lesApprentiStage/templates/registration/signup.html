@@ -1,56 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inscription</title>
-</head>
-<body>
-  <h1>Inscription</h1>
-  
-  <form method="POST" action="">
-    {% csrf_token %}
-    {{ user_form.as_p }}
-    
-    <div id="etudiant_fields" style="display:none;">
-      {{ etudiant_form.as_p }}
-    </div>
-    
-    <div id="enseignant_fields" style="display:none;">
-      {{ enseignant_form.as_p }}
-    </div>
-    
-    <div id="secretaire_fields" style="display:none;">
-      {{ secretaire_form.as_p }}
-    </div>
-    
-    <button type="submit">S'inscrire</button>
-  </form>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inscription</title>
+    </head>
+    <body>
+        <h1>Inscription</h1>
 
-  <script>
-    // Fonction pour afficher les champs du formulaire correspondant au type d'utilisateur sélectionné
-    function showFields() {
-      const userType = document.getElementById('id_user_type').value;
-      
-      document.getElementById('etudiant_fields').style.display = 'none';
-      document.getElementById('enseignant_fields').style.display = 'none';
-      document.getElementById('secretaire_fields').style.display = 'none';
-      
-      if (userType === 'etudiant') {
-        document.getElementById('etudiant_fields').style.display = 'block';
-      } else if (userType === 'enseignant') {
-        document.getElementById('enseignant_fields').style.display = 'block';
-      } else if (userType === 'secretaire') {
-        document.getElementById('secretaire_fields').style.display = 'block';
-      }
-    }
+        <form method="POST" action="{% url 'lesApprentiStage:signup' %}">
+            {% csrf_token %}
+            {{ user_form.as_p }}
 
-    // Ajout d'un écouteur d'événement pour changer les champs du formulaire lorsque le type d'utilisateur est modifié
-    document.getElementById('id_user_type').addEventListener('change', showFields);
+            <div id="etudiant_fields" style="display:none;">
+                {{ etudiant_form.as_p }}
+            </div>
 
-    // Appel initial de la fonction pour afficher les champs corrects
-    showFields();
+            <div id="enseignant_fields" style="display:none;">
+                {{ enseignant_form.as_p }}
+            </div>
+
+            <div id="secretaire_fields" style="display:none;">
+                {{ secretaire_form.as_p }}
+            </div>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const userTypeSelect = document.getElementById('id_type_utilisateur');
+                const etudiantFields = document.getElementById('etudiant_fields');
+                const enseignantFields = document.getElementById('enseignant_fields');
+                const secretaireFields = document.getElementById('secretaire_fields');
+              
+                function toggleFields() {
+                  const userType = userTypeSelect.value;
+                  
+                  if(userType === 'etudiant') {
+                      etudiantFields.style.display = 'block';
+                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+              
+                      enseignantFields.style.display = 'none';
+                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+              
+                      secretaireFields.style.display = 'none';
+                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+                  } 
+                  else if(userType === 'enseignant') {
+                      enseignantFields.style.display = 'block';
+                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+              
+                      etudiantFields.style.display = 'none';
+                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+              
+                      secretaireFields.style.display = 'none';
+                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+                  } 
+                  else if(userType === 'secretaire') {
+                      secretaireFields.style.display = 'block';
+                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+              
+                      etudiantFields.style.display = 'none';
+                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+              
+                      enseignantFields.style.display = 'none';
+                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+                  }
+                }
+              
+                // Afficher/masquer les champs lorsque la sélection change
+                userTypeSelect.addEventListener('change', toggleFields);
+              
+                // Afficher/masquer les champs au chargement de la page
+                toggleFields();
+              });
+                  
   </script>
-</body>
+
+    </body>
 </html>

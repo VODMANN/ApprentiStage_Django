@@ -4,15 +4,15 @@ from .models import Departement, Utilisateur, ProfilEtudiant, ProfilEnseignant, 
 class EtudiantForm(forms.ModelForm):
     class Meta:
         model = ProfilEtudiant
-        numEtu = forms.CharField(max_length=35, required=True)
-        civiliteEtu = forms.CharField(max_length=5, required=True)
-        adresseEtu = forms.CharField(max_length=255, required=True)
-        cpEtu = forms.IntegerField(required=True)
-        villeEtu = forms.CharField(max_length=100, required=True)
-        telEtu = forms.CharField(max_length=25, required=True)
-        promo = forms.CharField(max_length=20, required=True)
+        numEtu = forms.CharField(max_length=35, required=False)
+        civiliteEtu = forms.CharField(max_length=5, required=False)
+        adresseEtu = forms.CharField(max_length=255, required=False)
+        cpEtu = forms.IntegerField(required=False)
+        villeEtu = forms.CharField(max_length=100, required=False)
+        telEtu = forms.CharField(max_length=25, required=False)
+        promo = forms.CharField(max_length=20, required=False)
         # Ajoutez un champ pour sélectionner le département si nécessaire
-        idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=True)
+        idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
         fields = ['numEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
 
 class EnseignantForm(forms.ModelForm):

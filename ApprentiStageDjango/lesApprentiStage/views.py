@@ -8,6 +8,7 @@ def home(request):
   return render(request, 'pages/accueil.html')
 
 def signup(request):
+    print('//////////////////////////////')
     if request.method == 'POST':
         user_form = UtilisateurForm(request.POST)
         etudiant_form = EtudiantForm(request.POST)
@@ -24,22 +25,21 @@ def signup(request):
                 etudiant = etudiant_form.save(commit=False)
                 etudiant.utilisateur = user
                 etudiant.save()
-                # Log in the user here if needed
-                return redirect('home')
+                return redirect('lesApprentiStage:home')
             elif user_type == 'enseignant' and enseignant_form.is_valid():
                 user.save()
                 enseignant = enseignant_form.save(commit=False)
                 enseignant.utilisateur = user
                 enseignant.save()
                 # Log in the user here if needed
-                return redirect('home')
+                return redirect('lesApprentiStage:home')
             elif user_type == 'secretaire' and secretaire_form.is_valid():
                 user.save()
                 secretaire = secretaire_form.save(commit=False)
                 secretaire.utilisateur = user
                 secretaire.save()
                 # Log in the user here if needed
-                return redirect('home')
+                return redirect('lesApprentiStage:home')
 
     else:
         user_form = UtilisateurForm()

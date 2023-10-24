@@ -15,13 +15,15 @@ class Utilisateur(AbstractUser):
 
 class ProfilEtudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
+    nomEtu = models.CharField(max_length=50,null=True)
+    prenomEtu = models.CharField(max_length=50,null=True)
     numEtu = models.CharField(max_length=35, primary_key=True)
-    civiliteEtu = models.CharField(max_length=5)
-    adresseEtu = models.CharField(max_length=255)
-    cpEtu = models.IntegerField()
-    villeEtu = models.CharField(max_length=100)
-    telEtu = models.CharField(max_length=25)
-    promo = models.CharField(max_length=20)
+    civiliteEtu = models.CharField(max_length=5,null=True)
+    adresseEtu = models.CharField(max_length=255,null=True)
+    cpEtu = models.IntegerField(null=True)
+    villeEtu = models.CharField(max_length=100,null=True)
+    telEtu = models.CharField(max_length=25,null=True)
+    promo = models.CharField(max_length=20,null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -30,7 +32,10 @@ class ProfilEtudiant(models.Model):
 class ProfilEnseignant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     numHarpege = models.CharField(max_length=20, primary_key=True)
-    roleEnseignant = models.CharField(max_length=50)
+    roleEnseignant = models.CharField(max_length=50, null=True)
+    nomEnseignant = models.CharField(max_length=50, null=True)
+    prenomEnseignant = models.CharField(max_length=50, null=True)
+    mailEnseignant = models.EmailField(max_length=100, null=True)
 
     def __str__(self):
         return self.utilisateur.username
@@ -56,16 +61,6 @@ class Entreprise(models.Model):
 class Theme(models.Model):
     nomTheme = models.CharField(max_length=50)
 
-class Enseignant(models.Model):
-    profil = models.OneToOneField(ProfilEnseignant, on_delete=models.CASCADE)
-    nomEnseignant = models.CharField(max_length=50)
-    prenomEnseignant = models.CharField(max_length=50)
-    mailEnseignant = models.EmailField(max_length=100)
-
-class Etudiant(models.Model):
-    profil = models.OneToOneField(ProfilEtudiant, on_delete=models.CASCADE)
-    nomEtu = models.CharField(max_length=50)
-    prenomEtu = models.CharField(max_length=50)
 
 class Responsable(models.Model):
     nomResp = models.CharField(max_length=50)
@@ -86,8 +81,8 @@ class Contrat(models.Model):
     etat = models.CharField(max_length=50)
     dateDeb = models.DateField()
     dateFin = models.DateField()
-    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
-    enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
+    etudiant = models.ForeignKey(ProfilEtudiant, on_delete=models.CASCADE)
+    enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
