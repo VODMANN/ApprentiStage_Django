@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-auto d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+      <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">Recherches</span>
+      </a>
+      <ul class="p-3 nav nav-pills flex-column mb-auto">
+      <hr>
+  
+        <li class="nav-item mb-3">
+          <label>Texte à rechercher</label>
+          <input type="text" class="form-control" placeholder="recherche" id="recherche">
+        </li>
+        <li class="nav-item">
+          <label>Rechercher dans</label>
+          <select class="selectpicker" id="type">
+            <option value="ETUDIANT">Etudiant / Diplômé</option>
+            <option value="ENTREPRISE" >Structure</option>
+            <option value="CONTRAT">Stage / Apprentissage</option>
+            <!-- <option>Offre de stage</option> -->
+          </select>
+        </li>
+        <li>
+          <button class='btn btn-primary mt-3' id='submit' >Recherche</button>
+        </li>
+        <hr>
+  
+      </ul>
+    </div>
+    <div class="col p-3" id="resultat">
+    </div>
+  </div>
+{% endblock %}

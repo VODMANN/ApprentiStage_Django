@@ -5,9 +5,7 @@ from django.http import HttpResponse
 
 
 def home(request):
-  return HttpResponse('bonjour à tous')
-
-
+  return render(request, 'pages/accueil.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -55,3 +53,6 @@ def signup(request):
         'enseignant_form': enseignant_form,
         'secretaire_form': secretaire_form,
     })
+
+def pageRecherche(request):
+    return render(request, 'pages/recherche.html')

@@ -78,11 +78,11 @@ WSGI_APPLICATION = "ApprentiStageDjango.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'apprentiStageDjango',
+        'NAME': 'apprentistagedjango',
         'USER': 'root',
-        'PASSWORD': 'MLKqsd002',
-        'HOST': 'localhost',   # Set to the address of your database
-        'PORT': '3306',        # Leave as 3306, the default MySQL port
+        'PASSWORD': '8632253',
+        'HOST': '127.0.0.1',   # Set to the address of your database
+        'PORT': '3307',        # Leave as 3306, the default MySQL port
     }
 }
 
