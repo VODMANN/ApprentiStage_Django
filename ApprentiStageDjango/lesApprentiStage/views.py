@@ -2,9 +2,16 @@ from django.shortcuts import render, redirect
 from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
+from django.contrib.auth.views import LoginView
 
+
+class UserLoginView(LoginView):
+    template_name = 'registration/login.html'
 
 def home(request):
+  if request.user.is_authenticated:
+        user_type = request.user.type_utilisateur
+        print(user_type)
   return render(request, 'pages/accueil.html')
 
 def signup(request):
