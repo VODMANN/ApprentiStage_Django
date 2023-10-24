@@ -5,6 +5,6 @@ app_name = 'lesApprentiStage'
 
 urlpatterns=[
   path('',views.home,name='home'),
-  path('signup', views.signup, name='signup'),
+  path('signup/', views.signup, name='signup'),
   path('recherche', views.pageRecherche, name='recherche'),
 ]
