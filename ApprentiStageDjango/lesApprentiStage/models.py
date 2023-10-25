@@ -51,15 +51,24 @@ class Departement(models.Model):
     nomDep = models.CharField(max_length=100)
     adresseDep = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.nomDep
+
 class Entreprise(models.Model):
-    numSiret = models.CharField(max_length=100, primary_key=True)
+    numSiret = models.CharField(max_length=100, primary_key=True,unique=True)
     nomEnt = models.CharField(max_length=50)
     adresseEnt = models.CharField(max_length=255)
     cpEnt = models.IntegerField()
     villeEnt = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.nomEnt
+
 class Theme(models.Model):
     nomTheme = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nomTheme
 
 
 class Responsable(models.Model):
@@ -68,12 +77,19 @@ class Responsable(models.Model):
     emailResp = models.EmailField(max_length=100)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.nomResp
+
 class Tuteur(models.Model):
     nomTuteur = models.CharField(max_length=50)
     prenomTuteur = models.CharField(max_length=50)
+    metierTuteur = models.CharField(max_length=50)
     telTuteur = models.CharField(max_length=25)
     emailTuteur = models.EmailField(max_length=100)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nomTuteur
 
 class Contrat(models.Model):
     type = models.CharField(max_length=50)
@@ -81,11 +97,14 @@ class Contrat(models.Model):
     etat = models.CharField(max_length=50)
     dateDeb = models.DateField()
     dateFin = models.DateField()
+    estValide = models.BooleanField(default=False)
     etudiant = models.ForeignKey(ProfilEtudiant, on_delete=models.CASCADE)
-    enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE)
-    tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE)
+    enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
+    tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
+    entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE) 
+
 
 class Offre(models.Model):
     titre = models.CharField(max_length=100)

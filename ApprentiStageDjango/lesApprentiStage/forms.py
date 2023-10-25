@@ -1,5 +1,5 @@
 from django import forms
-from .models import Departement, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
+from .models import Contrat, Departement, Entreprise, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -32,3 +32,29 @@ class UtilisateurForm(forms.ModelForm):
         model = Utilisateur
         fields = ['username', 'password', 'type_utilisateur']
 
+
+
+TYPE_CHOICES_CONTRAT = [
+    ('Stage', 'Stage'),
+    ('Alternance', 'Alternance'),
+]
+
+
+class ContratEtudiantForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
+    class Meta:
+        model = Contrat
+        exclude = ['etudiant', 'offre', 'tuteur', 'estValide']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ContratEtudiantForm, self).__init__(*args, **kwargs)
+        if user and hasattr(user, 'profiletudiant'):
+            self.fields['etudiant'].initial = user.profilEtudiant.numEtu
+            self.instance.etudiant = user.profilEtudiant
+
+
+class EntrepriseForm(forms.ModelForm):
+    class Meta:
+        model = Entreprise
+        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'cpEnt', 'villeEnt']

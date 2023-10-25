@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
+from .forms import ContratEtudiantForm, EntrepriseForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
-from .models import ProfilEtudiant, Entreprise, Contrat
+from .models import ProfilEtudiant, Entreprise, Contrat, Utilisateur
+from django.contrib import messages
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -112,3 +113,57 @@ def search(request):
         return render(request, 'results.html', {"results": results})
 
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})
+
+
+def ajouter_contrat(request):
+    if request.method == 'POST':
+        form = ContratEtudiantForm(request.POST)
+        if form.is_valid():
+            contrat = form.save(commit=False)
+            try:
+                profil_etudiant = request.user.profiletudiant
+            except Utilisateur.profiletudiant.RelatedObjectDoesNotExist:
+                messages.error(request, "Vous devez avoir un profil étudiant pour ajouter un contrat.")
+                return redirect('lesApprentiStage:home')
+
+            contrat.etudiant = profil_etudiant
+            contrat.save()
+            messages.success(request, "Contrat ajouté avec succès.")
+            return redirect('lesApprentiStage:home')
+
+    else:
+        form = ContratEtudiantForm()
+    
+    return render(request, 'etudiant/ajouter_contrat.html', {'form': form, 'EntrepriseForm': EntrepriseForm()})
+
+
+@login_required
+def ajouter_entrepriseSeul(request):
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST)
+        if form.is_valid():
+            entreprise = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return redirect('lesApprentiStage:home')  # Remplacez 'url_apres_ajout' par l'URL appropriée
+        else:
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
+    else:
+        form = EntrepriseForm()
+
+    return render(request, 'pages/ajouter_entreprise.html', {'EntrepriseForm': form})
+
+
+@login_required
+def ajouter_entreprise(request):
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST)
+        if form.is_valid():
+            entreprise = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return JsonResponse({"success": True, "entreprise": {"nomEnt": entreprise.nomEnt, "pk": entreprise.pk}})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = EntrepriseForm()
+
+    return render(request, 'pages/ajouter_entreprise.html', {'EntrepriseForm': form})
