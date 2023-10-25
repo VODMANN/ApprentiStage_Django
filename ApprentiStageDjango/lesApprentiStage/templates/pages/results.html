@@ -45,17 +45,10 @@
                         <td>{{ result.civiliteEtu }}</td>
                         <td>{{ result.nomEtu }}</td>
 
-                        <td>{{ result.prenomEtu }}</td>
-                        <td>{{ result.adresseEtu }}</td>
-                        <td>{{ result.cpEtu }}</td>
-                        <td>{{ result.villeEtu }}</td>
-                        <td>{{ result.telEtu }}</td>
-                        <td>{{ result.promo }}</td>
-                        <td>{{ result.departement }}</td>
-
                     {% elif search_type == "ENTREPRISE" %}
                         <td>{{ result.nomEnt }}</td>
                         <td>{{ result.adresseEnt }}</td>
+                        <td>{{ result.cpEnt }}</td>
                         <!-- ajoutez d'autres colonnes pour ENTREPRISE ici -->
 
                     {% elif search_type == "CONTRAT" %}

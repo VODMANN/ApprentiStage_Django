@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
 from .models import ProfilEtudiant, Entreprise, Contrat
+from django.db.models import Q
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -99,16 +100,31 @@ def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
 
+    results = []
+
     if search_type == 'ETUDIANT':
-        results = ProfilEtudiant.objects.filter(nomEtu__icontains=query).values('numEtu','civiliteEtu','nomEtu','prenomEtu','adresseEtu','cpEtu','villeEtu','telEtu','promo')
+        results = ProfilEtudiant.objects.filter(
+            Q(nomEtu__icontains=query) |
+            Q(prenomEtu__icontains=query) |
+            Q(numEtu__icontains=query) |
+            Q(adresseEtu__icontains=query) |
+            Q(promo__icontains=query)
+        ).values('numEtu', 'civiliteEtu', 'nomEtu', 'prenomEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo')
     elif search_type == 'ENTREPRISE':
-        results = Entreprise.objects.filter(nomEnt__icontains=query)
+        results = Entreprise.objects.filter(
+            Q(nomEnt__icontains=query) |
+            Q(numSiret__icontains=query) |
+            Q(adresseEnt__icontains=query)
+        ).values('numSiret', 'nomEnt', 'adresseEnt', 'cpEnt', 'villeEnt')
     elif search_type == 'CONTRAT':
-        results = Contrat.objects.filter(type__icontains=query)
-    else:
-        results = []
+        results = Contrat.objects.filter(
+            Q(type__icontains=query) |
+            Q(description__icontains=query) |
+            Q(etat__icontains=query)
+        ).values('type', 'description', 'etat')
 
     if request.headers.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        return render(request, 'results.html', {"results": results})
+        data = list(results)
+        return JsonResponse(data, safe=False)
 
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})
