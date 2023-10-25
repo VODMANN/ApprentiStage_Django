@@ -3,7 +3,7 @@ from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
-
+from .models import ProfilEtudiant, Entreprise, Contrat
 
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
@@ -63,3 +63,21 @@ def signup(request):
 
 def pageRecherche(request):
     return render(request, 'pages/recherche.html')
+
+def search(request):
+    query = request.GET.get('query', '')
+    search_type = request.GET.get('type', '')
+
+    if search_type == 'ETUDIANT':
+        results = ProfilEtudiant.objects.filter(nomEtu__icontains=query).values('numEtu','civiliteEtu','nomEtu','prenomEtu','adresseEtu','cpEtu','villeEtu','telEtu','promo')
+    elif search_type == 'ENTREPRISE':
+        results = Entreprise.objects.filter(nomEnt__icontains=query)
+    elif search_type == 'CONTRAT':
+        results = Contrat.objects.filter(type__icontains=query)
+    else:
+        results = []
+
+    if request.headers.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        return render(request, 'results.html', {"results": results})
+
+    return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})

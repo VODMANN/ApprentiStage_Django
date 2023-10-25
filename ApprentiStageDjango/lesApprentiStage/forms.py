@@ -7,6 +7,8 @@ class EtudiantForm(forms.ModelForm):
         numEtu = forms.CharField(max_length=35, required=False)
         civiliteEtu = forms.CharField(max_length=5, required=False)
         adresseEtu = forms.CharField(max_length=255, required=False)
+        nomEtu = forms.CharField(max_length=255, required=False)
+        prenomEtu = forms.CharField(max_length=255, required=False)
         cpEtu = forms.IntegerField(required=False)
         villeEtu = forms.CharField(max_length=100, required=False)
         telEtu = forms.CharField(max_length=25, required=False)
