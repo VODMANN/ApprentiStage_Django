@@ -132,3 +132,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'lesApprentiStage.Utilisateur'
 
 LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
+
+LOGIN_URL = 'lesApprentiStage:login'

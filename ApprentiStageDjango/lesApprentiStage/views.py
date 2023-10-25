@@ -1,9 +1,33 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.views import LoginView
 from .models import ProfilEtudiant, Entreprise, Contrat
+
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+
+def user_type_required(user_type):
+    def decorator(view_func):
+        @login_required
+        def _wrapped_view(request, *args, **kwargs):
+            user = request.user
+            if user.is_authenticated:
+                try:
+                    # Accéder au profil associé au type d'utilisateur
+                    profile = getattr(user, f'profil{user_type.lower()}')
+                except AttributeError:
+                    return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
+            else:
+                from django.contrib.auth.views import redirect_to_login
+                return redirect_to_login(request.get_full_path())
+
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+
 
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
@@ -61,9 +85,14 @@ def signup(request):
         'secretaire_form': secretaire_form,
     })
 
+@login_required
+@user_type_required('secretaire')
 def pageRecherche(request):
     return render(request, 'pages/recherche.html')
 
+
+@login_required
+@user_type_required('secretaire')
 def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
