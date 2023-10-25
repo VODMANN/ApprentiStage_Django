@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Connexion</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Connexion</button>
-  </form>
+  <div class='card container mt-5 p-3' style="width: 25rem;">
+    <div class="row">
+        <h4>Connexion</h4>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row p-2">
+        <label class="col" for="{{ form.username.id_for_label }}">Nom d'utilisateur :</label>
+        <input class="col form-control" id="{{ form.username.id_for_label }}" type="text" name="{{ form.username.name }}" required>
+      </div>
+      <div class="row p-2">
+        <label class="col" for="{{ form.password.id_for_label }}">Mot de passe :</label>
+        <input class="col form-control" id="{{ form.password.id_for_label }}" type="password" name="{{ form.password.name }}" required>
+      <div class="row p-2">
+          <button class="col btn btn-primary" id="submit" >Connexion</button>
+      </div>
+  </div>
 {% endblock %}

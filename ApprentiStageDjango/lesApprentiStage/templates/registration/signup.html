@@ -1,83 +1,180 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Inscription</title>
-    </head>
-    <body>
-        <h1>Inscription</h1>
+{% extends "base.html" %}
 
-        <form method="POST" action="{% url 'lesApprentiStage:signup' %}">
-            {% csrf_token %}
-            {{ user_form.as_p }}
+{% block content %}
+  <div class='card container mt-5 p-3' style="width: 30rem;">
+    <div class="row">
+        <h4>Inscription</h4>
+    </div>
+    <form method="POST" action="{% url 'lesApprentiStage:signup' %}">
+      {% csrf_token %}
+      
+      <div class="row p-2">
+        <label class="col" for="{{ user_form.username.id_for_label }}">Nom d'utilisateur :</label>
+        <input class="col form-control" id="{{ user_form.username.id_for_label }}" type="text" name="{{ user_form.username.name }}" required>
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ user_form.password.id_for_label }}">Mot de passe :</label>
+        <input class="col form-control" id="{{ user_form.password.id_for_label }}" type="password" name="{{ user_form.password.name }}" required>
+      </div>
+      
+    <div class="row p-2">
+        <label class="col" for="{{ user_form.type_utilisateur.id_for_label }}">Type d'utilisateur :</label>
+        <select class="col form-control" id="{{ user_form.type_utilisateur.id_for_label }}" name="{{ user_form.type_utilisateur.name }}" required>
+            {% for choice in user_form.type_utilisateur.field.choices %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <hr>
+      
+      <div id="etudiant_fields" style="display:none;">
+        <div class="row p-2">
+          <label class="col" for="{{ etudiant_form.nomEtu.id_for_label }}">Nom :</label>
+          <input class="col form-control" id="{{ etudiant_form.nomEtu.id_for_label }}" type="text" name="{{ etudiant_form.nomEtu.name }}" required>
+        </div>
+        
+        <div class="row p-2">
+          <label class="col" for="{{ etudiant_form.prenomEtu.id_for_label }}">Prénom :</label>
+          <input class="col form-control" id="{{ etudiant_form.prenomEtu.id_for_label }}" type="text" name="{{ etudiant_form.prenomEtu.name }}" required>
+        </div>
 
-            <div id="etudiant_fields" style="display:none;">
-                {{ etudiant_form.as_p }}
-            </div>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.numEtu.id_for_label }}">Numéro étudiant :</label>
+            <input class="col form-control" id="{{ etudiant_form.numEtu.id_for_label }}" type="text" name="{{ etudiant_form.numEtu.name }}" required>
+        </div>
 
-            <div id="enseignant_fields" style="display:none;">
-                {{ enseignant_form.as_p }}
-            </div>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.civiliteEtu.id_for_label }}">Civilité étudiant :</label>
+            <select class="col form-control" id="{{ etudiant_form.civiliteEtu.id_for_label }}" name="{{ etudiant_form.civiliteEtu.name }}" required>
+                <option value="M.">M.</option>
+                <option value="Mme.">Mme.</option>
+            </select>
+        </div>
 
-            <div id="secretaire_fields" style="display:none;">
-                {{ secretaire_form.as_p }}
-            </div>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.adresseEtu.id_for_label }}">Adresse étudiant :</label>
+            <input class="col form-control" id="{{ etudiant_form.adresseEtu.id_for_label }}" type="text" name="{{ etudiant_form.adresseEtu.name }}" required>
+        </div>
 
-            <button type="submit">S'inscrire</button>
-        </form>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.cpEtu.id_for_label }}">Code Postal :</label>
+            <input class="col form-control" id="{{ etudiant_form.cpEtu.id_for_label }}" 
+                   type="text" name="{{ etudiant_form.cpEtu.name }}" 
+                   pattern="[0-9]{5}" title="Le code postal doit comporter 5 chiffres"
+                   required>
+        </div>
+        
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.villeEtu.id_for_label }}">Ville :</label>
+            <input class="col form-control" id="{{ etudiant_form.villeEtu.id_for_label }}" type="text" name="{{ etudiant_form.villeEtu.name }}" required>
+        </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const userTypeSelect = document.getElementById('id_type_utilisateur');
-                const etudiantFields = document.getElementById('etudiant_fields');
-                const enseignantFields = document.getElementById('enseignant_fields');
-                const secretaireFields = document.getElementById('secretaire_fields');
-              
-                function toggleFields() {
-                  const userType = userTypeSelect.value;
-                  
-                  if(userType === 'etudiant') {
-                      etudiantFields.style.display = 'block';
-                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-              
-                      enseignantFields.style.display = 'none';
-                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-              
-                      secretaireFields.style.display = 'none';
-                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-                  } 
-                  else if(userType === 'enseignant') {
-                      enseignantFields.style.display = 'block';
-                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-              
-                      etudiantFields.style.display = 'none';
-                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-              
-                      secretaireFields.style.display = 'none';
-                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-                  } 
-                  else if(userType === 'secretaire') {
-                      secretaireFields.style.display = 'block';
-                      [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-              
-                      etudiantFields.style.display = 'none';
-                      [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-              
-                      enseignantFields.style.display = 'none';
-                      [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-                  }
-                }
-              
-                // Afficher/masquer les champs lorsque la sélection change
-                userTypeSelect.addEventListener('change', toggleFields);
-              
-                // Afficher/masquer les champs au chargement de la page
-                toggleFields();
-              });
-                  
-  </script>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.telEtu.id_for_label }}">Numéro de téléphone :</label>
+            <input class="col form-control" id="{{ etudiant_form.telEtu.id_for_label }}" 
+                   type="text" name="{{ etudiant_form.telEtu.name }}" 
+                   pattern="^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$"
+                   title="Le numéro de téléphone doit être au format français"
+                   required>
+        </div>
 
-    </body>
-</html>
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
+            <input class="col form-control" id="{{ etudiant_form.promo.id_for_label }}" type="text" name="{{ etudiant_form.promo.name }}" required>
+        </div>
+
+        <div class="row p-2">
+            <label class="col" for="{{ etudiant_form.idDepartement.id_for_label }}">Département :</label>
+            <select class="col form-control" id="{{ etudiant_form.idDepartement.id_for_label }}" name="{{ etudiant_form.idDepartement.name }}" required>
+                {% for departement in etudiant_form.idDepartement.field.queryset %}
+                    <option value="{{ departement.pk }}">{{ departement.nomDep }}</option>
+                {% endfor %}
+            </select>
+        </div>
+             
+        
+        <!-- Ajoutez les autres champs d'étudiant ici -->
+      </div>
+      
+      <div id="enseignant_fields" style="display:none;">
+        <div class="row p-2">
+          <label class="col" for="{{ enseignant_form.numHarpege.id_for_label }}">Numéro Harpège :</label>
+          <input class="col form-control" id="{{ enseignant_form.numHarpege.id_for_label }}" type="text" name="{{ enseignant_form.numHarpege.name }}" required>
+        </div>
+        
+        <div class="row p-2">
+          <label class="col" for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle :</label>
+          <input class="col form-control" id="{{ enseignant_form.roleEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.roleEnseignant.name }}" required>
+        </div>
+        
+        <!-- Ajoutez les autres champs d'enseignant ici -->
+      </div>
+      
+      <div id="secretaire_fields" style="display:none;">
+        <div class="row p-2">
+          <label class="col" for="{{ secretaire_form.numSec.id_for_label }}">Numéro Secrétaire :</label>
+          <input class="col form-control" id="{{ secretaire_form.numSec.id_for_label }}" type="text" name="{{ secretaire_form.numSec.name }}" required>
+        </div>
+        
+        <!-- Ajoutez les autres champs de secrétaire ici -->
+      </div>
+      
+      <div class="row p-2">
+        <button class="col btn btn-primary" type="submit">Inscrire</button>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const userTypeSelect = document.getElementById('id_type_utilisateur');
+        const etudiantFields = document.getElementById('etudiant_fields');
+        const enseignantFields = document.getElementById('enseignant_fields');
+        const secretaireFields = document.getElementById('secretaire_fields');
+      
+        function toggleFields() {
+          const userType = userTypeSelect.value;
+          
+          if(userType === 'etudiant') {
+              etudiantFields.style.display = 'block';
+              [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+      
+              enseignantFields.style.display = 'none';
+              [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+              secretaireFields.style.display = 'none';
+              [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+          } 
+          else if(userType === 'enseignant') {
+              enseignantFields.style.display = 'block';
+              [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+      
+              etudiantFields.style.display = 'none';
+              [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+              secretaireFields.style.display = 'none';
+              [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+          } 
+          else if(userType === 'secretaire') {
+              secretaireFields.style.display = 'block';
+              [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
+      
+              etudiantFields.style.display = 'none';
+              [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+              enseignantFields.style.display = 'none';
+              [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+          }
+        }
+      
+        // Afficher/masquer les champs lorsque la sélection change
+        userTypeSelect.addEventListener('change', toggleFields);
+      
+        // Afficher/masquer les champs au chargement de la page
+        toggleFields();
+      });
+          
+</script>
+{% endblock %}

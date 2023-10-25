@@ -38,6 +38,8 @@ def home(request):
         print(user_type)
   return render(request, 'pages/accueil.html')
 
+@login_required
+@user_type_required('secretaire')
 def signup(request):
     print('//////////////////////////////')
     if request.method == 'POST':
