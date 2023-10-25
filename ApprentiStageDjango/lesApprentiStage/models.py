@@ -96,3 +96,14 @@ class Offre(models.Model):
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     estPublie = models.BooleanField(default=False)
+
+class Salle(models.Model):
+    numero = models.CharField(max_length=50)
+
+class Soutenance(models.Model):
+    dateSoutenance = models.DateField()
+    heureSoutenance = models.TimeField()
+    salle = models.ForeignKey(Salle, on_delete=models.CASCADE,null=True)
+    idContrat = models.ForeignKey(Contrat, on_delete=models.CASCADE,null=True)
+    candide = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
+    estDistanciel = models.BooleanField()

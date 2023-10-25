@@ -41,6 +41,9 @@
                         <li class="nav-item ms-1">
                             <a class="nav-link dropdown-item" href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
                         </li>
+                        <li class="nav-item ms-1">
+                            <a class="nav-link dropdown-item" href="{% url 'lesApprentiStage:soutenance' %}">Soutenance</a>
+                        </li>
                         {% endif %}
                         {% if user.type_utilisateur == "etudiant" %}
                         <li class="nav-item ms-1">

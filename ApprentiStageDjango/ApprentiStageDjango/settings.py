@@ -80,9 +80,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'apprentiStageDjango',
         'USER': 'root',
-        'PASSWORD': '8632253',
+        'PASSWORD': 'root',
         'HOST': '127.0.0.1',   # Set to the address of your database
-        'PORT': '3307',        # Leave as 3306, the default MySQL port
+        'PORT': '3306',        # Leave as 3306, the default MySQL port
     }
 }
 

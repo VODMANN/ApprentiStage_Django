@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
+from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm,SoutenanceForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.views import LoginView
-from .models import ProfilEtudiant, Entreprise, Contrat
+from .models import ProfilEtudiant, Entreprise, Contrat,Soutenance,Salle
+from django.contrib.auth.views import redirect_to_login
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -21,7 +22,6 @@ def user_type_required(user_type):
                 except AttributeError:
                     return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
             else:
-                from django.contrib.auth.views import redirect_to_login
                 return redirect_to_login(request.get_full_path())
 
             return view_func(request, *args, **kwargs)
@@ -38,8 +38,8 @@ def home(request):
         print(user_type)
   return render(request, 'pages/accueil.html')
 
-@login_required
-@user_type_required('secretaire')
+# @login_required
+# @user_type_required('secretaire')
 def signup(request):
     print('//////////////////////////////')
     if request.method == 'POST':
@@ -112,3 +112,16 @@ def search(request):
         return render(request, 'results.html', {"results": results})
 
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})
+
+@login_required
+def soutenance(request):
+    if request.method == 'POST':
+        formSoutenance = SoutenanceForm(request.POST)
+        if formSoutenance.is_valid():
+            uneSoutenance = formSoutenance.save(commit=False)
+            uneSoutenance.save()
+            return redirect('lesApprentiStage:soutenance')
+    else:
+        formSoutenance = SoutenanceForm()
+    listSoutenance = Soutenance.objects.all()
+    return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance})

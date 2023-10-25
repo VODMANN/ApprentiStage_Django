@@ -11,5 +11,5 @@ urlpatterns=[
   path('login/', views.UserLoginView.as_view(), name='login'),
   path('logout/', LogoutView.as_view(next_page='lesApprentiStage:home'), name='logout'),
   path('search/', views.search, name='search'),
-
+  path('soutenance/', views.soutenance, name='soutenance'),
 ]
