@@ -12,4 +12,6 @@ urlpatterns=[
   path('logout/', LogoutView.as_view(next_page='lesApprentiStage:home'), name='logout'),
   path('search/', views.search, name='search'),
   path('soutenance/', views.soutenance, name='soutenance'),
+  path('supprimerSoutenance/<id>', views.supprimerSoutenance, name='supprimerSoutenance'),
+  path('modifierSoutenance/<id>', views.modifierSoutenance, name='modifierSoutenance'),
 ]

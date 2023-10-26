@@ -87,6 +87,9 @@ class Contrat(models.Model):
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.etudiant.prenomEtu+' '+self.etudiant.nomEtu
+
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
@@ -99,6 +102,10 @@ class Offre(models.Model):
 
 class Salle(models.Model):
     numero = models.CharField(max_length=50)
+
+    
+    def __str__(self):
+        return self.numero
 
 class Soutenance(models.Model):
     dateSoutenance = models.DateField()

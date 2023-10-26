@@ -1,36 +1,90 @@
 {% extends "base.html" %}
-{% block content %}
-<h1>Bienvenue dans les Soutenances</h1>
+{% load crispy_forms_tags %}
+ {% block content %}
+
+<h1 class="text-center mt-2">Soutenances</h1>
 <!-- Button trigger modal -->
-{% for soutenance in listSoutenance %}
-<p>{{soutenance.estDistanciel}}</p>
-{% endfor %}
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Ajouter
-  </button>
-  
-  <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"s>
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Ajouter une Soutenance</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+<div class="d-flex justify-content-center align-content-center mb-2">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Ajouter</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" data-backdrop="false" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"s>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          Ajouter une Soutenance
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'lesApprentiStage:soutenance' %}">
+        <div class="modal-body">
+          {% csrf_token %} 
+          {{ form | crispy }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" name="ajouter">
+            Ajouter
           </button>
         </div>
-        <form  method="POST" action="{% url 'lesApprentiStage:soutenance' %}">
-            <div class="modal-body">
-                    {% csrf_token %} 
-                    {{ form }}
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" name="ajouter">Ajouter</button>
-            </div>
-        </form>
-      </div>
+      </form>
     </div>
   </div>
+</div>
 
- 
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    
+      {% for soutenance in listSoutenance %}
+        {% if modifSoutenance.id != soutenance.id %}
+        <tr>
+          <td>{{soutenance.dateSoutenance}}</td>
+          <td>{{soutenance.heureSoutenance}}</td>
+          <td>{{soutenance.salle}}</td>
+          <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance.candide}}</td>
+          <td>{{soutenance.estDistanciel}}</td>
+          <td><a href="{% url 'lesApprentiStage:modifierSoutenance' soutenance.id %}" class="btn bg-success text-white">Modifier</a></td>
+          <td><a href="{% url 'lesApprentiStage:supprimerSoutenance' soutenance.id %}" class="btn bg-danger text-white">Supprimer</a></td>
+        </tr>
+        {% else %}
+        <tr>
+          <form method="POST" action="{% url 'lesApprentiStage:modifierSoutenance' soutenance.id %}">
+          {% csrf_token %} 
+          <td>{{ form.dateSoutenance|as_crispy_field }}</td>
+          <td>{{ form.heureSoutenance|as_crispy_field }}</td>
+          <td>{{ form.salle|as_crispy_field }}</td>
+          <td>{{ form.idContrat|as_crispy_field }}</td>
+          <td>{{ form.candide|as_crispy_field }}</td>
+          <td><p class="mt-4">{{ form.estDistanciel|as_crispy_field }}</p></td>
+          <td></td>
+          <td></td>
+          <td><button type="submit" class="btn btn-primary mt-4" name="modifier">Modifier</button></td>
+          </form>
+          <td><a href="{% url 'lesApprentiStage:supprimerSoutenance' soutenance.id %}" class="btn bg-danger text-white mt-4">Supprimer</a></td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    
+  </tbody>
+</table>
+
 {% endblock %}

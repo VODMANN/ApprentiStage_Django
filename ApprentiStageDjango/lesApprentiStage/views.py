@@ -118,10 +118,41 @@ def soutenance(request):
     if request.method == 'POST':
         formSoutenance = SoutenanceForm(request.POST)
         if formSoutenance.is_valid():
-            uneSoutenance = formSoutenance.save(commit=False)
-            uneSoutenance.save()
-            return redirect('lesApprentiStage:soutenance')
+            if 'ajouter' in request.POST:
+                verification = Soutenance.objects.filter(salle = formSoutenance.cleaned_data['salle'], heureSoutenance = formSoutenance.cleaned_data['heureSoutenance'],dateSoutenance = formSoutenance.cleaned_data['dateSoutenance'])
+                if len(verification)==0:
+                    uneSoutenance = formSoutenance.save(commit=False)
+                    uneSoutenance.save()
+                return redirect('lesApprentiStage:soutenance')
     else:
         formSoutenance = SoutenanceForm()
     listSoutenance = Soutenance.objects.all()
     return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance})
+
+@login_required
+def supprimerSoutenance(request,id):
+    unesoutenance = Soutenance.objects.filter(id = id)[0]
+    unesoutenance.delete()
+    return redirect('lesApprentiStage:soutenance')
+
+@login_required
+def modifierSoutenance(request,id):
+    unesoutenance = Soutenance.objects.filter(id = id)[0]
+    listSoutenance = Soutenance.objects.all()
+    if request.method == 'POST':
+        formSoutenance = SoutenanceForm(request.POST)
+        if formSoutenance.is_valid():
+             if 'modifier' in request.POST:
+                verification = Soutenance.objects.filter(salle = formSoutenance.cleaned_data['salle'], heureSoutenance = formSoutenance.cleaned_data['heureSoutenance'],dateSoutenance = formSoutenance.cleaned_data['dateSoutenance'])
+                if len(verification)==0:
+                    unesoutenance.dateSoutenance = formSoutenance.cleaned_data['dateSoutenance']
+                    unesoutenance.heureSoutenance = formSoutenance.cleaned_data['heureSoutenance']
+                    unesoutenance.salle = formSoutenance.cleaned_data['salle']
+                    unesoutenance.idContrat = formSoutenance.cleaned_data['idContrat']
+                    unesoutenance.candide = formSoutenance.cleaned_data['candide']
+                    unesoutenance.estDistanciel = formSoutenance.cleaned_data['estDistanciel']
+                    unesoutenance.save()
+                return redirect('lesApprentiStage:soutenance')
+    else:
+        formSoutenance = SoutenanceForm(initial={'dateSoutenance': unesoutenance.dateSoutenance,'heureSoutenance': unesoutenance.heureSoutenance, 'salle': unesoutenance.salle, 'idContrat': unesoutenance.idContrat, 'candide': unesoutenance.candide, 'estDistanciel': unesoutenance.estDistanciel})
+    return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance, 'modifSoutenance': unesoutenance})

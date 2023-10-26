@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "lesApprentiStage",
+    'crispy_bootstrap4',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,5 @@ AUTH_USER_MODEL = 'lesApprentiStage.Utilisateur'
 LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
 
 LOGIN_URL = 'lesApprentiStage:login'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
