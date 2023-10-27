@@ -21,7 +21,11 @@
             <!-- Site Icon -->
             <link rel="icon" type="images/x-icon" href="/logo.png" />
         </head>
+<<<<<<< HEAD
         <body style="background-color : #F5F7FB">
+=======
+        <body style="background-color:#F5F7FB">
+>>>>>>> main
             <!-- jQuery (Necessary for Bootstrap's JavaScript plugins) -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -38,6 +42,7 @@
                 crossorigin="anonymous"></script>
 
             <!-- Other Libraries -->
+<<<<<<< HEAD
             <scriptsrc="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></scriptsrc=>
             <scriptsrc="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></scriptsrc=>
             <scriptsrc="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></scriptsrc=>
@@ -78,6 +83,61 @@
                       </ul>
                     </div>
                   </nav>
+=======
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+            <header>
+                <nav class="navbar navbar-expand navbar-dark bg-dark p-2 ">
+                    <a class="navbar-brand"
+                        href="{% url 'lesApprentiStage:home' %}">
+                        Apprentistage
+                    </a>
+                    <button class="navbar-toggler" type="button"
+                        data-toggle="collapse" data-target="#navbarsExample02"
+                        aria-controls="navbarsExample02" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarsExample02">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item" id="acc"
+                                    href="{% url 'lesApprentiStage:home' %}">Accueil</a>
+                            </li>
+                            {% if user.type_utilisateur == "secretaire" %}
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item"
+                                    href="{% url 'lesApprentiStage:recherche' %}">Recherche</a>
+                            </li>
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item"
+                                    href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
+                            </li>
+                            {% endif %}
+                            {% if user.type_utilisateur == "etudiant" %}
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item" href>Ajout</a>
+                            </li>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item" id="delog"
+                                    href="{% url 'lesApprentiStage:logout' %}">Déconnexion</a>
+                            </li>
+                            {% else %}
+                            <li class="nav-item ms-1">
+                                <a class="nav-link dropdown-item" id="cov"
+                                    href="{% url 'lesApprentiStage:login' %}">Connexion</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+>>>>>>> main
             </header>
 
             <main>
@@ -101,11 +161,15 @@
                 }
             </script>
         
+<<<<<<< HEAD
             <style>
                 .navbar-nav .nav-link {
                     font-size: 1.2rem;
                 }
             </style>
+=======
+        
+>>>>>>> main
 
         </body>
     </html>

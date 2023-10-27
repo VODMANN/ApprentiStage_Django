@@ -1,0 +1,13 @@
+
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h2>Ajouter un</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ EntrepriseForm|crispy }}
+        <button type="submit">Ajouter</button>
+    </form>
+{% endblock %}

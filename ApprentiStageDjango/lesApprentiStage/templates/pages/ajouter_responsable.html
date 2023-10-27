@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Ajouter un responsable et un tuteur</h2>
+  <form method="post" id="responsableForm">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ responsable_form.responsable_existant|as_crispy_field }}
+      </div>
+      <div id="nouveauResponsableFields" style="display:none;">
+        <div class="form-group">
+          {{ responsable_form.nomResp|as_crispy_field }}
+        </div>
+        <div class="form-group">
+          {{ responsable_form.prenomResp|as_crispy_field }}
+        </div>
+        <div class="form-group">
+          {{ responsable_form.emailResp|as_crispy_field }}
+        </div>
+      </div>
+      <!-- Champs du formulaire tuteur -->
+      <div id="tuteurFields">
+        {{ tuteur_form|crispy }}
+      </div>
+      <button type="submit" class="btn btn-primary">Ajouter</button>
+  </form>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const responsableExistantSelect = document.getElementById('id_responsable_existant');
+    const nouveauResponsableFields = document.getElementById('nouveauResponsableFields');
+    const nomRespInput = document.getElementById('id_nomResp');
+    const prenomRespInput = document.getElementById('id_prenomResp');
+    const emailRespInput = document.getElementById('id_emailResp');
+
+    function toggleResponsableFields() {
+      if (responsableExistantSelect.value) {
+        nouveauResponsableFields.style.display = 'none';
+        nomRespInput.required = false;
+        prenomRespInput.required = false;
+        emailRespInput.required = false;
+      } else {
+        nouveauResponsableFields.style.display = 'block';
+        nomRespInput.required = true;
+        prenomRespInput.required = true;
+        emailRespInput.required = true;
+      }
+    }
+
+    responsableExistantSelect.addEventListener('change', toggleResponsableFields);
+
+    // Déclenchez l'événement de changement manuellement pour définir l'état initial.
+    toggleResponsableFields();
+  });
+</script>
+{% endblock %}
