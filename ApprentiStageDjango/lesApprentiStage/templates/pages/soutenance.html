@@ -3,6 +3,8 @@
  {% block content %}
 
 <h1 class="text-center mt-2">Soutenances</h1>
+
+{% if user == "secretaire" %}
 <!-- Button trigger modal -->
 <div class="d-flex justify-content-center align-content-center mb-2">
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Ajouter</button>
@@ -86,5 +88,101 @@
     
   </tbody>
 </table>
-
+{% endif %}
+{% if user == "etudiant" %}
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr>
+          <td>{{etuSoutenance.dateSoutenance}}</td>
+          <td>{{etuSoutenance.heureSoutenance}}</td>
+          <td>{{etuSoutenance.salle}}</td>
+          <td>{{etuSoutenance.idContrat.etudiant.prenomEtu}} {{etuSoutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{etuSoutenance.idContrat.enseignant.prenomEnseignant}} {{etuSoutenance.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{etuSoutenance.idContrat.tuteur.prenomTuteur}} {{etuSoutenance.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{etuSoutenance.candide}}</td>
+          <td>{{etuSoutenance.estDistanciel}}</td>
+        </tr>
+  </tbody>
+</table>
+{% endif %}
+{% if user == "enseignant" %}
+<h2 class="text-center mt-2">Mes Soutenances</h2>
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for soutenance in enSoutenance %}
+        <tr>
+          <td>{{soutenance.dateSoutenance}}</td>
+          <td>{{soutenance.heureSoutenance}}</td>
+          <td>{{soutenance.salle}}</td>
+          <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance.candide}}</td>
+          <td>{{soutenance.estDistanciel}}</td>
+          {% if enseignant == soutenance.candide %}
+          <td><a href="{% url 'lesApprentiStage:desinscrireSoutenance' soutenance.id %}" class="btn bg-danger text-white">Désinscrire</a></td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<h2 class="text-center mt-2">A s'inscrire en tant que candide</h2>
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for soutenance in listCandideSoutenance %}
+      <tr>
+        <td>{{soutenance.dateSoutenance}}</td>
+        <td>{{soutenance.heureSoutenance}}</td>
+        <td>{{soutenance.salle}}</td>
+        <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+        <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+        <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+        <td>{{soutenance.candide}}</td>
+        <td>{{soutenance.estDistanciel}}</td>
+        <td><a href="{% url 'lesApprentiStage:inscrireSoutenance' soutenance.id %}" class="btn bg-success text-white">S'inscrire</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 {% endblock %}

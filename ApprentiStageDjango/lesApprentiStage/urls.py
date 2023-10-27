@@ -14,4 +14,6 @@ urlpatterns=[
   path('soutenance/', views.soutenance, name='soutenance'),
   path('supprimerSoutenance/<id>', views.supprimerSoutenance, name='supprimerSoutenance'),
   path('modifierSoutenance/<id>', views.modifierSoutenance, name='modifierSoutenance'),
+  path('inscrireSoutenance/<id>', views.inscrireSoutenance, name='inscrireSoutenance'),
+  path('desinscrireSoutenance/<id>', views.desinscrireSoutenance, name='desinscrireSoutenance'),
 ]

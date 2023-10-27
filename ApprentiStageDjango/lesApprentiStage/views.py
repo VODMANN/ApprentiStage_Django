@@ -4,7 +4,7 @@ from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.views import LoginView
-from .models import ProfilEtudiant, Entreprise, Contrat,Soutenance,Salle
+from .models import ProfilEtudiant, Entreprise, Contrat,Soutenance,Salle,Utilisateur,ProfilEnseignant
 from django.contrib.auth.views import redirect_to_login
 
 from django.http import HttpResponseForbidden
@@ -115,19 +115,35 @@ def search(request):
 
 @login_required
 def soutenance(request):
-    if request.method == 'POST':
-        formSoutenance = SoutenanceForm(request.POST)
-        if formSoutenance.is_valid():
-            if 'ajouter' in request.POST:
-                verification = Soutenance.objects.filter(salle = formSoutenance.cleaned_data['salle'], heureSoutenance = formSoutenance.cleaned_data['heureSoutenance'],dateSoutenance = formSoutenance.cleaned_data['dateSoutenance'])
-                if len(verification)==0:
-                    uneSoutenance = formSoutenance.save(commit=False)
-                    uneSoutenance.save()
-                return redirect('lesApprentiStage:soutenance')
-    else:
-        formSoutenance = SoutenanceForm()
-    listSoutenance = Soutenance.objects.all()
-    return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance})
+    if request.user.is_authenticated:
+        user_type = request.user.type_utilisateur
+    if user_type == 'secretaire':
+        if request.method == 'POST':
+            formSoutenance = SoutenanceForm(request.POST)
+            if formSoutenance.is_valid():
+                if 'ajouter' in request.POST:
+                    verification = Soutenance.objects.filter(salle = formSoutenance.cleaned_data['salle'], heureSoutenance = formSoutenance.cleaned_data['heureSoutenance'],dateSoutenance = formSoutenance.cleaned_data['dateSoutenance'])
+                    if len(verification)==0:
+                        uneSoutenance = formSoutenance.save(commit=False)
+                        uneSoutenance.save()
+                    return redirect('lesApprentiStage:soutenance')
+        else:
+            formSoutenance = SoutenanceForm()
+        listSoutenance = Soutenance.objects.all()
+        return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance, 'user': user_type})
+    elif user_type == 'etudiant':
+        unUtilisateur = Utilisateur.objects.filter(username = request.user.username)[0]
+        unEtudiant = ProfilEtudiant.objects.filter(utilisateur = unUtilisateur)[0]
+        unContrat = Contrat.objects.filter(etudiant = unEtudiant)[0]
+        etuSoutenance = Soutenance.objects.filter(idContrat = unContrat)[0]
+        return render(request, 'pages/soutenance.html',{'etuSoutenance': etuSoutenance,'user': user_type})
+    elif user_type == 'enseignant':
+        unUtilisateur = Utilisateur.objects.filter(username = request.user.username)[0]
+        unEnseignant = ProfilEnseignant.objects.filter(utilisateur = unUtilisateur)[0]
+        unContrat = Contrat.objects.filter(enseignant = unEnseignant)
+        enSoutenance = Soutenance.objects.filter(idContrat__in = unContrat) | Soutenance.objects.filter(candide = unEnseignant)
+        listCandideSoutenance = Soutenance.objects.filter(candide = None).exclude(idContrat__in = unContrat)
+        return render(request, 'pages/soutenance.html',{'enSoutenance': enSoutenance,'user': user_type, 'listCandideSoutenance':listCandideSoutenance, 'enseignant': unEnseignant })
 
 @login_required
 def supprimerSoutenance(request,id):
@@ -156,3 +172,20 @@ def modifierSoutenance(request,id):
     else:
         formSoutenance = SoutenanceForm(initial={'dateSoutenance': unesoutenance.dateSoutenance,'heureSoutenance': unesoutenance.heureSoutenance, 'salle': unesoutenance.salle, 'idContrat': unesoutenance.idContrat, 'candide': unesoutenance.candide, 'estDistanciel': unesoutenance.estDistanciel})
     return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance, 'modifSoutenance': unesoutenance})
+
+@login_required
+def inscrireSoutenance(request,id):
+    unUtilisateur = Utilisateur.objects.filter(username = request.user.username)[0]
+    unEnseignant = ProfilEnseignant.objects.filter(utilisateur = unUtilisateur)[0]
+    unesoutenance = Soutenance.objects.filter(id = id)[0]
+    unesoutenance.candide = unEnseignant
+    unesoutenance.save()
+    return redirect('lesApprentiStage:soutenance')
+
+
+@login_required
+def desinscrireSoutenance(request,id):
+    unesoutenance = Soutenance.objects.filter(id = id)[0]
+    unesoutenance.candide = None
+    unesoutenance.save()
+    return redirect('lesApprentiStage:soutenance')
