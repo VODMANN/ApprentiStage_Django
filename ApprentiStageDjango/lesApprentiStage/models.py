@@ -103,7 +103,7 @@ class Contrat(models.Model):
     enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE) 
+    entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE)
     enFrance = models.BooleanField(default=True)
 
 

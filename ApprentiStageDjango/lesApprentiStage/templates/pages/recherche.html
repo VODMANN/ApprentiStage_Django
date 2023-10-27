@@ -15,12 +15,25 @@
         </li>
         <li class="nav-item">
           <label>Rechercher dans</label>
-          <select class="selectpicker" name="type">
+          <select class="form-control form-control" id="typeSelect" name="type">
             <option value="ETUDIANT">Etudiant / Diplômé</option>
             <option value="ENTREPRISE">Structure</option>
             <option value="CONTRAT">Stage / Apprentissage</option>
-          </select>
+          </select>        
         </li>
+        <hr class="hr" />
+        <span class="fs-4">Filtres</span>
+        <div class="form-group m-2" id="filtresEtu">
+          <label for="promoSelect">Promotion :</label>
+          <select class="form-control" id="promoSelect" name="promo">
+            <option value="">Toutes les promotions</option>
+            <option value="2A" {% if request.GET.promo == '2A' %} selected {% endif %}>2e Année</option>
+            <option value="3A" {% if request.GET.promo == '3A' %} selected {% endif %}>3e Année</option>
+          </select>
+        </div>
+        <div class="form-group m-2" id="filtresEnt">
+          <label for="promoSelect">Pas de filtres pour une structure</label>
+        </div>                         
         <li>
           <input type="submit" class="btn btn-primary mt-3" value="Recherche">
         </li>
@@ -28,18 +41,172 @@
       </ul>
     </form>
   </div>
-  <div class="col p-3">
-    {% for result in results %}
-      <div class="result-item">
-          {{ result }}
-      </div>
-    {% endfor %}
-
-    {% if not results %}
-      <div class="no-results">
-          Aucun résultat trouvé.
-      </div>
-    {% endif %}
+  <div class="row mt-4">
+    <div class="col">
+      {% if results %}
+        <table table class="table table-bordered w-100">
+          <thead>
+            <tr class="bg-primary">
+              {% if search_type == "ETUDIANT" %}
+                <th class="text-center"> Numéro Étudiant </th>
+                <th class="text-center"> Identité </th>
+                <th class="text-center"> Adresse </th>
+                <th class="text-center"> Numéro de téléphone </th>
+                <th class="text-center"> Département </th>
+                <th class="text-center"> Promo </th>
+                <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
+              {% elif search_type == "ENTREPRISE" %}
+                <th> Numéro SIRET </th>
+                <th> Nom de l'entreprise </th>
+                <th> Adresse de l'entreprise </th>
+                <th> Responsable </th>
+                <th> Email Responsable </th>
+                <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
+              {% elif search_type == "CONTRAT" %}
+                <th> Type de contrat </th>
+                <th> Description </th>
+                <th> État </th>
+                <th> Période </th>
+                <th> Étudiant </th>
+                <th> Entreprise </th>
+                <th> Adresse de l'entreprise </th>
+                <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in results %}
+              <tr>
+                {% if search_type == "ETUDIANT" %}
+                  <td> {{ result.numEtu }} </td>
+                  <td> {{ result.civiliteEtu}}  {{ result.nomEtu|upper }} {{ result.prenomEtu }} </td>
+                  <td> {{ result.adresseEtu }}, {{ result.cpEtu }} {{ result.villeEtu}} </td>
+                  <td> {{ result.telEtu }} </td>
+                  <td> {{ result.idDepartement__nomDep }} </td>
+                  <td> {{ result.promo }} </td>
+                  <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les étudiants -->
+                {% elif search_type == "ENTREPRISE" %}
+                  <td> {{ result.numSiret }} </td>
+                  <td> {{ result.nomEnt }} </td>
+                  <td> {{ result.adresseEnt }}, {{ result.cpEnt }} {{ result.villeEnt }} </td>
+                  <td> {{ result.responsable__nomResp|upper }} {{ result.responsable__prenomResp }} </td>
+                  <td> {{ result.responsable__emailResp }} </td>
+                  <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les structures -->
+                {% elif search_type == "CONTRAT" %}
+                  <td> {{ result.type }} </td>
+                  <td> {{ result.description }} </td>
+                  <td> {{ result.etat }} </td>
+                  <td> Du {{ result.dateDeb | date:"d/m/Y" }} au {{ result.dateFin | date:"d/m/Y" }} </td>
+                  <td> {{ result.etudiant__civiliteEtu }} {{ result.etudiant__nomEtu|upper }} {{ result.etudiant__prenomEtu }} </td>
+                  <td> {{ result.entreprise__nomEnt }} </td>
+                  <td> 
+                    {{ result.entreprise__adresseEnt}} 
+                    <br>
+                    {{ result.entreprise__cpEnt }}, {{ result.entreprise__villeEnt }}
+                  </td>
+                  <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les contrats -->
+                {% endif %}
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="{% if search_type == 'ETUDIANT' %} 2 {% else %} 1 {% endif %}">Aucun résultat trouvé.</td>
+                <!-- Colspan indique le nombre de colonnes dans votre tableau -->
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="no-results">
+            Aucun résultat trouvé.
+        </div>
+      {% endif %}
+    </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var typeSelect = document.getElementById("typeSelect");
+    var filtresEtu = document.getElementById("filtresEtu");
+    var filtresEnt = document.getElementById("filtresEnt");
+    var promoSelect = document.getElementById("promoSelect");
+  
+    typeSelect.addEventListener("change", function() {
+      if (typeSelect.value === "ENTREPRISE") {
+        filtresEtu.style.display = "none";
+        filtresEnt.style.display = "block";
+        // Réinitialisez la valeur du champ de sélection "promo"
+        promoSelect.value = "";
+      } else if (typeSelect.value === "ETUDIANT") {
+        filtresEtu.style.display = "block";
+        filtresEnt.style.display = "none";
+      } else {
+        filtresEtu.style.display = "none";
+        filtresEnt.style.display = "none";
+        // Réinitialisez la valeur du champ de sélection "promo"
+        promoSelect.value = "";
+      }
+    });
+  
+    // Vérifiez la valeur initiale lors du chargement de la page
+    if (typeSelect.value === "ENTREPRISE") {
+      filtresEtu.style.display = "none";
+      filtresEnt.style.display = "block";
+      // Réinitialisez la valeur du champ de sélection "promo"
+      promoSelect.value = "";
+    } else if (typeSelect.value === "ETUDIANT") {
+      filtresEtu.style.display = "block";
+      filtresEnt.style.display = "none";
+    } else {
+      filtresEtu.style.display = "none";
+      filtresEnt.style.display = "none";
+      // Réinitialisez la valeur du champ de sélection "promo"
+      promoSelect.value = "";
+    }
+  });
+  
+
+  // Fonction pour définir un cookie
+  function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + value + expires + "; path=/";
+  }
+
+  // Fonction pour récupérer la valeur du cookie
+  function getCookie(name) {
+      var nameEQ = name + "=";
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i];
+          while (cookie.charAt(0) == ' ') {
+              cookie = cookie.substring(1, cookie.length);
+          }
+          if (cookie.indexOf(nameEQ) == 0) {
+              return cookie.substring(nameEQ.length, cookie.length);
+          }
+      }
+      return null;
+  }
+
+  // Récupérer la valeur du cookie et la définir comme option sélectionnée
+  var typeSelect = document.getElementById("typeSelect");
+  var savedValue = getCookie("selectedType");
+  
+  if (savedValue) {
+      typeSelect.value = savedValue;
+  }
+
+  // Écouter le changement de sélection du menu déroulant et mettre à jour le cookie
+  typeSelect.addEventListener("change", function() {
+      var selectedValue = typeSelect.value;
+      setCookie("selectedType", selectedValue, 365); // Conserver la sélection pendant un an
+  });
+</script>
+
+
 {% endblock %}
