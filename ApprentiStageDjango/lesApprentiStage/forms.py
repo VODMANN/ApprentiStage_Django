@@ -86,7 +86,7 @@ class ThemeForm(forms.ModelForm):
 
 class ResponsableForm(forms.ModelForm):
     responsable_existant = forms.ModelChoiceField(
-        queryset=Responsable.objects.none(),  # On initialisera cela plus tard dans __init__
+        queryset=Responsable.objects.none(), 
         required=False,
         label='Responsable Existant',
         empty_label="Ajoutez ou sélectionnez un responsable existant"
@@ -113,7 +113,5 @@ class TuteurForm(forms.ModelForm):
         fields = ['nomTuteur', 'prenomTuteur', 'metierTuteur', 'telTuteur', 'emailTuteur']
 
     def __init__(self, *args, **kwargs):
-        entreprise = kwargs.pop('entreprise', None)
         super(TuteurForm, self).__init__(*args, **kwargs)
-        if entreprise is not None:
-            self.fields['entreprise'].initial = entreprise
+        
