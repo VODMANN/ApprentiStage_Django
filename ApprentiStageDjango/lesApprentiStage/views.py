@@ -7,6 +7,7 @@ from django.contrib.auth.views import LoginView
 from .models import ProfilEtudiant, Entreprise, Contrat
 from django.db.models import Q
 
+
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 
@@ -99,29 +100,25 @@ def pageRecherche(request):
 def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
+    promo_filter = request.GET.get('promo', '')  # Récupère la valeur de la promotion depuis la requête GET
+
+    search_mapping = {
+        'ETUDIANT': (ProfilEtudiant, ['civiliteEtu','nomEtu', 'prenomEtu', 'numEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement__nomDep']),
+        'ENTREPRISE': (Entreprise, ['nomEnt', 'numSiret', 'adresseEnt', 'cpEnt', 'villeEnt', 'responsable__nomResp', 'responsable__prenomResp', 'responsable__emailResp']),
+        'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
+    }
 
     results = []
+    if search_type in search_mapping:
+        model, fields = search_mapping[search_type]
+        query_objects = Q()
+        for field in fields:
+            query_objects |= Q(**{f'{field}__icontains': query})
 
-    if search_type == 'ETUDIANT':
-        results = ProfilEtudiant.objects.filter(
-            Q(nomEtu__icontains=query) |
-            Q(prenomEtu__icontains=query) |
-            Q(numEtu__icontains=query) |
-            Q(adresseEtu__icontains=query) |
-            Q(promo__icontains=query)
-        ).values('numEtu', 'civiliteEtu', 'nomEtu', 'prenomEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo')
-    elif search_type == 'ENTREPRISE':
-        results = Entreprise.objects.filter(
-            Q(nomEnt__icontains=query) |
-            Q(numSiret__icontains=query) |
-            Q(adresseEnt__icontains=query)
-        ).values('numSiret', 'nomEnt', 'adresseEnt', 'cpEnt', 'villeEnt')
-    elif search_type == 'CONTRAT':
-        results = Contrat.objects.filter(
-            Q(type__icontains=query) |
-            Q(description__icontains=query) |
-            Q(etat__icontains=query)
-        ).values('type', 'description', 'etat')
+        if promo_filter:  # Vérifie si un filtre de promotion est appliqué
+            query_objects &= Q(promo__icontains=promo_filter)
+
+        results = model.objects.filter(query_objects).values(*fields)
 
     if request.headers.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         data = list(results)

@@ -58,6 +58,9 @@ class Entreprise(models.Model):
     cpEnt = models.IntegerField()
     villeEnt = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.nomEnt
+
 class Theme(models.Model):
     nomTheme = models.CharField(max_length=50)
 
@@ -85,7 +88,7 @@ class Contrat(models.Model):
     enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
+    entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE)
 
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
