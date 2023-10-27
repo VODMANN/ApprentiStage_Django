@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
+from .forms import ContratEtudiantForm, EntrepriseForm, ResponsableForm, ThemeForm, TuteurForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
-from .models import ProfilEtudiant, Entreprise, Contrat
+from .models import ProfilEtudiant, Entreprise, Contrat, Utilisateur
+from django.contrib import messages
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -112,3 +113,131 @@ def search(request):
         return render(request, 'results.html', {"results": results})
 
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})
+
+
+def ajouter_contrat(request):
+    if request.method == 'POST':
+        form = ContratEtudiantForm(request.POST)
+        if form.is_valid():
+            contrat = form.save(commit=False)
+            try:
+                profil_etudiant = request.user.profiletudiant
+            except Utilisateur.profiletudiant.RelatedObjectDoesNotExist:
+                messages.error(request, "Vous devez avoir un profil étudiant pour ajouter un contrat.")
+                return redirect('lesApprentiStage:home')
+
+            contrat.etudiant = profil_etudiant
+            contrat.save()
+            messages.success(request, "Contrat ajouté avec succès.")
+            return redirect('lesApprentiStage:ajouter_responsable', contrat_id=contrat.id)
+        
+    else:
+        form = ContratEtudiantForm()
+    
+    return render(request, 'etudiant/ajouter_contrat.html', {'form': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
+
+
+@login_required
+def ajouter_entrepriseSeul(request):
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST)
+        if form.is_valid():
+            entreprise = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return redirect('lesApprentiStage:home') 
+        else:
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
+    else:
+        form = EntrepriseForm()
+
+    return render(request, 'pages/ajouter_entreprise.html', {'EntrepriseForm': form})
+
+
+@login_required
+def ajouter_entreprise(request):
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST)
+        if form.is_valid():
+            entreprise = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return JsonResponse({"success": True, "entreprise": {"nomEnt": entreprise.nomEnt, "pk": entreprise.pk}})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = EntrepriseForm()
+
+    return render(request, 'pages/ajouter_entreprise.html', {'EntrepriseForm': form})
+
+
+
+@login_required
+def ajouter_theme(request):
+    if request.method == 'POST':
+        form = ThemeForm(request.POST)
+        if form.is_valid():
+            theme = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return JsonResponse({"success": True, "theme": {"nomTheme": theme.nomTheme, "pk": theme.pk}})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = ThemeForm()
+
+    return render(request, 'pages/ajouter_theme.html', {'ThemeForm': form})
+
+
+# def ajouter_responsable(request, contrat_id):
+#     contrat = get_object_or_404(Contrat, pk=contrat_id)
+#     entreprise = contrat.entreprise
+
+#     if request.method == 'POST':
+#         form = ResponsableForm(request.POST, entreprise=entreprise)
+#         if form.is_valid():
+#             if form.cleaned_data['responsable_existant']:
+#                 contrat.responsable = form.cleaned_data['responsable_existant']
+#                 contrat.save()
+#                 messages.success(request, "Responsable lié au contrat avec succès.")
+#             else:
+#                 responsable = form.save(commit=False)
+#                 responsable.entreprise = entreprise
+#                 responsable.save()
+#                 contrat.responsable = responsable
+#                 contrat.save()
+#                 messages.success(request, "Responsable ajouté avec succès.")
+#             return redirect('lesApprentiStage:home')
+#     else:
+#         form = ResponsableForm(entreprise=entreprise)
+
+#     return render(request, 'pages/ajouter_responsable.html', {'form': form})
+
+def ajouter_responsable(request, contrat_id):
+    contrat = get_object_or_404(Contrat, pk=contrat_id)
+    entreprise = contrat.entreprise
+
+    if request.method == 'POST':
+        responsable_form = ResponsableForm(request.POST, entreprise=entreprise)
+        tuteur_form = TuteurForm(request.POST)
+        if responsable_form.is_valid() and tuteur_form.is_valid():
+            responsable = responsable_form.save(commit=False)
+            tuteur = tuteur_form.save(commit=False)
+            if responsable_form.cleaned_data['responsable_existant']:
+                responsable = responsable_form.cleaned_data['responsable_existant']
+            else:
+                responsable.entreprise = entreprise
+                responsable.save()
+            tuteur.entreprise = entreprise
+            tuteur.save()
+            contrat.responsable = responsable
+            contrat.tuteur = tuteur
+            contrat.save()
+            messages.success(request, "Responsable et tuteur ajoutés avec succès.")
+            return redirect('lesApprentiStage:home')
+    else:
+        responsable_form = ResponsableForm(entreprise=entreprise)
+        tuteur_form = TuteurForm()
+
+    context = {
+        'responsable_form': responsable_form,
+        'tuteur_form': tuteur_form
+    }
+    return render(request, 'pages/ajouter_responsable.html', context)

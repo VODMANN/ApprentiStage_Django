@@ -1,0 +1,60 @@
+<div class="form-group">
+  <div class="d-flex align-items-center">
+    <label for="monSwitch" class="mr-2 mb-0">Le stage se passe bien en France </label>
+    <label class="toggle-switch mb-0">
+      <input type="checkbox" id="monSwitch" name="{{ widget.name }}" class="toggle-switch-checkbox" {% if value %}checked{% endif %}>
+      <span class="toggle-switch-slider round"></span>
+    </label>
+  </div>
+</div>
+
+<style>
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .toggle-switch-checkbox { 
+    display: none;
+  }
+
+  .toggle-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+  }
+
+  .toggle-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+  }
+
+  .toggle-switch-checkbox:checked + .toggle-switch-slider {
+    background-color: #2196F3;
+  }
+
+  .toggle-switch-checkbox:checked + .toggle-switch-slider:before {
+    transform: translateX(26px);
+  }
+
+  .toggle-switch-slider.round {
+    border-radius: 34px;
+  }
+
+  .toggle-switch-slider.round:before {
+    border-radius: 50%;
+  }
+</style>
