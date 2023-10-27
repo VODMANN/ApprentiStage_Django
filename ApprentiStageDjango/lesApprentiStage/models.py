@@ -66,7 +66,7 @@ class Entreprise(models.Model):
 
 class Theme(models.Model):
     nomTheme = models.CharField(max_length=50)
-
+    
     def __str__(self):
         return self.nomTheme
 
@@ -83,7 +83,7 @@ class Responsable(models.Model):
 class Tuteur(models.Model):
     nomTuteur = models.CharField(max_length=50)
     prenomTuteur = models.CharField(max_length=50)
-    metierTuteur = models.CharField(max_length=50)
+    metierTuteur = models.CharField(max_length=50,default='')
     telTuteur = models.CharField(max_length=25)
     emailTuteur = models.EmailField(max_length=100)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
@@ -95,6 +95,7 @@ class Contrat(models.Model):
     type = models.CharField(max_length=50)
     description = models.TextField()
     etat = models.CharField(max_length=50)
+    gratification = models.CharField(max_length=50,null=True)
     dateDeb = models.DateField()
     dateFin = models.DateField()
     estValide = models.BooleanField(default=False)
@@ -102,8 +103,9 @@ class Contrat(models.Model):
     enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
     entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE) 
+    enFrance = models.BooleanField(default=True)
+
 
 
 class Offre(models.Model):
@@ -115,3 +117,21 @@ class Offre(models.Model):
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     estPublie = models.BooleanField(default=False)
+
+
+class Document(models.Model):
+    titre = models.CharField(max_length=255)
+    fichier = models.FileField(upload_to='documents/')  # Dossier de stockage des fichiers
+    contrat = models.ForeignKey('Contrat', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.titre
+    
+class Evaluation(models.Model):
+    contrat = models.ForeignKey('Contrat', on_delete=models.CASCADE)
+    enseignant = models.ForeignKey('ProfilEnseignant', on_delete=models.CASCADE)
+    note = models.DecimalField(max_digits=4, decimal_places=2)
+    commentaire = models.TextField()
+
+    def __str__(self):
+        return f"Évaluation de {self.contrat.etudiant.utilisateur.username} par {self.enseignant.utilisateur.username}"

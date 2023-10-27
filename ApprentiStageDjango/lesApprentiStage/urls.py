@@ -14,6 +14,8 @@ urlpatterns=[
   path('ajout_stage/', views.ajouter_contrat, name='ajout_stage'),
   path('ajouter_entreprise_sansC/', views.ajouter_entrepriseSeul, name='ajouter_entreprise'),
   path('ajouter_entreprise/', views.ajouter_entreprise, name='ajouter_entreprise'),
+  path('ajouter_theme/', views.ajouter_theme, name='ajouter_theme'),
+  path('ajouter_responsable/<int:contrat_id>/', views.ajouter_responsable, name='ajouter_responsable'),
 
 
 ]

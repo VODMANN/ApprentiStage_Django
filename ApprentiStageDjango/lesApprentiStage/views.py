@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import ContratEtudiantForm, EntrepriseForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
+from .forms import ContratEtudiantForm, EntrepriseForm, ResponsableForm, ThemeForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
@@ -129,12 +129,12 @@ def ajouter_contrat(request):
             contrat.etudiant = profil_etudiant
             contrat.save()
             messages.success(request, "Contrat ajouté avec succès.")
-            return redirect('lesApprentiStage:home')
-
+            return redirect('lesApprentiStage:ajouter_responsable', contrat_id=contrat.id)
+        
     else:
         form = ContratEtudiantForm()
     
-    return render(request, 'etudiant/ajouter_contrat.html', {'form': form, 'EntrepriseForm': EntrepriseForm()})
+    return render(request, 'etudiant/ajouter_contrat.html', {'form': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
 
 
 @login_required
@@ -144,7 +144,7 @@ def ajouter_entrepriseSeul(request):
         if form.is_valid():
             entreprise = form.save()
             messages.success(request, "Entreprise ajoutée avec succès.")
-            return redirect('lesApprentiStage:home')  # Remplacez 'url_apres_ajout' par l'URL appropriée
+            return redirect('lesApprentiStage:home') 
         else:
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
     else:
@@ -167,3 +167,45 @@ def ajouter_entreprise(request):
         form = EntrepriseForm()
 
     return render(request, 'pages/ajouter_entreprise.html', {'EntrepriseForm': form})
+
+
+
+@login_required
+def ajouter_theme(request):
+    if request.method == 'POST':
+        form = ThemeForm(request.POST)
+        if form.is_valid():
+            theme = form.save()
+            messages.success(request, "Entreprise ajoutée avec succès.")
+            return JsonResponse({"success": True, "theme": {"nomTheme": theme.nomTheme, "pk": theme.pk}})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = ThemeForm()
+
+    return render(request, 'pages/ajouter_theme.html', {'ThemeForm': form})
+
+
+def ajouter_responsable(request, contrat_id):
+    contrat = get_object_or_404(Contrat, pk=contrat_id)
+    entreprise = contrat.entreprise
+
+    if request.method == 'POST':
+        form = ResponsableForm(request.POST, entreprise=entreprise)
+        if form.is_valid():
+            if form.cleaned_data['responsable_existant']:
+                contrat.responsable = form.cleaned_data['responsable_existant']
+                contrat.save()
+                messages.success(request, "Responsable lié au contrat avec succès.")
+            else:
+                responsable = form.save(commit=False)
+                responsable.entreprise = entreprise
+                responsable.save()
+                contrat.responsable = responsable
+                contrat.save()
+                messages.success(request, "Responsable ajouté avec succès.")
+            return redirect('lesApprentiStage:home')
+    else:
+        form = ResponsableForm(entreprise=entreprise)
+
+    return render(request, 'pages/ajouter_responsable.html', {'form': form})

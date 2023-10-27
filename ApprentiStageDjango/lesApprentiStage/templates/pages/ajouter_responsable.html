@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Ajouter un responsable</h2>
+  <form method="post" id="responsableForm">
+      {% csrf_token %}
+      <div id="responsableExistantField">
+        {{ form.responsable_existant|as_crispy_field }}
+      </div>
+      <div id="nouveauResponsableFields" style="display:none;">
+        {{ form.nomResp|as_crispy_field }}
+        {{ form.prenomResp|as_crispy_field }}
+        {{ form.emailResp|as_crispy_field }}
+      </div>
+      <button type="submit">Ajouter</button>
+  </form>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const responsableExistantSelect = document.getElementById('id_responsable_existant');
+      const nouveauResponsableFields = document.getElementById('nouveauResponsableFields');
+      const nomRespInput = document.getElementById('id_nomResp');
+      const prenomRespInput = document.getElementById('id_prenomResp');
+      const emailRespInput = document.getElementById('id_emailResp');
+
+      function toggleResponsableFields() {
+        if (responsableExistantSelect.value) {
+          nouveauResponsableFields.style.display = 'none';
+          nomRespInput.required = false;
+          prenomRespInput.required = false;
+          emailRespInput.required = false;
+        } else {
+          nouveauResponsableFields.style.display = 'block';
+          nomRespInput.required = true;
+          prenomRespInput.required = true;
+          emailRespInput.required = true;
+        }
+      }
+  
+      responsableExistantSelect.addEventListener('change', toggleResponsableFields);
+  
+      // Déclenchez l'événement de changement manuellement pour définir l'état initial.
+      toggleResponsableFields();
+    });
+  </script>
+{% endblock %}

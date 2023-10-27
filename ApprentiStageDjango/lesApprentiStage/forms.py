@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contrat, Departement, Entreprise, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
+from .models import Contrat, Departement, Entreprise, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -32,6 +32,8 @@ class UtilisateurForm(forms.ModelForm):
         model = Utilisateur
         fields = ['username', 'password', 'type_utilisateur']
 
+class ToggleSwitchWidget(forms.widgets.CheckboxInput):
+    template_name = 'widget/toggle_switch_widget.html'
 
 
 TYPE_CHOICES_CONTRAT = [
@@ -42,9 +44,12 @@ TYPE_CHOICES_CONTRAT = [
 
 class ContratEtudiantForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
+    enFrance = forms.BooleanField(label='', widget=ToggleSwitchWidget, required=False)
+
     class Meta:
         model = Contrat
-        exclude = ['etudiant', 'offre', 'tuteur', 'estValide']
+        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat']
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -58,3 +63,57 @@ class EntrepriseForm(forms.ModelForm):
     class Meta:
         model = Entreprise
         fields = ['numSiret', 'nomEnt', 'adresseEnt', 'cpEnt', 'villeEnt']
+
+        labels = {
+            'numSiret': 'Numéro SIRET :',
+            'nomEnt': 'Nom de l\'entreprise :',
+            'adresseEnt': 'Adresse :',
+            'cpEnt': 'Code postal :',
+            'villeEnt': 'Ville :',
+        }
+
+
+class ThemeForm(forms.ModelForm):
+    class Meta:
+        model = Theme
+        fields = ['nomTheme']
+
+        labels = {
+            'nomTheme': 'Theme de votre sujet :',
+            
+        }
+
+
+class ResponsableForm(forms.ModelForm):
+    responsable_existant = forms.ModelChoiceField(
+        queryset=Responsable.objects.none(),  # On initialisera cela plus tard dans __init__
+        required=False,
+        label='Responsable Existant',
+        empty_label="Ajoutez ou sélectionnez un responsable existant"
+    )
+    
+    class Meta:
+        model = Responsable
+        fields = ['nomResp', 'prenomResp', 'emailResp']
+
+    def __init__(self, *args, **kwargs):
+        entreprise = kwargs.pop('entreprise', None)
+        super(ResponsableForm, self).__init__(*args, **kwargs)
+        if entreprise is not None:
+            self.fields['responsable_existant'].queryset = Responsable.objects.filter(entreprise=entreprise)
+        self.fields['nomResp'].required = False
+        self.fields['prenomResp'].required = False
+        self.fields['emailResp'].required = False
+
+
+
+class TuteurForm(forms.ModelForm):
+    class Meta:
+        model = Tuteur
+        fields = ['nomTuteur', 'prenomTuteur', 'metierTuteur', 'telTuteur', 'emailTuteur']
+
+    def __init__(self, *args, **kwargs):
+        entreprise = kwargs.pop('entreprise', None)
+        super(TuteurForm, self).__init__(*args, **kwargs)
+        if entreprise is not None:
+            self.fields['entreprise'].initial = entreprise
