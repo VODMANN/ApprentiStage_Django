@@ -12,19 +12,30 @@ class EtudiantForm(forms.ModelForm):
         villeEtu = forms.CharField(max_length=100, required=False)
         telEtu = forms.CharField(max_length=25, required=False)
         promo = forms.CharField(max_length=20, required=False)
-        # Ajoutez un champ pour sélectionner le département si nécessaire
         idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
         fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
 
 class EnseignantForm(forms.ModelForm):
     class Meta:
         model = ProfilEnseignant
-        fields = ['numHarpege', 'roleEnseignant',]
+        numHarpege = forms.CharField(max_length=20, required=False)
+        roleEnseignant = forms.CharField(max_length=50, required=False)
+        nomEnseignant = forms.CharField(max_length=50, required=False)
+        prenomEnseignant = forms.CharField(max_length=50, required=False)
+        mailEnseignant = forms.EmailField(max_length=100, required=False)
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant',]
 
 class SecretaireForm(forms.ModelForm):
     class Meta:
         model = ProfilSecretaire
         fields = ['numSec', ]
+
+class DepartementForm(forms.ModelForm):
+    class Meta:
+        model = Departement
+        nomDep = forms.CharField(max_length=100, required=False)
+        adresseDep = forms.CharField(max_length=255, required=False)
+        fields = ['nomDep', 'adresseDep',]
 
 class UtilisateurForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)

@@ -42,7 +42,6 @@ def home(request):
 """ @login_required
 @user_type_required('secretaire') """
 def signup(request):
-    print('//////////////////////////////')
     if request.method == 'POST':
         user_form = UtilisateurForm(request.POST)
         etudiant_form = EtudiantForm(request.POST)
@@ -186,7 +185,7 @@ def ajouter_theme(request):
         form = ThemeForm(request.POST)
         if form.is_valid():
             theme = form.save()
-            messages.success(request, "Entreprise ajoutée avec succès.")
+            messages.success(request, "Thème ajouté avec succès.")
             return JsonResponse({"success": True, "theme": {"nomTheme": theme.nomTheme, "pk": theme.pk}})
         else:
             return JsonResponse({"success": False, "errors": form.errors})
