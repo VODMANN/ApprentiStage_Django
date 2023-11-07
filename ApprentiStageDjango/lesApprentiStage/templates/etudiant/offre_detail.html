@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="card-title">{{ offre.titre }}</h1>
+        <h6 class="text-muted">Publiée le {{ offre.datePublication|date:"d F Y" }}</h6>
+        <p class="card-text">{{ offre.description }}</p>
+        
+        <div class="mt-3">
+          <p><strong>Compétences requises :</strong> {{ offre.competences }}</p>
+          <p><strong>Durée :</strong> {{ offre.duree }}</p>
+          <p><strong>Entreprise :</strong> {{ offre.entreprise }}</p>
+          <p><strong>Thème :</strong> {{ offre.theme }}</p>
+          <p><strong>Adresse e-mail RH :</strong> <a href="mailto:{{ offre.mailRh }}">{{ offre.mailRh }}</a></p>
+        </div>
+
+        <!-- Lien pour candidater par e-mail -->
+        <a href="mailto:{{ offre.mailRh }}?subject=Candidature pour l'offre {{ offre.titre }}" class="btn btn-primary">
+          <i class="fas fa-envelope"></i> Candidater par e-mail
+        </a>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <!-- Lien de retour à la liste des offres -->
+        <a href="{% url 'lesApprentiStage:home' %}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Retour à la liste des offres
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

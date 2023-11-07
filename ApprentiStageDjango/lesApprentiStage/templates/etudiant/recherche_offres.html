@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="mb-4 text-center">Recherche d'Offres de Stage</h1>
+
+  <!-- Formulaire de recherche -->
+  <div class="search-form mb-5">
+    <form action="{% url 'lesApprentiStage:recherche_offres' %}" method="get" class="card card-body">
+      <div class="row">
+        <!-- Search Input -->
+        <div class="col-md-4 mb-3">
+          <input type="text" class="form-control" placeholder="Mots-clés, compétences, etc." name="query">
+        </div>
+        
+        <!-- Entreprise Filter -->
+        <div class="col-md-3 mb-3">
+          <select class="form-control select2" name="entreprise">
+            <option value="">Sélectionnez une entreprise</option>
+            {% for ent in entreprise %}
+            <option value="{{ ent.id }}">{{ ent }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Theme Filter -->
+        <div class="col-md-3 mb-3">
+          <select class="form-control select2" name="theme">
+            <option value="">Choisissez un thème</option>
+            {% for th in theme %}
+            <option value="{{ th.id }}">{{ th }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Date Filters -->
+        <div class="col-md-2 d-flex align-items-end mb-3">
+          <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5 mb-3">
+          <input type="date" class="form-control" name="date_min" placeholder="Date de début">
+        </div>
+        <div class="col-md-5 mb-3">
+          <input type="date" class="form-control" name="date_max" placeholder="Date de fin">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results Section -->
+  {% if results %}
+    <div class="results">
+      <h2 class="text-center mb-4">Résultats de la recherche</h2>
+      <div class="list-group">
+        {% for offre in results %}
+        <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ offre.titre }}</h5>
+            <small>{{ offre.datePublication|date:"d/m/Y" }}</small>
+          </div>
+          <p class="mb-1">{{ offre.entreprise.nom }}</p>
+          <small>{{ offre.theme.nom }}</small>
+        </a>
+        {% empty %}
+          <div class="alert alert-warning" role="alert">
+            Aucune offre trouvée pour les critères de recherche sélectionnés.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      Commencez votre recherche d'offres de stage en utilisant les filtres ci-dessus.
+    </div>
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.select2').select2({
+      theme: "bootstrap",
+      placeholder: "Sélectionnez une option",
+      allowClear: true
+    });
+  });
+</script>
+
+{% endblock %}
