@@ -153,6 +153,8 @@ def supprimerSoutenance(request,id):
 
 @login_required
 def modifierSoutenance(request,id):
+    if request.user.is_authenticated:
+        user_type = request.user.type_utilisateur
     unesoutenance = Soutenance.objects.filter(id = id)[0]
     listSoutenance = Soutenance.objects.all()
     if request.method == 'POST':
@@ -171,7 +173,7 @@ def modifierSoutenance(request,id):
                 return redirect('lesApprentiStage:soutenance')
     else:
         formSoutenance = SoutenanceForm(initial={'dateSoutenance': unesoutenance.dateSoutenance,'heureSoutenance': unesoutenance.heureSoutenance, 'salle': unesoutenance.salle, 'idContrat': unesoutenance.idContrat, 'candide': unesoutenance.candide, 'estDistanciel': unesoutenance.estDistanciel})
-    return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance, 'modifSoutenance': unesoutenance})
+    return render(request, 'pages/soutenance.html',{"form": formSoutenance,'listSoutenance': listSoutenance, 'modifSoutenance': unesoutenance,'user': user_type})
 
 @login_required
 def inscrireSoutenance(request,id):
