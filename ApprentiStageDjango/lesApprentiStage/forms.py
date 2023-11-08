@@ -1,5 +1,6 @@
 from django import forms
 from .models import Departement, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance,Contrat,Salle
+
 class EtudiantForm(forms.ModelForm):
     class Meta:
         model = ProfilEtudiant
@@ -34,9 +35,13 @@ class UtilisateurForm(forms.ModelForm):
 
 HORAIRES = (("09:00:00","9h"),("10:00:00","10h"),("11:00:00","11h"),("14:00:00","14h"),("15:00:00","15h"),("16:00:00","16h"),)
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
 class SoutenanceForm(forms.ModelForm):
-    dateSoutenance = forms.DateField()
-    heureSoutenance = forms.ChoiceField(choices=HORAIRES,widget=forms.Select)
+    dateSoutenance = forms.DateField(widget=DateInput())
+    heureSoutenance = forms.ChoiceField(choices=HORAIRES, widget=forms.Select)
     salle = forms.ModelChoiceField(queryset=Salle.objects.all(), required=False)
     idContrat = forms.ModelChoiceField(queryset=Contrat.objects.all(), required=False)
     candide = forms.ModelChoiceField(queryset=ProfilEnseignant.objects.all(), required=False)

@@ -59,7 +59,7 @@
           <td>{{soutenance.dateSoutenance}}</td>
           <td>{{soutenance.heureSoutenance}}</td>
           <td>{{soutenance.salle}}</td>
-          <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance.idContrat.etudiant.numEtu}} - {{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
           <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
           <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
           <td>{{soutenance.candide}}</td>
@@ -90,6 +90,7 @@
 </table>
 {% endif %}
 {% if user == "etudiant" %}
+
 <table class="table table-striped mt-4">
   <thead class="thead-dark">
     <tr>
@@ -104,16 +105,19 @@
     </tr>
   </thead>
   <tbody>
+    {% for soutenance_etu in etuSoutenances %}
         <tr>
-          <td>{{etuSoutenance.dateSoutenance}}</td>
-          <td>{{etuSoutenance.heureSoutenance}}</td>
-          <td>{{etuSoutenance.salle}}</td>
-          <td>{{etuSoutenance.idContrat.etudiant.prenomEtu}} {{etuSoutenance.idContrat.etudiant.nomEtu}}</td>
-          <td>{{etuSoutenance.idContrat.enseignant.prenomEnseignant}} {{etuSoutenance.idContrat.enseignant.nomEnseignant}}</td>
-          <td>{{etuSoutenance.idContrat.tuteur.prenomTuteur}} {{etuSoutenance.idContrat.tuteur.nomTuteur}}</td>
-          <td>{{etuSoutenance.candide}}</td>
-          <td>{{etuSoutenance.estDistanciel}}</td>
+          <td>{{soutenance_etu.dateSoutenance}}</td>
+          <td>{{soutenance_etu.heureSoutenance}}</td>
+          <td>{{soutenance_etu.salle}}</td>
+          <td>{{soutenance_etu.idContrat.etudiant.prenomEtu}} {{soutenance_etu.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance_etu.idContrat.enseignant.prenomEnseignant}} {{soutenance_etu.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance_etu.idContrat.tuteur.prenomTuteur}} {{soutenance_etu.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance_etu.candide}}</td>
+          <td>{{soutenance_etu.estDistanciel}}</td>
         </tr>
+    {% endfor %}
+    
   </tbody>
 </table>
 {% endif %}
@@ -184,5 +188,14 @@
     {% endfor %}
   </tbody>
 </table>
+
+
 {% endif %}
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+    {{ message }}
+</div>
+{% endfor %}
+
 {% endblock %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "lesApprentiStage",
     'crispy_bootstrap4',
+    "django_select2",
     'crispy_forms',
 ]
 
@@ -82,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'apprentiStageDjango',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'MLKqsd002',
         'HOST': '127.0.0.1',   # Set to the address of your database
         'PORT': '3306',        # Leave as 3306, the default MySQL port
     }
@@ -138,3 +139,5 @@ LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
 LOGIN_URL = 'lesApprentiStage:login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+

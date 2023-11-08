@@ -16,4 +16,8 @@ urlpatterns=[
   path('modifierSoutenance/<id>', views.modifierSoutenance, name='modifierSoutenance'),
   path('inscrireSoutenance/<id>', views.inscrireSoutenance, name='inscrireSoutenance'),
   path('desinscrireSoutenance/<id>', views.desinscrireSoutenance, name='desinscrireSoutenance'),
+  path('api/calendar_events/', views.calendar_events, name='calendar_events'),
+  path('export_calendar/', views.export_calendar, name='export_calendar'),
+  path('calendar_ens/', views.calendar_ens, name='calendar_ens'),
+
 ]
