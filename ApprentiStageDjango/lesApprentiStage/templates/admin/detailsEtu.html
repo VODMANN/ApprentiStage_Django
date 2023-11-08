@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row m-3">
+  <div class="col-md-auto d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 360px;">
+    <div class="col card p-2 mb-3 col-sm-auto">
+      <h2>Détails de l'étudiant</h2>
+      <p><strong>Nom :</strong> {{ etudiant.nomEtu }}</p>
+      <p><strong>Prénom :</strong> {{ etudiant.prenomEtu }}</p>
+      <p><strong>Numéro étudiant :</strong> {{ etudiant.numEtu }}</p>
+      <!-- Ajoutez d'autres détails de l'étudiant ici si nécessaire -->
+    </div>
+    <div class="accordion" id="accordionExample">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+                <button class="btn btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Contrat(s) de stage
+                </button>
+            </h2>
+        </div>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                {% if contrats_stage %}
+                    <ul>
+                        {% for contrat in contrats_stage %}
+                            <li>
+                                Type: {{ contrat.type }}<br>
+                                Description: {{ contrat.description }}<br>
+                                État: {{ contrat.etat }}<br>
+                                Période: Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
+                                <!-- Affichez d'autres détails du contrat ici si nécessaire -->
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    Aucun contrat de stage trouvé pour cet étudiant.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+        
+
+      <div class="card">
+        <div class="card-header" id="headingThree">
+          <h2 class="mb-0">
+            <button class="btn btn collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Contrat(s) d'apprentissage
+            </button>
+          </h2>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+          <div class="card-body">
+            {% if contrats_apprentissage %}
+                    <ul>
+                        {% for contrat in contrats_apprentissage %}
+                            <li>
+                                Type: {{ contrat.type }}<br>
+                                Description: {{ contrat.description }}<br>
+                                État: {{ contrat.etat }}<br>
+                                Période: Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
+                                <!-- Affichez d'autres détails du contrat ici si nécessaire -->
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    Aucun contrat de stage trouvé pour cet étudiant.
+                {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

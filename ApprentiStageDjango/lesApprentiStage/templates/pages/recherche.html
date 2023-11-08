@@ -44,7 +44,7 @@
   <div class="row mt-4">
     <div class="col">
       {% if results %}
-        <table table class="table table-bordered w-100">
+        <table table class="table table-bordered table-sm">
           <thead>
             <tr class="bg-primary">
               {% if search_type == "ETUDIANT" %}
@@ -76,8 +76,8 @@
           </thead>
           <tbody>
             {% for result in results %}
-              <tr>
                 {% if search_type == "ETUDIANT" %}
+                <tr class="clickable-row" data-href="{% url 'lesApprentiStage:details_etudiant' result.numEtu %}">
                   <td> {{ result.numEtu }} </td>
                   <td> {{ result.civiliteEtu}}  {{ result.nomEtu|upper }} {{ result.prenomEtu }} </td>
                   <td> {{ result.adresseEtu }}, {{ result.cpEtu }} {{ result.villeEtu}} </td>
@@ -86,6 +86,7 @@
                   <td> {{ result.promo }} </td>
                   <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les étudiants -->
                 {% elif search_type == "ENTREPRISE" %}
+                <tr>
                   <td> {{ result.numSiret }} </td>
                   <td> {{ result.nomEnt }} </td>
                   <td> {{ result.adresseEnt }}, {{ result.cpEnt }} {{ result.villeEnt }} </td>
@@ -93,6 +94,7 @@
                   <td> {{ result.responsable__emailResp }} </td>
                   <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les structures -->
                 {% elif search_type == "CONTRAT" %}
+                <tr>
                   <td> {{ result.type }} </td>
                   <td> {{ result.description }} </td>
                   <td> {{ result.etat }} </td>
@@ -125,6 +127,19 @@
 </div>
 
 <script>
+
+  // Rendre les lignes du tableau cliquables
+  document.addEventListener("DOMContentLoaded", function() {
+    var tableRows = document.querySelectorAll(".clickable-row");
+
+    tableRows.forEach(function(row) {
+      row.addEventListener("click", function() {
+        window.location.href = row.getAttribute("data-href");
+      });
+    });
+  });
+
+  // Afficher / masquer les filtres en fonction du type de recherche sélectionné
   document.addEventListener("DOMContentLoaded", function() {
     var typeSelect = document.getElementById("typeSelect");
     var filtresEtu = document.getElementById("filtresEtu");

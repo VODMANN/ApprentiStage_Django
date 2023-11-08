@@ -250,3 +250,18 @@ def ajouter_responsable(request, contrat_id):
         'tuteur_form': tuteur_form
     }
     return render(request, 'pages/ajouter_responsable.html', context)
+
+def details_etudiant(request, etudiant_id):
+    etudiant = get_object_or_404(ProfilEtudiant, numEtu=etudiant_id)
+    contrats_stage = Contrat.objects.filter(etudiant=etudiant, type='stage')
+    contrats_apprentissage = Contrat.objects.filter(etudiant=etudiant, type='apprentissage')
+
+    context = {
+        'etudiant': etudiant,
+        'contrats_stage': contrats_stage,
+        'contrats_apprentissage': contrats_apprentissage,
+    }
+    return render(request, 'admin/detailsEtu.html', context)
+
+
+

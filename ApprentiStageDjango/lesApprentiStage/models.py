@@ -28,6 +28,13 @@ class ProfilEtudiant(models.Model):
 
     def __str__(self):
         return self.utilisateur.username
+    
+    def get_etudiant_id_as_int(self):
+        try:
+            return int(self.numEtu)
+        except ValueError:
+            return None
+
 
 class ProfilEnseignant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
