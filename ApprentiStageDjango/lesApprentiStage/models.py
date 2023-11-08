@@ -85,7 +85,6 @@ class Contrat(models.Model):
     enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    offre = models.ForeignKey('Offre', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.etudiant.prenomEtu+' '+self.etudiant.nomEtu
