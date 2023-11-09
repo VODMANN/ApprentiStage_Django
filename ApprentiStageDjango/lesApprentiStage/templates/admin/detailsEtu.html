@@ -23,13 +23,14 @@
                 {% if contrats_stage %}
                     <ul>
                         {% for contrat in contrats_stage %}
+                          <div class="affichageContrat" num="{{ contrat.id }}">
                             <li>
-                                Type: {{ contrat.type }}<br>
-                                Description: {{ contrat.description }}<br>
-                                État: {{ contrat.etat }}<br>
-                                Période: Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
+                                {{ contrat.entreprise }}<br>
+                                Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
                                 <!-- Affichez d'autres détails du contrat ici si nécessaire -->
                             </li>
+                            <hr>
+                          </div>
                         {% endfor %}
                     </ul>
                 {% else %}
@@ -41,25 +42,26 @@
         
 
       <div class="card">
-        <div class="card-header" id="headingThree">
+        <div class="card-header" id="headingTwo">
           <h2 class="mb-0">
-            <button class="btn btn collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <button class="btn btn collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
               Contrat(s) d'apprentissage
             </button>
           </h2>
         </div>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
           <div class="card-body">
             {% if contrats_apprentissage %}
                     <ul>
                         {% for contrat in contrats_apprentissage %}
+                          <div class="affichageContrat" num="{{ contrat.id }}">
                             <li>
-                                Type: {{ contrat.type }}<br>
-                                Description: {{ contrat.description }}<br>
-                                État: {{ contrat.etat }}<br>
-                                Période: Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
+                                {{ contrat.entreprise }}<br>
+                                Du {{ contrat.dateDeb|date:"d/m/Y" }} au {{ contrat.dateFin|date:"d/m/Y" }}<br>
                                 <!-- Affichez d'autres détails du contrat ici si nécessaire -->
                             </li>
+                            <hr>
+                          </div>
                         {% endfor %}
                     </ul>
                 {% else %}
@@ -71,6 +73,29 @@
 
     </div>
   </div>
+
+  <div class="col p-3" id='contrat'>
+  </div>
+
 </div>
+
+<script>
+  $('.affichageContrat').on('click', function() {
+    numcontrat = $(this).attr('num');
+
+    $.ajax({
+        url: '/affichage_contrat/' + numcontrat + '/',  // L'URL vers la vue qui gère l'affichage du contrat
+        type: 'GET',
+        dataType: 'html',
+        success: function(data) {
+            $('#contrat').html(data);
+        },
+        error: function() {
+            alert('Une erreur s\'est produite lors du chargement du contrat.');
+        }
+    });
+  });
+
+</script>
 
 {% endblock %}

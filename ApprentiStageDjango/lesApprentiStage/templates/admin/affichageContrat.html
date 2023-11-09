@@ -1,0 +1,12 @@
+<div class="card p-3" style="height:40vw;">
+    <h1>Fiche {{ contrat.type }}</h1>
+    <h2>Structure d'accueil</h2>
+    <div class="card border-info p-3">
+        <p><strong>Structure administratives :</strong> {{ contrat.entreprise }}</p>
+        <p><strong>Responsable admin. :</strong> {{ responsable.nomResp }}</p>
+        <p><strong>Adresse exécution {{ contrat.type }} :</strong> {{ contrat.entreprise__adresseEnt }}</p>
+        <p><strong>Tuteur entreprise :</strong> {{ contrat.tuteur }}</p>
+    </div>
+    
+    <!-- Ajoutez d'autres champs du contrat selon vos besoins -->
+</div>

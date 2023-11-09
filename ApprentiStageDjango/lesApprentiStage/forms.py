@@ -49,7 +49,7 @@ class ToggleSwitchWidget(forms.widgets.CheckboxInput):
 
 TYPE_CHOICES_CONTRAT = [
     ('Stage', 'Stage'),
-    ('Alternance', 'Alternance'),
+    ('Apprentissage', 'Apprentissage'),
 ]
 
 
@@ -60,7 +60,6 @@ class ContratEtudiantForm(forms.ModelForm):
     class Meta:
         model = Contrat
         exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat']
-
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -90,7 +89,7 @@ class ThemeForm(forms.ModelForm):
         fields = ['nomTheme']
 
         labels = {
-            'nomTheme': 'Theme de votre sujet :',
+            'nomTheme': 'Thème de votre sujet :',
             
         }
 

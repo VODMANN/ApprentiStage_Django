@@ -103,7 +103,7 @@ def search(request):
     search_mapping = {
         'ETUDIANT': (ProfilEtudiant, ['civiliteEtu','nomEtu', 'prenomEtu', 'numEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement__nomDep']),
         'ENTREPRISE': (Entreprise, ['nomEnt', 'numSiret', 'adresseEnt', 'cpEnt', 'villeEnt', 'responsable__nomResp', 'responsable__prenomResp', 'responsable__emailResp']),
-        'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
+        'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'etudiant__numEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
     }
 
     results = []
@@ -251,6 +251,8 @@ def ajouter_responsable(request, contrat_id):
     }
     return render(request, 'pages/ajouter_responsable.html', context)
 
+@login_required
+@user_type_required('secretaire')
 def details_etudiant(request, etudiant_id):
     etudiant = get_object_or_404(ProfilEtudiant, numEtu=etudiant_id)
     contrats_stage = Contrat.objects.filter(etudiant=etudiant, type='stage')
@@ -263,5 +265,19 @@ def details_etudiant(request, etudiant_id):
     }
     return render(request, 'admin/detailsEtu.html', context)
 
+@login_required
+@user_type_required('secretaire')
+def details_entreprise(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, numSiret=entreprise_id)
 
+    context = {
+        'entreprise': entreprise,
+    }
+    return render(request, 'admin/detailsEnt.html', context)
 
+def affichage_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, id=contrat_id)
+    context = {
+        'contrat': contrat,
+    }
+    return render(request, 'admin/affichageContrat.html', context)
