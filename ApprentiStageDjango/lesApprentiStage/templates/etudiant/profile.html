@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Colonne de profil -->
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Profil de {{ etudiant.utilisateur.username }}</h5>
+                    <p class="card-text">Nom : {{ etudiant.nomEtu }}</p>
+                    <p class="card-text">Prénom : {{ etudiant.prenomEtu }}</p>
+                    <!-- Bouton pour afficher plus d'infos -->
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#moreInfo" aria-expanded="false" aria-controls="moreInfo">
+                        Plus d'infos
+                    </button>
+                    <!-- Informations supplémentaires sur l'étudiant -->
+                    <div class="collapse" id="moreInfo">
+                        <div class="card card-body">
+                            <p class="card-text">Numéro Étudiant : {{ etudiant.numEtu }}</p>
+                            <p class="card-text">Adresse : {{ etudiant.adresseEtu }}</p>
+                            <p class="card-text">Ville : {{ etudiant.villeEtu }}</p>
+                            <p class="card-text">Code Postal : {{ etudiant.cpEtu }}</p>
+                            <p class="card-text">Téléphone : {{ etudiant.telEtu }}</p>
+                            <p class="card-text">Promotion : {{ etudiant.promo }}</p>
+                            <p class="card-text">Département : {{ etudiant.idDepartement.nom }}</p>
+                            <!-- Ajouter ici d'autres informations si nécessaire -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Colonne principale pour les onglets -->
+        <div class="col-md-8">
+            <!-- Onglets de navigation -->
+            <ul class="nav nav-tabs" id="profileTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="contrats-tab" data-toggle="tab" href="#contrats" role="tab" aria-controls="contrats" aria-selected="true">Contrats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="evaluations-tab" data-toggle="tab" href="#evaluations" role="tab" aria-controls="evaluations" aria-selected="false">Évaluations</a>
+                </li>
+            </ul>
+            <!-- Contenu des onglets -->
+            <div class="tab-content" id="profileTabContent">
+                <!-- Onglet Contrats -->
+                <div class="tab-pane fade show active" id="contrats" role="tabpanel" aria-labelledby="contrats-tab">
+                    <ul class="list-group list-group-flush">
+                        {% for contrat in contrats %}
+                        <li class="list-group-item">
+                            Type : {{ contrat.type }} - Entreprise : {{ contrat.entreprise.nomEnt }}
+                            <button class="btn btn-secondary btn-sm" type="button" data-toggle="modal" data-target="#contratDetail{{ contrat.id }}">
+                                Détails
+                            </button>
+                            <!-- Modal pour les détails du contrat -->
+                            <div class="modal fade" id="contratDetail{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="contratDetailLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="contratDetailLabel">Détails du contrat</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <dl class="row">
+                                                <dt class="col-sm-4">Description :</dt>
+                                                <dd class="col-sm-8">{{ contrat.description }}</dd>
+                            
+                                                <dt class="col-sm-4">État :</dt>
+                                                <dd class="col-sm-8">{{ contrat.etat }}</dd>
+                            
+                                                <dt class="col-sm-4">Gratification :</dt>
+                                                <dd class="col-sm-8">{{ contrat.gratification }} €</dd>
+                            
+                                                <dt class="col-sm-4">Début :</dt>
+                                                <dd class="col-sm-8">{{ contrat.dateDeb|date:"d/m/Y" }}</dd>
+                            
+                                                <dt class="col-sm-4">Fin :</dt>
+                                                <dd class="col-sm-8">{{ contrat.dateFin|date:"d/m/Y" }}</dd>
+                            
+                                                <dt class="col-sm-4">Enseignant :</dt>
+                                                <dd class="col-sm-8">{{ contrat.enseignant.utilisateur.username }}</dd>
+                            
+                                                <dt class="col-sm-4">Tuteur :</dt>
+                                                <dd class="col-sm-8">{{ contrat.tuteur.nomTut }}</dd>
+                            
+                                                <dt class="col-sm-4">Thème :</dt>
+                                                <dd class="col-sm-8">{{ contrat.theme.nomTheme }}</dd>
+                            
+                                                <dt class="col-sm-4">En France :</dt>
+                                                <dd class="col-sm-8">{{ contrat.enFrance|yesno:"Oui,Non" }}</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">Aucun contrat trouvé.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- Onglet Documents -->
+                <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                    <ul class="list-group list-group-flush">
+                        {% for document in documents %}
+                        <li class="list-group-item">
+                            <a href="{{ document.fichier.url }}">{{ document.titre }}</a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">Aucun document trouvé.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- Onglet Évaluations -->
+                <div class="tab-pane fade" id="evaluations" role="tabpanel" aria-labelledby="evaluations-tab">
+                    <ul class="list-group list-group-flush">
+                        {% for evaluation in evaluations %}
+                        <li class="list-group-item">
+                            Note : {{ evaluation.note }} - Commentaire : {{ evaluation.commentaire }}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">Aucune évaluation trouvée.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_css %}
+<style>
+   /* Mettez vos styles CSS personnalisés ici ou dans static/css/style.css */
+   .card-header {
+       background-color: #007bff;
+       color: white;
+   }
+   .card {
+       box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
+   }
+
+   /* Améliorations globales */
+.card, .modal-content {
+    border-radius: 0.5rem; /* Coins arrondis */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Ombre de boîte */
+}
+
+/* En-tête de modal personnalisé */
+.modal-header {
+    background-color: #6c757d; /* Couleur de fond de l'en-tête */
+    color: white; /* Couleur du texte */
+    border-top-left-radius: calc(0.5rem - 1px);
+    border-top-right-radius: calc(0.5rem - 1px);
+}
+
+/* Bouton principal */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Animation pour les modals */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translateY(-100%);
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+}
+
+/* Styles de base pour le modal */
+.modal-content {
+    background: #fff; /* Couleur de fond */
+    border: none; /* Pas de bordure */
+}
+
+/* En-tête du modal avec un aspect plus épuré */
+.modal-header {
+    padding: 1rem; /* Padding plus généreux */
+    border-bottom: 1px solid #e9ecef; /* Ligne de séparation subtile */
+    background: #f8f9fa; /* Couleur de fond légère */
+    color: #495057; /* Couleur de texte sombre pour un contraste plus élevé */
+}
+
+/* Titre du modal avec une typographie améliorée */
+.modal-title {
+    font-size: 1.25rem; /* Taille de police plus grande */
+    font-weight: bold; /* Gras pour une meilleure lisibilité */
+}
+
+/* Corps du modal avec un meilleur espacement */
+.modal-body {
+    padding: 20px; /* Plus d'espace à l'intérieur */
+    line-height: 1.5; /* Espacement des lignes pour une meilleure lisibilité */
+}
+
+/* Pied de page du modal sans bordure pour un look plus propre */
+.modal-footer {
+    border-top: none; /* Pas de bordure en haut */
+    padding: 1rem; /* Padding similaire à l'en-tête pour la symétrie */
+}
+
+/* Amélioration des boutons du modal */
+.modal-footer .btn {
+    margin: 0 5px; /* Espacement autour des boutons */
+}
+
+/* Bouton de fermeture du modal avec une apparence plus douce */
+.close {
+    span {
+        color: #6c757d; /* Couleur assombrie pour le contraste */
+        font-size: 1.4rem; /* Taille de police plus grande */
+    }
+    &:hover, &:focus {
+        color: #5a6268; /* Couleur plus foncée au survol */
+        opacity: 1; /* Opacité complète */
+    }
+}
+
+/* Transition douce pour l'apparition du modal */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transform: translateY(-50px);
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+</style>
+{% endblock %}

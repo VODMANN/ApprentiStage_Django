@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class='card container mt-5 p-3' style="width: 25rem;">
+  <div class='card container mt-5 p-4' style="width: 30rem;">
     <div class="row">
-        <h4>Connexion</h4>
+      <h4>Connexion</h4>
     </div>
     <form method="post">
       {% csrf_token %}
@@ -14,8 +14,10 @@
       <div class="row p-2">
         <label class="col" for="{{ form.password.id_for_label }}">Mot de passe :</label>
         <input class="col form-control" id="{{ form.password.id_for_label }}" type="password" name="{{ form.password.name }}" required>
-      <div class="row p-2">
-          <button class="col btn btn-primary" id="submit" >Connexion</button>
       </div>
+      <div class="row p-2">
+        <button class="col btn btn-primary" id="submit" >Connexion</button>
+      </div>
+    </form>
   </div>
 {% endblock %}

@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "lesApprentiStage",
     'crispy_bootstrap4',
-    "django_select2",
     'crispy_forms',
 ]
 
@@ -139,5 +138,4 @@ LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
 LOGIN_URL = 'lesApprentiStage:login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 
