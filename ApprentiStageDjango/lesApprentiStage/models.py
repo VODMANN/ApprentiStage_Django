@@ -106,8 +106,10 @@ class Contrat(models.Model):
     entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE)
     enFrance = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.etudiant.prenomEtu+' '+self.etudiant.nomEtu
 
-
+      
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
@@ -118,6 +120,22 @@ class Offre(models.Model):
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     estPublie = models.BooleanField(default=False)
+
+class Salle(models.Model):
+    numero = models.CharField(max_length=50)
+
+    
+    def __str__(self):
+        return self.numero
+
+class Soutenance(models.Model):
+    dateSoutenance = models.DateField()
+    heureSoutenance = models.TimeField()
+    salle = models.ForeignKey(Salle, on_delete=models.CASCADE,null=True)
+    idContrat = models.ForeignKey(Contrat, on_delete=models.CASCADE,null=True)
+    candide = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
+    estDistanciel = models.BooleanField()
+=======
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class Document(models.Model):

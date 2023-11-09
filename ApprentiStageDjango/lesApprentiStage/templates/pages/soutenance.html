@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+ {% block content %}
+
+<h1 class="text-center mt-2">Soutenances</h1>
+
+{% if user == "secretaire" %}
+<!-- Button trigger modal -->
+<div class="d-flex justify-content-center align-content-center mb-2">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Ajouter</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" data-backdrop="false" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"s>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          Ajouter une Soutenance
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'lesApprentiStage:soutenance' %}">
+        <div class="modal-body">
+          {% csrf_token %} 
+          {{ form | crispy }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" name="ajouter">
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    
+      {% for soutenance in listSoutenance %}
+        {% if modifSoutenance.id != soutenance.id %}
+        <tr>
+          <td>{{soutenance.dateSoutenance}}</td>
+          <td>{{soutenance.heureSoutenance}}</td>
+          <td>{{soutenance.salle}}</td>
+          <td>{{soutenance.idContrat.etudiant.numEtu}} - {{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance.candide}}</td>
+          <td>{{soutenance.estDistanciel}}</td>
+          <td><a href="{% url 'lesApprentiStage:modifierSoutenance' soutenance.id %}" class="btn bg-success text-white">Modifier</a></td>
+          <td><a href="{% url 'lesApprentiStage:supprimerSoutenance' soutenance.id %}" class="btn bg-danger text-white">Supprimer</a></td>
+        </tr>
+        {% else %}
+        <tr>
+          <form method="POST" action="{% url 'lesApprentiStage:modifierSoutenance' soutenance.id %}">
+          {% csrf_token %} 
+          <td>{{ form.dateSoutenance|as_crispy_field }}</td>
+          <td>{{ form.heureSoutenance|as_crispy_field }}</td>
+          <td>{{ form.salle|as_crispy_field }}</td>
+          <td>{{ form.idContrat|as_crispy_field }}</td>
+          <td>{{ form.candide|as_crispy_field }}</td>
+          <td><p class="mt-4">{{ form.estDistanciel|as_crispy_field }}</p></td>
+          <td></td>
+          <td></td>
+          <td><button type="submit" class="btn btn-primary mt-4" name="modifier">Modifier</button></td>
+          </form>
+          <td><a href="{% url 'lesApprentiStage:supprimerSoutenance' soutenance.id %}" class="btn bg-danger text-white mt-4">Supprimer</a></td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    
+  </tbody>
+</table>
+{% endif %}
+{% if user == "etudiant" %}
+
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for soutenance_etu in etuSoutenances %}
+        <tr>
+          <td>{{soutenance_etu.dateSoutenance}}</td>
+          <td>{{soutenance_etu.heureSoutenance}}</td>
+          <td>{{soutenance_etu.salle}}</td>
+          <td>{{soutenance_etu.idContrat.etudiant.prenomEtu}} {{soutenance_etu.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance_etu.idContrat.enseignant.prenomEnseignant}} {{soutenance_etu.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance_etu.idContrat.tuteur.prenomTuteur}} {{soutenance_etu.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance_etu.candide}}</td>
+          <td>{{soutenance_etu.estDistanciel}}</td>
+        </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+{% endif %}
+{% if user == "enseignant" %}
+<h2 class="text-center mt-2">Mes Soutenances</h2>
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for soutenance in enSoutenance %}
+        <tr>
+          <td>{{soutenance.dateSoutenance}}</td>
+          <td>{{soutenance.heureSoutenance}}</td>
+          <td>{{soutenance.salle}}</td>
+          <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+          <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+          <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+          <td>{{soutenance.candide}}</td>
+          <td>{{soutenance.estDistanciel}}</td>
+          {% if enseignant == soutenance.candide %}
+          <td><a href="{% url 'lesApprentiStage:desinscrireSoutenance' soutenance.id %}" class="btn bg-danger text-white">Désinscrire</a></td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<h2 class="text-center mt-2">A s'inscrire en tant que candide</h2>
+<table class="table table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Heure</th>
+      <th scope="col">Salle</th>
+      <th scope="col">Eleve</th>
+      <th scope="col">Professeur referant</th>
+      <th scope="col">Tuteur</th>
+      <th scope="col">Candide</th>
+      <th scope="col">Distanciel</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for soutenance in listCandideSoutenance %}
+      <tr>
+        <td>{{soutenance.dateSoutenance}}</td>
+        <td>{{soutenance.heureSoutenance}}</td>
+        <td>{{soutenance.salle}}</td>
+        <td>{{soutenance.idContrat.etudiant.prenomEtu}} {{soutenance.idContrat.etudiant.nomEtu}}</td>
+        <td>{{soutenance.idContrat.enseignant.prenomEnseignant}} {{soutenance.idContrat.enseignant.nomEnseignant}}</td>
+        <td>{{soutenance.idContrat.tuteur.prenomTuteur}} {{soutenance.idContrat.tuteur.nomTuteur}}</td>
+        <td>{{soutenance.candide}}</td>
+        <td>{{soutenance.estDistanciel}}</td>
+        <td><a href="{% url 'lesApprentiStage:inscrireSoutenance' soutenance.id %}" class="btn bg-success text-white">S'inscrire</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endif %}
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+    {{ message }}
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -138,3 +138,4 @@ LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
 LOGIN_URL = 'lesApprentiStage:login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
