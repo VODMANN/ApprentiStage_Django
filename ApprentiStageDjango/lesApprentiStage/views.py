@@ -4,7 +4,7 @@ from .forms import ContratEtudiantForm, EntrepriseForm, ResponsableForm, ThemeFo
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
-from .models import ProfilEtudiant, Entreprise, Contrat, Utilisateur
+from .models import Document, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Theme, Utilisateur
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
@@ -34,10 +34,14 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 def home(request):
-  if request.user.is_authenticated:
+    offre_list = Offre.objects.all()    
+    if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
         print(user_type)
-  return render(request, 'pages/accueil.html')
+        if user_type == 'etudiant':
+          return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+
+    return render(request, 'pages/accueil.html')
 
 """ @login_required
 @user_type_required('secretaire') """
@@ -196,30 +200,6 @@ def ajouter_theme(request):
     return render(request, 'pages/ajouter_theme.html', {'ThemeForm': form})
 
 
-# def ajouter_responsable(request, contrat_id):
-#     contrat = get_object_or_404(Contrat, pk=contrat_id)
-#     entreprise = contrat.entreprise
-
-#     if request.method == 'POST':
-#         form = ResponsableForm(request.POST, entreprise=entreprise)
-#         if form.is_valid():
-#             if form.cleaned_data['responsable_existant']:
-#                 contrat.responsable = form.cleaned_data['responsable_existant']
-#                 contrat.save()
-#                 messages.success(request, "Responsable lié au contrat avec succès.")
-#             else:
-#                 responsable = form.save(commit=False)
-#                 responsable.entreprise = entreprise
-#                 responsable.save()
-#                 contrat.responsable = responsable
-#                 contrat.save()
-#                 messages.success(request, "Responsable ajouté avec succès.")
-#             return redirect('lesApprentiStage:home')
-#     else:
-#         form = ResponsableForm(entreprise=entreprise)
-
-#     return render(request, 'pages/ajouter_responsable.html', {'form': form})
-
 def ajouter_responsable(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     entreprise = contrat.entreprise
@@ -251,3 +231,77 @@ def ajouter_responsable(request, contrat_id):
         'tuteur_form': tuteur_form
     }
     return render(request, 'pages/ajouter_responsable.html', context)
+
+
+def offre_detail(request, offre_id):
+    offre = Offre.objects.get(pk=offre_id)
+    return render(request, 'etudiant/offre_detail.html', {'offre': offre})
+
+def recherche_offres(request):
+    theme = Theme.objects.all()
+    entreprise = Entreprise.objects.all()
+
+    query = request.GET.get('query', '')
+    entreprise_id = request.GET.get('entreprise', '')
+    theme_id = request.GET.get('theme', '')
+    date_min = request.GET.get('date_min', '')
+    date_max = request.GET.get('date_max', '')
+
+    queryset = Offre.objects.all()
+    if entreprise_id:
+        queryset = queryset.filter(entreprise__id=entreprise_id)
+    if theme_id:
+        queryset = queryset.filter(theme__id=theme_id)
+    if date_min:
+        queryset = queryset.filter(datePublication__gte=date_min)
+    if date_max:
+        queryset = queryset.filter(datePublication__lte=date_max)
+
+    # Recherche sur plusieurs champs en utilisant Q objects
+    if query:
+        queryset = queryset.filter(
+            Q(titre__icontains=query) |
+            Q(description__icontains=query) |
+            Q(competences__icontains=query)
+        )
+    # Renommez 'results' en 'queryset' pour être cohérent avec le filtrage ci-dessus
+    return render(request, 'etudiant/recherche_offres.html', {'results': queryset, 'theme': theme, 'entreprise': entreprise})
+
+
+@login_required
+def edit_etudiant(request):
+    if request.user.type_utilisateur != 'etudiant':
+        # Rediriger l'utilisateur ou afficher une erreur car il n'est pas un étudiant
+        return redirect('page_d_erreur')
+
+    profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
+
+    if request.method == 'POST':
+        form = EtudiantForm(request.POST, instance=profil_etudiant)
+        if form.is_valid():
+            form.save()
+            # Ajouter un message de succès
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+            # Rediriger l'utilisateur vers une autre page, comme le tableau de bord
+            return redirect('lesApprentiStage:home')
+    else:
+        form = EtudiantForm(instance=profil_etudiant)
+
+    return render(request, 'etudiant/edit_etudiant.html', {'form': form})
+
+
+@login_required
+def profile(request):
+    etudiant = request.user.profiletudiant
+    contrats = Contrat.objects.filter(etudiant=etudiant).select_related('entreprise', 'theme', 'tuteur', 'enseignant')
+    documents = Document.objects.filter(contrat__etudiant=etudiant)
+    evaluations = Evaluation.objects.filter(contrat__etudiant=etudiant)
+    # Vous pouvez ajouter d'autres éléments si besoin
+
+    context = {
+        'etudiant': etudiant,
+        'contrats': contrats,
+        'documents': documents,
+        'evaluations': evaluations,
+    }
+    return render(request, 'etudiant/profile.html', context)

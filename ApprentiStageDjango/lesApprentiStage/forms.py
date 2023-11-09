@@ -2,19 +2,37 @@ from django import forms
 from .models import Contrat, Departement, Entreprise, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
 
 class EtudiantForm(forms.ModelForm):
+    CIVILITE_CHOICES = [
+        ('M', 'Monsieur'),
+        ('Mme', 'Madame'),
+    ]
+
+    civiliteEtu = forms.ChoiceField(
+        choices=CIVILITE_CHOICES,
+        label='Civilité',
+        required=False
+    )
+    cpEtu = forms.CharField(
+        max_length=10,
+        required=False,
+        label='Code postal'
+    )
+
+
     class Meta:
         model = ProfilEtudiant
-        numEtu = forms.CharField(max_length=35, required=False)
-        nomEtu = forms.CharField(max_length=255, required=False)
-        prenomEtu = forms.CharField(max_length=255, required=False)
-        civiliteEtu = forms.CharField(max_length=5, required=False)
-        cpEtu = forms.IntegerField(required=False)
-        villeEtu = forms.CharField(max_length=100, required=False)
-        telEtu = forms.CharField(max_length=25, required=False)
-        promo = forms.CharField(max_length=20, required=False)
-        # Ajoutez un champ pour sélectionner le département si nécessaire
-        idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
+        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement']
+        labels = {
+            'numEtu': 'Numéro d\'étudiant',
+            'nomEtu': 'Nom',
+            'prenomEtu': 'Prénom',
+            'adresseEtu': 'Adresse',
+            'cpEtu': 'Code postal',
+            'villeEtu': 'Ville',
+            'telEtu': 'Téléphone',
+            'promo': 'Promotion',
+            'idDepartement': 'Département',
+        }
 
 class EnseignantForm(forms.ModelForm):
     class Meta:
@@ -48,7 +66,7 @@ class ContratEtudiantForm(forms.ModelForm):
 
     class Meta:
         model = Contrat
-        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat']
+        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']
 
 
     def __init__(self, *args, **kwargs):

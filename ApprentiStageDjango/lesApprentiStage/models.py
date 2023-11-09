@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-
+from django.utils import timezone
 
 class Utilisateur(AbstractUser):
     TYPE_CHOICES = (
@@ -111,13 +111,14 @@ class Contrat(models.Model):
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
+    mailRh = models.TextField()
     competences = models.TextField()
     duree = models.CharField(max_length=50)
     datePublication = models.DateField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     estPublie = models.BooleanField(default=False)
-
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class Document(models.Model):
     titre = models.CharField(max_length=255)
@@ -135,3 +136,7 @@ class Evaluation(models.Model):
 
     def __str__(self):
         return f"Évaluation de {self.contrat.etudiant.utilisateur.username} par {self.enseignant.utilisateur.username}"
+        
+
+# INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
+# VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');

@@ -16,6 +16,10 @@ urlpatterns=[
   path('ajouter_entreprise/', views.ajouter_entreprise, name='ajouter_entreprise'),
   path('ajouter_theme/', views.ajouter_theme, name='ajouter_theme'),
   path('ajouter_responsable/<int:contrat_id>/', views.ajouter_responsable, name='ajouter_responsable'),
+  path('offre/<int:offre_id>/', views.offre_detail, name='offre_detail'),
+  path('etudiant/recherche_offres/', views.recherche_offres, name='recherche_offres'),
+  path('etudiant/edit/', views.edit_etudiant, name='edit_etudiant'),
+  path('etudiant/profil/', views.profile, name='profil_etudiant'),
 
 
 ]

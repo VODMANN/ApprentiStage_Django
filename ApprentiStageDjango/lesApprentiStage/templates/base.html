@@ -14,14 +14,18 @@
             <link rel="stylesheet"
                 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
+            <!-- FontAwesome CSS -->
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
             <!-- Bootstrap Select CSS -->
             <link rel="stylesheet"
                 href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
 
             <!-- Site Icon -->
-            <link rel="icon" type="images/x-icon" href="/logo.png" />
+            <link rel="icon" type="image/x-icon" href="/logo.png" />
         </head>
-        <body style="background-color : #F5F7FB">
+        <body style="background-color: #F5F7FB">
             <!-- jQuery (Necessary for Bootstrap's JavaScript plugins) -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -38,46 +42,60 @@
                 crossorigin="anonymous"></script>
 
             <!-- Other Libraries -->
-            <scriptsrc="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></scriptsrc=>
-            <scriptsrc="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></scriptsrc=>
-            <scriptsrc="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></scriptsrc=>
-            
+
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+
             <header>
-                <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+                <nav
+                    class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
                     <a class="navbar-brand"
-                        href="{% url 'lesApprentiStage:home' %}" style="font-size : 1.5rem">
+                        href="{% url 'lesApprentiStage:home' %}"
+                        style="font-size : 1.5rem">
                         Apprentistage
                     </a>
                     <div class="collapse navbar-collapse" id="navbarText">
-                      <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                          <a class="nav-link" href="{% url 'lesApprentiStage:home' %}">Accueil</a>
-                        </li>
-                        {% if user.type_utilisateur == "secretaire" %}
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:home' %}">Accueil</a>
+                            </li>
+                            {% if user.type_utilisateur == "secretaire" %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'lesApprentiStage:recherche' %}">Recherche</a>
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:recherche' %}">Recherche</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
                             </li>
-                        {% endif %}
-                        {% if user.type_utilisateur == "etudiant" %}
+                            {% endif %}
+                            {% if user.type_utilisateur == "etudiant" %}
                             <li class="nav-item">
-                                <a class="nav-link" href=" {% url 'lesApprentiStage:ajout_stage'%} ">Ajout</a>
+                                <a class="nav-link"
+                                    href=" {% url 'lesApprentiStage:ajout_stage'%} ">Ajout</a>
                             </li>
-                        {% endif %}
-                        {% if user.is_authenticated %}
+                            {% endif %}
+                            {% if user.is_authenticated %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'lesApprentiStage:logout' %}">Déconnexion</a>
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:logout' %}">Déconnexion</a>
                             </li>
-                        {% else %}
+                            {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'lesApprentiStage:login' %}">Connexion</a>
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:login' %}">Connexion</a>
                             </li>
-                        {% endif %}
-                      </ul>
+                            {% endif %}
+                        </ul>
                     </div>
-                  </nav>
+                </nav>
             </header>
 
             <main>
@@ -100,12 +118,15 @@
                     zoom();
                 }
             </script>
-        
+
             <style>
                 .navbar-nav .nav-link {
                     font-size: 1.2rem;
                 }
             </style>
+            {% block additional_css %}
+
+            {% endblock %}
 
         </body>
     </html>

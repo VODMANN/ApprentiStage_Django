@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="jumbotron">
+    <h1 class="display-4">Bienvenue sur le Portail de Gestion de Stages et
+      Alternances!</h1>
+    <p class="lead">Trouvez et gérez vos opportunités de stage et d'alternance.</p>
+    <hr class="my-4">
+    <p>Accédez à votre profil, recherchez des offres, suivez vos candidatures,
+      et bien plus encore.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'lesApprentiStage:recherche_offres' %}"  role="button">Rechercher des
+      Offres</a>
+    <a class="btn btn-secondary btn-lg" href="{% url 'lesApprentiStage:profil_etudiant' %}" role="button">Mon Profil</a>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Profil Personnel</h5>
+          <p class="card-text">Mettez à jour vos informations personnelles.</p>
+          <a href="{% url 'lesApprentiStage:edit_etudiant' %}" class="btn btn-sm btn-outline-secondary">Modifier le
+            Profil</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Convention</h5>
+          <p class="card-text">Vous avez trouvé une entreprise ! Crée votre Contrat.</p>
+          <a href="{% url 'lesApprentiStage:ajout_stage' %}" class="btn btn-sm btn-outline-secondary">Generer une Convention</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Ressources Utiles</h5>
+          <p class="card-text">Explorez les ressources pour optimiser votre
+            recherche et préparation aux stages.</p>
+          <a href="#" class="btn btn-sm btn-outline-secondary">Découvrir</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="display-5">Dernières Offres</h2>
+      <div class="list-group">
+        <!-- Offres de stage dynamiques ici -->
+        {% for offre in offre_list %}
+        {% if offre.estPublie %}
+        <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}"
+          class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ offre.titre }}</h5>
+            <small>{{ offre.datePublication|date:"d F Y" }}</small>
+          </div>
+          <p class="mb-1">{{ offre.description }}</p>
+          <small>{{ offre.entreprise }}</small>
+        </a>
+        {% endif %}
+        
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}
