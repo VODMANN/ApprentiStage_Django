@@ -44,6 +44,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="evaluations-tab" data-toggle="tab" href="#evaluations" role="tab" aria-controls="evaluations" aria-selected="false">Évaluations</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="soutenances-tab" data-toggle="tab" href="#soutenances" role="tab" aria-controls="soutenances" aria-selected="false">soutenances</a>
+                </li>
             </ul>
             <!-- Contenu des onglets -->
             <div class="tab-content" id="profileTabContent">
@@ -129,7 +132,23 @@
                         {% endfor %}
                     </ul>
                 </div>
+                <div class="tab-pane fade" id="soutenances" role="tabpanel" aria-labelledby="soutenances-tab">
+                    <ul class="list-group list-group-flush">
+                        {% for soutenance in soutenances %}
+                        <li class="list-group-item">
+                            Date : {{ soutenance.dateSoutenance }} <br>
+                            Heure : {{ soutenance.heureSoutenance }} <br>
+                            Salle : {{ soutenance.salle }} <br>
+                            Type de soutenance : {% if soutenance.estDistanciel %}Distanciel{% else %}Présentiel{% endif %} <br>
+                            Contrat lié : {{ soutenance.idContrat.type }} - Entreprise : {{ soutenance.idContrat.entreprise }}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">Aucune soutenance trouvée.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
+            
         </div>
     </div>
 </div>

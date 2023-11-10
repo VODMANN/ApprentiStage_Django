@@ -136,6 +136,7 @@ def search(request):
 
 @login_required
 def soutenance(request):
+    print(request.user.type_utilisateur)
     user_type_to_view_func = {
         'secretaire': soutenance_sec,
         'etudiant': soutenance_etu,
@@ -187,8 +188,6 @@ def soutenance_etu(request, user_type):
     unEtudiant = get_object_or_404(ProfilEtudiant, utilisateur=unUtilisateur)
     lesContrats = Contrat.objects.filter(etudiant=unEtudiant)  # Récupérer tous les contrats pour l'étudiant
     etuSoutenances = Soutenance.objects.filter(idContrat__in=lesContrats)  # Utiliser '__in' pour filtrer par les contrats récupérés
-    for elem in etuSoutenances:
-        print(elem)
     return render(request, 'pages/soutenance.html', {
         'etuSoutenances': etuSoutenances,  # Passer les soutenances en contexte
         'user': user_type
@@ -345,7 +344,7 @@ def calendar_events(request):
             'title': f'Soutenance: {soutenance.idContrat.etudiant.nomEtu} {soutenance.idContrat.etudiant.prenomEtu}',
             'start': f'{soutenance.dateSoutenance.isoformat()}T{soutenance.heureSoutenance.isoformat()}',
             'end': (datetime.combine(soutenance.dateSoutenance, soutenance.heureSoutenance) + timedelta(hours=1)).isoformat(),
-            'url': '',  # URL pour accéder aux détails de la soutenance si nécessaire
+            'url': '',
             'allDay': False
         }
         
@@ -489,6 +488,8 @@ def profile(request):
     contrats = Contrat.objects.filter(etudiant=etudiant).select_related('entreprise', 'theme', 'tuteur', 'enseignant')
     documents = Document.objects.filter(contrat__etudiant=etudiant)
     evaluations = Evaluation.objects.filter(contrat__etudiant=etudiant)
+    soutenance = Soutenance.objects.filter(idContrat__etudiant=request.user.profiletudiant)
+    print(soutenance)
     # Vous pouvez ajouter d'autres éléments si besoin
 
     context = {
@@ -496,5 +497,6 @@ def profile(request):
         'contrats': contrats,
         'documents': documents,
         'evaluations': evaluations,
+        'soutenances': soutenance,
     }
     return render(request, 'etudiant/profile.html', context)
