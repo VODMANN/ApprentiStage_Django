@@ -127,6 +127,24 @@
       </div>
     </form>
   </div>
+
+  <div class='card container mt-5 p-3' style="width: 30rem;">
+    <div class="row">
+        <h4>Upload CSV des étudiants</h4>
+    </div>
+    <form method="POST" action="{% url 'lesApprentiStage:upload_csv' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="row p-2">
+        <label class="col" for="csv_file">Fichier CSV :</label>
+        <input class="col form-control" id="csv_file" type="file" name="file" accept=".csv" required>
+      </div>
+      
+      <div class="row p-2">
+        <button class="col btn btn-primary" type="submit">Uploader</button>
+      </div>
+    </form>
+  </div>
   
   <script>
     document.addEventListener('DOMContentLoaded', function () {

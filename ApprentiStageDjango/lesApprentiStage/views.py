@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import redirect_to_login
 
-from .models import Document, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
+from .models import Departement, Document, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
@@ -16,6 +16,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from datetime import datetime, timedelta  
 from icalendar import Calendar, Event
+import csv
+from django.contrib.auth.hashers import make_password
 
 
 def user_type_required(user_type):
@@ -500,3 +502,46 @@ def profile(request):
         'soutenances': soutenance,
     }
     return render(request, 'etudiant/profile.html', context)
+
+
+
+def upload_csv(request):
+    if request.method == "GET":
+        return render(request, 'secretariat/upload_csv.html')
+
+    csv_file = request.FILES['file']
+    if not csv_file.name.endswith('.csv'):
+        return HttpResponse("Le fichier n'est pas un CSV")
+
+    file_data = csv_file.read().decode("utf-8")
+    lines = file_data.split("\n")
+
+    for line in lines:
+        fields = line.split(",")
+        if fields and len(fields) > 1:
+            departement_id = fields[10]
+
+            try:
+                departement = Departement.objects.get(id=departement_id)
+            except Departement.DoesNotExist:
+                return HttpResponse(f"Erreur : le département avec l'ID {departement_id} n'existe pas", status=400)
+
+            username = fields[1] + '_' + fields[2]
+            password = make_password('password_par_defaut')
+            user, created = Utilisateur.objects.get_or_create(username=username, defaults={'password': password, 'type_utilisateur': 'etudiant'})
+            
+            ProfilEtudiant.objects.update_or_create(
+                utilisateur=user,
+                nomEtu=fields[1],
+                prenomEtu=fields[2],
+                numEtu=fields[3],
+                civiliteEtu=fields[4],
+                adresseEtu=fields[5],
+                cpEtu=fields[6],
+                villeEtu=fields[7],
+                telEtu=fields[8],
+                promo=fields[9],
+                idDepartement=departement,
+            )
+
+    return redirect('lesApprentiStage:home')
