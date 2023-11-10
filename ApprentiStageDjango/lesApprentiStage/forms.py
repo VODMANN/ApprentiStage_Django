@@ -68,7 +68,7 @@ class SoutenanceForm(forms.ModelForm):
     class Meta:
         model = Soutenance
         fields = ['dateSoutenance','heureSoutenance','salle','idContrat','candide','estDistanciel']
-=======
+
 class ToggleSwitchWidget(forms.widgets.CheckboxInput):
     template_name = 'widget/toggle_switch_widget.html'
 

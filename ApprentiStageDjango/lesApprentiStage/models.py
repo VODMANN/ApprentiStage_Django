@@ -135,7 +135,6 @@ class Soutenance(models.Model):
     idContrat = models.ForeignKey(Contrat, on_delete=models.CASCADE,null=True)
     candide = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
     estDistanciel = models.BooleanField()
-=======
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class Document(models.Model):

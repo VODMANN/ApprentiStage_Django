@@ -47,9 +47,7 @@ def home(request):
         print(user_type)
         if user_type == 'etudiant':
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
-
-
-    #return render(request, 'pages/accueil.html')
+    return render(request, 'pages/accueil.html')
 
 """ @login_required
 @user_type_required('secretaire') """
@@ -189,6 +187,8 @@ def soutenance_etu(request, user_type):
     unEtudiant = get_object_or_404(ProfilEtudiant, utilisateur=unUtilisateur)
     lesContrats = Contrat.objects.filter(etudiant=unEtudiant)  # Récupérer tous les contrats pour l'étudiant
     etuSoutenances = Soutenance.objects.filter(idContrat__in=lesContrats)  # Utiliser '__in' pour filtrer par les contrats récupérés
+    for elem in etuSoutenances:
+        print(elem)
     return render(request, 'pages/soutenance.html', {
         'etuSoutenances': etuSoutenances,  # Passer les soutenances en contexte
         'user': user_type
@@ -377,7 +377,7 @@ def export_calendar(request):
 
 def calendar_ens(request):
     return render(request, 'pages/calendrier_ens.html')
-=======
+
 def ajouter_theme(request):
     if request.method == 'POST':
         form = ThemeForm(request.POST)
