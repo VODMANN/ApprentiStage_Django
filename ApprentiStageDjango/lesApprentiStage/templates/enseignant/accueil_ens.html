@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block content %}
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="text-center">Bienvenue, {{ user.username }}</h1>
+      <p class="lead text-center">Espace enseignant - Gestion des Stages/Apprentissages</p>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Candidater au soutenances</h5>
+          <p class="card-text">Candidater au soutenances de stage ou d'apprentissage.</p>
+          <a href="{% url 'lesApprentiStage:soutenance' %}" class="btn btn-primary">Voir les soutenances</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Calendrier des Soutenances</h5>
+          <p class="card-text">Consulter le calendrier des soutenances programmées.</p>
+          <a href="{% url 'lesApprentiStage:calendar_ens' %}" class="btn btn-success">Calendrier</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Suivi des Étudiants</h5>
+          <p class="card-text">Accéder au suivi de stages/alternances des étudiants.</p>
+          <a href="#" class="btn btn-info">Suivi Étudiants</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

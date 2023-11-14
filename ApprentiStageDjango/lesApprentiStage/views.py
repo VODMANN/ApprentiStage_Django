@@ -49,6 +49,8 @@ def home(request):
         print(user_type)
         if user_type == 'etudiant':
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+        if user_type == 'enseignant':
+          return render(request, 'enseignant/accueil_ens.html')
     return render(request, 'pages/accueil.html')
 
 """ @login_required
@@ -63,7 +65,7 @@ def signup(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
-            user_type = user_form.cleaned_data['type_utilisateur']  # Assurez-vous que cela correspond au nom dans votre modèle
+            user_type = user_form.cleaned_data['type_utilisateur']  
 
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
@@ -76,14 +78,12 @@ def signup(request):
                 enseignant = enseignant_form.save(commit=False)
                 enseignant.utilisateur = user
                 enseignant.save()
-                # Log in the user here if needed
                 return redirect('lesApprentiStage:home')
             elif user_type == 'secretaire' and secretaire_form.is_valid():
                 user.save()
                 secretaire = secretaire_form.save(commit=False)
                 secretaire.utilisateur = user
                 secretaire.save()
-                # Log in the user here if needed
                 return redirect('lesApprentiStage:home')
 
     else:
@@ -331,14 +331,11 @@ def desinscrireSoutenance(request,id):
 def calendar_events(request):
     events = []
 
-    # Assurez-vous que seul un enseignant peut accéder à cette vue
     if request.user.type_utilisateur != 'enseignant':
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
-    # Obtenez le profil enseignant connecté
     profil_enseignant = get_object_or_404(ProfilEnseignant, utilisateur=request.user)
 
-    # Filtrez les soutenances où l'utilisateur est le candide
     soutenances = Soutenance.objects.filter(candide=profil_enseignant)
 
     for soutenance in soutenances:
@@ -465,7 +462,6 @@ def recherche_offres(request):
 @login_required
 def edit_etudiant(request):
     if request.user.type_utilisateur != 'etudiant':
-        # Rediriger l'utilisateur ou afficher une erreur car il n'est pas un étudiant
         return redirect('page_d_erreur')
 
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
@@ -474,9 +470,7 @@ def edit_etudiant(request):
         form = EtudiantForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
             form.save()
-            # Ajouter un message de succès
             messages.success(request, "Votre profil a été mis à jour avec succès.")
-            # Rediriger l'utilisateur vers une autre page, comme le tableau de bord
             return redirect('lesApprentiStage:home')
     else:
         form = EtudiantForm(instance=profil_etudiant)
@@ -491,8 +485,6 @@ def profile(request):
     documents = Document.objects.filter(contrat__etudiant=etudiant)
     evaluations = Evaluation.objects.filter(contrat__etudiant=etudiant)
     soutenance = Soutenance.objects.filter(idContrat__etudiant=request.user.profiletudiant)
-    print(soutenance)
-    # Vous pouvez ajouter d'autres éléments si besoin
 
     context = {
         'etudiant': etudiant,
@@ -545,3 +537,4 @@ def upload_csv(request):
             )
 
     return redirect('lesApprentiStage:home')
+
