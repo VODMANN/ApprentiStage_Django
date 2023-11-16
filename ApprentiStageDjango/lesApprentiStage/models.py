@@ -113,7 +113,18 @@ class Contrat(models.Model):
     entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE)
     enFrance = models.BooleanField(default=True)
 
+    def annee_scolaire(self):
+        if self.dateDeb.month < 9:
+            annee_debut = self.dateDeb.year - 1
+        else:
+            annee_debut = self.dateDeb.year
 
+        if self.dateFin.month < 9:
+            annee_fin = self.dateFin.year
+        else:
+            annee_fin = self.dateFin.year +1
+
+        return f"{annee_debut}-{annee_fin}"
 
 class Offre(models.Model):
     titre = models.CharField(max_length=100)

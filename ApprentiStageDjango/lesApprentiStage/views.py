@@ -277,7 +277,20 @@ def details_entreprise(request, entreprise_id):
 
 def affichage_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, id=contrat_id)
+
+    # Assurez-vous que la relation avec l'entreprise existe
+    if contrat.entreprise:
+        # Utilisez la relation inverse à partir du modèle Responsable
+        responsable_entreprise = contrat.entreprise.responsable_set.first()
+    else:
+        responsable_entreprise = None
+
     context = {
         'contrat': contrat,
+        'entreprise': contrat.entreprise,
+        'tuteur': contrat.tuteur,
+        'responsable_entreprise': responsable_entreprise,
     }
+
     return render(request, 'admin/affichageContrat.html', context)
+
