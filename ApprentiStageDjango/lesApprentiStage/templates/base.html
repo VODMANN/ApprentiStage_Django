@@ -85,13 +85,12 @@
                             {% endif %}
                             {% if user.is_authenticated %}
                             <li class="nav-item ms-1">
-                                <a class="nav-link dropdown-item"
+                                <a class="nav-link"
                                     href="{% url 'lesApprentiStage:soutenance' %}">Soutenance</a>
                             </li>
                             {% else %}
-                            <li class="nav-item ms-1">
-                                <a class="nav-link dropdown-item" id="cov"
-                            <li class="nav-item">
+                            
+                            <li class="nav-item" >
                                 <a class="nav-link"
                                     href=" {% url 'lesApprentiStage:ajout_stage'%} ">Ajout</a>
                             </li>

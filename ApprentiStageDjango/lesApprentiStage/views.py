@@ -46,7 +46,6 @@ def home(request):
     offre_list = Offre.objects.all()    
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
-        print(user_type)
         if user_type == 'etudiant':
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
     return render(request, 'pages/accueil.html')
