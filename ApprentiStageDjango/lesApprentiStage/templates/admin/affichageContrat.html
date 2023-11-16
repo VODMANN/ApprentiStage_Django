@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<div class="card p-3" style="height:55vw; overflow: auto;">
+    <h1>Fiche {{ contrat.type }}</h1>
+    <h2 class="m-3">Structure d'accueil</h2>
+    <div class="card border-info p-3">
+        <p><strong>Structure administratives :</strong> {{ contrat.entreprise }}</p>
+        <p><strong>Responsable admin. :</strong> {{ responsable_entreprise.nomResp |upper }} {{ responsable_entreprise.prenomResp }}</p>
+        <p><strong>Adresse exécution {{ contrat.type }} :</strong> {{ entreprise.adresseEnt }}</p>
+        <p><strong>Tuteur entreprise :</strong> {{ tuteur.nomTuteur | upper}} {{ tuteur.prenomTuteur }}</p>
+    </div>
+
+    <h2 class="m-3">Information pédagogique</h2>
+    <div class="card border-info p-3">
+        <p><strong>Sujet du stage :</strong> {{ contrat.description }}</p>
+        <p><strong>État validation :</strong> {{ contrat.etat }}</p>
+    </div>
+
+    <h2 class="m-3">Période</h2>
+    <div class="card border-info p-3">
+        <p><strong>Date de début :</strong> {{ contrat.dateDeb|date:"d F Y" }}</p>
+        <p><strong>Date de fin :</strong> {{ contrat.dateFin|date:"d F Y" }}</p>
+        <p><strong>Année scolaire :</strong> {{ contrat.annee_scolaire }}</p>
+    </div>
+    
+    <!-- Ajoutez d'autres champs du contrat selon vos besoins -->
+</div>

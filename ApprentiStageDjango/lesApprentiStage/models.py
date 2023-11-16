@@ -28,6 +28,13 @@ class ProfilEtudiant(models.Model):
 
     def __str__(self):
         return self.utilisateur.username
+    
+    def get_etudiant_id_as_int(self):
+        try:
+            return int(self.numEtu)
+        except ValueError:
+            return None
+
 
 class ProfilEnseignant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
@@ -105,6 +112,19 @@ class Contrat(models.Model):
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise,null=True, on_delete=models.CASCADE)
     enFrance = models.BooleanField(default=True)
+
+    def annee_scolaire(self):
+        if self.dateDeb.month < 9:
+            annee_debut = self.dateDeb.year - 1
+        else:
+            annee_debut = self.dateDeb.year
+
+        if self.dateFin.month < 9:
+            annee_fin = self.dateFin.year
+        else:
+            annee_fin = self.dateFin.year +1
+
+        return f"{annee_debut}-{annee_fin}"
 
     def __str__(self):
         return self.etudiant.prenomEtu+' '+self.etudiant.nomEtu

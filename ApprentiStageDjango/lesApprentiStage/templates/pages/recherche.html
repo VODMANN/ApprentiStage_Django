@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
+<div class="row m-3">
   <div class="col-md-auto d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
     <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
       <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -41,10 +41,11 @@
       </ul>
     </form>
   </div>
-  <div class="row mt-4">
+  
+  <div class="col p-3">
     <div class="col">
       {% if results %}
-        <table table class="table table-bordered w-100">
+        <table table class="table table-bordered table-sm">
           <thead>
             <tr class="bg-primary">
               {% if search_type == "ETUDIANT" %}
@@ -56,28 +57,28 @@
                 <th class="text-center"> Promo </th>
                 <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
               {% elif search_type == "ENTREPRISE" %}
-                <th> Numéro SIRET </th>
-                <th> Nom de l'entreprise </th>
-                <th> Adresse de l'entreprise </th>
-                <th> Responsable </th>
-                <th> Email Responsable </th>
+                <th class="text-center"> Numéro SIRET </th>
+                <th class="text-center"> Nom de l'entreprise </th>
+                <th class="text-center"> Adresse de l'entreprise </th>
+                <th class="text-center"> Responsable </th>
+                <th class="text-center"> Email Responsable </th>
                 <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
               {% elif search_type == "CONTRAT" %}
-                <th> Type de contrat </th>
-                <th> Description </th>
-                <th> État </th>
-                <th> Période </th>
-                <th> Étudiant </th>
-                <th> Entreprise </th>
-                <th> Adresse de l'entreprise </th>
+                <th class="text-center"> Type de contrat </th>
+                <th class="text-center"> Description </th>
+                <th class="text-center"> État </th>
+                <th class="text-center"> Période </th>
+                <th class="text-center"> Étudiant </th>
+                <th class="text-center"> Entreprise </th>
+                <th class="text-center"> Adresse de l'entreprise </th>
                 <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
               {% endif %}
             </tr>
           </thead>
           <tbody>
             {% for result in results %}
-              <tr>
                 {% if search_type == "ETUDIANT" %}
+                <tr class="clickable-row" data-href="{% url 'lesApprentiStage:details_etudiant' result.numEtu %}">
                   <td> {{ result.numEtu }} </td>
                   <td> {{ result.civiliteEtu}}  {{ result.nomEtu|upper }} {{ result.prenomEtu }} </td>
                   <td> {{ result.adresseEtu }}, {{ result.cpEtu }} {{ result.villeEtu}} </td>
@@ -86,6 +87,7 @@
                   <td> {{ result.promo }} </td>
                   <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les étudiants -->
                 {% elif search_type == "ENTREPRISE" %}
+                <tr class="clickable-row" data-href="{% url 'lesApprentiStage:details_entreprise' result.numSiret %}">
                   <td> {{ result.numSiret }} </td>
                   <td> {{ result.nomEnt }} </td>
                   <td> {{ result.adresseEnt }}, {{ result.cpEnt }} {{ result.villeEnt }} </td>
@@ -93,6 +95,7 @@
                   <td> {{ result.responsable__emailResp }} </td>
                   <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les structures -->
                 {% elif search_type == "CONTRAT" %}
+                <tr class="clickable-row" data-href="{% url 'lesApprentiStage:details_etudiant' result.etudiant__numEtu %}">
                   <td> {{ result.type }} </td>
                   <td> {{ result.description }} </td>
                   <td> {{ result.etat }} </td>
@@ -125,6 +128,19 @@
 </div>
 
 <script>
+
+  // Rendre les lignes du tableau cliquables
+  document.addEventListener("DOMContentLoaded", function() {
+    var tableRows = document.querySelectorAll(".clickable-row");
+
+    tableRows.forEach(function(row) {
+      row.addEventListener("click", function() {
+        window.location.href = row.getAttribute("data-href");
+      });
+    });
+  });
+
+  // Afficher / masquer les filtres en fonction du type de recherche sélectionné
   document.addEventListener("DOMContentLoaded", function() {
     var typeSelect = document.getElementById("typeSelect");
     var filtresEtu = document.getElementById("filtresEtu");

@@ -114,7 +114,7 @@ def search(request):
     search_mapping = {
         'ETUDIANT': (ProfilEtudiant, ['civiliteEtu','nomEtu', 'prenomEtu', 'numEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement__nomDep']),
         'ENTREPRISE': (Entreprise, ['nomEnt', 'numSiret', 'adresseEnt', 'cpEnt', 'villeEnt', 'responsable__nomResp', 'responsable__prenomResp', 'responsable__emailResp']),
-        'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
+        'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'etudiant__numEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
     }
 
     results = []
@@ -383,7 +383,7 @@ def ajouter_theme(request):
         form = ThemeForm(request.POST)
         if form.is_valid():
             theme = form.save()
-            messages.success(request, "Entreprise ajoutée avec succès.")
+            messages.success(request, "Thème ajouté avec succès.")
             return JsonResponse({"success": True, "theme": {"nomTheme": theme.nomTheme, "pk": theme.pk}})
         else:
             return JsonResponse({"success": False, "errors": form.errors})
@@ -424,6 +424,50 @@ def ajouter_responsable(request, contrat_id):
         'tuteur_form': tuteur_form
     }
     return render(request, 'pages/ajouter_responsable.html', context)
+
+@login_required
+@user_type_required('secretaire')
+def details_etudiant(request, etudiant_id):
+    etudiant = get_object_or_404(ProfilEtudiant, numEtu=etudiant_id)
+    contrats_stage = Contrat.objects.filter(etudiant=etudiant, type='stage')
+    contrats_apprentissage = Contrat.objects.filter(etudiant=etudiant, type='apprentissage')
+
+    context = {
+        'etudiant': etudiant,
+        'contrats_stage': contrats_stage,
+        'contrats_apprentissage': contrats_apprentissage,
+    }
+    return render(request, 'admin/detailsEtu.html', context)
+
+@login_required
+@user_type_required('secretaire')
+def details_entreprise(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, numSiret=entreprise_id)
+
+    context = {
+        'entreprise': entreprise,
+    }
+    return render(request, 'admin/detailsEnt.html', context)
+
+def affichage_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, id=contrat_id)
+
+    # Assurez-vous que la relation avec l'entreprise existe
+    if contrat.entreprise:
+        # Utilisez la relation inverse à partir du modèle Responsable
+        responsable_entreprise = contrat.entreprise.responsable_set.first()
+    else:
+        responsable_entreprise = None
+
+    context = {
+        'contrat': contrat,
+        'entreprise': contrat.entreprise,
+        'tuteur': contrat.tuteur,
+        'responsable_entreprise': responsable_entreprise,
+    }
+
+    return render(request, 'admin/affichageContrat.html', context)
+
 
 
 def offre_detail(request, offre_id):

@@ -19,12 +19,24 @@ class EtudiantForm(forms.ModelForm):
 class EnseignantForm(forms.ModelForm):
     class Meta:
         model = ProfilEnseignant
-        fields = ['numHarpege', 'roleEnseignant',]
+        numHarpege = forms.CharField(max_length=20, required=False)
+        roleEnseignant = forms.CharField(max_length=50, required=False)
+        nomEnseignant = forms.CharField(max_length=50, required=False)
+        prenomEnseignant = forms.CharField(max_length=50, required=False)
+        mailEnseignant = forms.EmailField(max_length=100, required=False)
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant',]
 
 class SecretaireForm(forms.ModelForm):
     class Meta:
         model = ProfilSecretaire
         fields = ['numSec', ]
+
+class DepartementForm(forms.ModelForm):
+    class Meta:
+        model = Departement
+        nomDep = forms.CharField(max_length=100, required=False)
+        adresseDep = forms.CharField(max_length=255, required=False)
+        fields = ['nomDep', 'adresseDep',]
 
 class UtilisateurForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -56,7 +68,7 @@ class ToggleSwitchWidget(forms.widgets.CheckboxInput):
 
 TYPE_CHOICES_CONTRAT = [
     ('Stage', 'Stage'),
-    ('Alternance', 'Alternance'),
+    ('Apprentissage', 'Apprentissage'),
 ]
 
 
@@ -67,7 +79,6 @@ class ContratEtudiantForm(forms.ModelForm):
     class Meta:
         model = Contrat
         exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']
-
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -97,7 +108,7 @@ class ThemeForm(forms.ModelForm):
         fields = ['nomTheme']
 
         labels = {
-            'nomTheme': 'Theme de votre sujet :',
+            'nomTheme': 'Thème de votre sujet :',
             
         }
 
