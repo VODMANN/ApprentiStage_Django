@@ -165,7 +165,7 @@ class EtudiantProfilForm(forms.ModelForm):
 
     class Meta:
         model = ProfilEtudiant
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement']
+        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'civiliteEtu','telEtu', 'idDepartement', 'promo']
         labels = {
             'numEtu': 'Numéro d\'étudiant',
             'nomEtu': 'Nom',

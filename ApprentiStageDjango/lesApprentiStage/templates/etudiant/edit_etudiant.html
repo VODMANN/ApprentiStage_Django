@@ -3,44 +3,51 @@
 {% block content %}
 <div class="container py-5">
     <div class="row">
-        <div class="col-md-10 col-lg-8 mx-auto">
+        <div class="mx-auto">
             <div class="profile-edit-wrapper">
                 <div class="profile-edit-card">
                     <form method="post" class="profile-form">
                         {% csrf_token %}
-                        <h2 class="text-center mb-5">Modifier votre profil</h2>
-                        {% for field in form %}
-                        <div class="form-group">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            <div class="input-group">
-                                {% if field.name == 'numEtu' %}
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                                </div>
-                                <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" class="form-control" readonly>
-                                {% elif field.name == 'civiliteEtu' or field.name == 'idDepartement' %}
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">{% if field.name == 'civiliteEtu' %}<i class="fas fa-venus-mars"></i>{% else %}<i class="fas fa-building"></i>{% endif %}</span>
-                                </div>
-                                {{ field|add_class:"form-control custom-select" }}
+                        <h2 class="text-center mb-4">Modifier votre profil</h2>
+                        <div class="row">
+                            {% for field in form %}
+                                {% if field.name == 'adresseEtu' %}
+                                    <div class="form-group col-md-6 ">
+                                {% elif field.name == 'cpEtu' %}
+                                    <div class="form-group col-md-2 ">
                                 {% else %}
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">{{ field|add_icon }}</span>
+                                    <div class="form-group col-md-4 ">
+                                {% endif %}
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                <div class="input-group">
+                                    {% if field.name == 'numEtu' %}
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    </div>
+                                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" class="form-control" readonly>
+                                    {% elif field.name == 'civiliteEtu' or field.name == 'idDepartement' %}
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{% if field.name == 'civiliteEtu' %}<i class="fas fa-venus-mars"></i>{% else %}<i class="fas fa-building"></i>{% endif %}</span>
+                                    </div>
+                                    {{ field|add_class:"form-control custom-select" }}
+                                    {% else %}
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{ field|add_icon }}</span>
+                                    </div>
+                                    {{ field|add_class:"form-control" }}
+                                    {% endif %}
                                 </div>
-                                {{ field|add_class:"form-control" }}
+                                {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ field.errors|join:", " }}
+                                </div>
                                 {% endif %}
                             </div>
-                            {% if field.help_text %}
-                            <small class="form-text text-muted">{{ field.help_text }}</small>
-                            {% endif %}
-                            {% if field.errors %}
-                            <div class="invalid-feedback">
-                                {{ field.errors|join:", " }}
-                            </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-
                         <div class="form-group text-center">
                             <button type="submit" class="btn btn-primary custom-btn">Sauvegarder les changements</button>
                         </div>
