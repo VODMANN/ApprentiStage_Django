@@ -1,5 +1,6 @@
 from django import forms
-from .models import Contrat, Departement, Entreprise, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
+
+from .models import Contrat, Departement, Entreprise, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -43,6 +44,24 @@ class UtilisateurForm(forms.ModelForm):
         model = Utilisateur
         fields = ['username', 'password', 'type_utilisateur']
 
+
+HORAIRES = (("09:00:00","9h"),("10:00:00","10h"),("11:00:00","11h"),("14:00:00","14h"),("15:00:00","15h"),("16:00:00","16h"),)
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class SoutenanceForm(forms.ModelForm):
+    dateSoutenance = forms.DateField(widget=DateInput())
+    heureSoutenance = forms.ChoiceField(choices=HORAIRES, widget=forms.Select)
+    salle = forms.ModelChoiceField(queryset=Salle.objects.all(), required=False)
+    idContrat = forms.ModelChoiceField(queryset=Contrat.objects.all(), required=False)
+    candide = forms.ModelChoiceField(queryset=ProfilEnseignant.objects.all(), required=False)
+    estDistanciel = forms.BooleanField(required=False)
+    class Meta:
+        model = Soutenance
+        fields = ['dateSoutenance','heureSoutenance','salle','idContrat','candide','estDistanciel']
+
 class ToggleSwitchWidget(forms.widgets.CheckboxInput):
     template_name = 'widget/toggle_switch_widget.html'
 
@@ -59,7 +78,7 @@ class ContratEtudiantForm(forms.ModelForm):
 
     class Meta:
         model = Contrat
-        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat']
+        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

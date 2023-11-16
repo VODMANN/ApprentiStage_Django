@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,14 +79,15 @@ WSGI_APPLICATION = "ApprentiStageDjango.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'apprentiStageDjango',
         'USER': 'root',
-        'PASSWORD': '8632253',
+        'PASSWORD': 'erdmann',
         'HOST': '127.0.0.1',   # Set to the address of your database
-        'PORT': '3307',        # Leave as 3306, the default MySQL port
+        'PORT': '3306',        # Leave as 3306, the default MySQL port
     }
 }
 
@@ -140,3 +141,4 @@ LOGIN_REDIRECT_URL = 'lesApprentiStage:home'
 LOGIN_URL = 'lesApprentiStage:login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+

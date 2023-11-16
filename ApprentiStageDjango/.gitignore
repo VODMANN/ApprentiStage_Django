@@ -1,0 +1,4 @@
+# Ignorer les fichiers .pyc générés par Python
+*.pyc
+__pycache__/
+.env
