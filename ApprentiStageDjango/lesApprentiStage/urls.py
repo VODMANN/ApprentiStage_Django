@@ -29,4 +29,5 @@ urlpatterns = [
     path('etudiant/recherche_offres/', views.recherche_offres, name='recherche_offres'),
     path('etudiant/edit/', views.edit_etudiant, name='edit_etudiant'),
     path('etudiant/profil/', views.profile, name='profil_etudiant'),
+    path('generate-pdf/', views.PDFGeneratorView.as_view(), name='generate-pdf'),
 ]

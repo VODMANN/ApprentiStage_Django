@@ -1,3 +1,4 @@
+import io
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -18,6 +19,10 @@ from datetime import datetime, timedelta
 from icalendar import Calendar, Event
 import csv
 from django.contrib.auth.hashers import make_password
+from django.http import FileResponse
+from django.views import View
+from reportlab.pdfgen import canvas
+
 
 
 def user_type_required(user_type):
@@ -545,3 +550,26 @@ def upload_csv(request):
             )
 
     return redirect('lesApprentiStage:home')
+
+
+class PDFGeneratorView(View):
+    def get(self, request):
+        # Créez un objet PDF avec ReportLab
+        response = FileResponse(self.generate_pdf(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="example.pdf"'
+        return response
+
+    def generate_pdf(self):
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer)
+
+        # Ajoutez du contenu au PDF
+        p.drawString(100, 750, "Hello world!")
+
+        # Vous pouvez ajouter plus de contenu ici
+
+        p.showPage()
+        p.save()
+
+        buffer.seek(0)
+        return buffer
