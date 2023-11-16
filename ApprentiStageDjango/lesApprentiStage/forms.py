@@ -144,3 +144,37 @@ class TuteurForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TuteurForm, self).__init__(*args, **kwargs)
         
+
+class EtudiantProfilForm(forms.ModelForm):
+    CIVILITE_CHOICES = [
+        ('M', 'Monsieur'),
+        ('Mme', 'Madame'),
+    ]
+
+    civiliteEtu = forms.ChoiceField(
+        choices=CIVILITE_CHOICES,
+        label='Civilité',
+        required=False
+    )
+    cpEtu = forms.CharField(
+        max_length=10,
+        required=False,
+        label='Code postal'
+    )
+
+
+    class Meta:
+        model = ProfilEtudiant
+        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement']
+        labels = {
+            'numEtu': 'Numéro d\'étudiant',
+            'nomEtu': 'Nom',
+            'prenomEtu': 'Prénom',
+            'adresseEtu': 'Adresse',
+            'cpEtu': 'Code postal',
+            'villeEtu': 'Ville',
+            'telEtu': 'Téléphone',
+            'promo': 'Promotion',
+            'idDepartement': 'Département',
+        }
+

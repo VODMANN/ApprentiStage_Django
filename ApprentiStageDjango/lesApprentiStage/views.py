@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .forms import ContratEtudiantForm, EntrepriseForm, ResponsableForm, ThemeForm, TuteurForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm, SoutenanceForm
+from .forms import ContratEtudiantForm, EntrepriseForm, EtudiantProfilForm, ResponsableForm, ThemeForm, TuteurForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm, SoutenanceForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
@@ -523,7 +523,7 @@ def edit_etudiant(request):
             # Rediriger l'utilisateur vers une autre page, comme le tableau de bord
             return redirect('lesApprentiStage:home')
     else:
-        form = EtudiantForm(instance=profil_etudiant)
+        form = EtudiantProfilForm(instance=profil_etudiant)
 
     return render(request, 'etudiant/edit_etudiant.html', {'form': form})
 
