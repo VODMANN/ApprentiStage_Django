@@ -212,7 +212,8 @@ def soutenance_ens(request, user_type):
 
 
 
-
+@login_required
+@user_type_required('etudiant')
 def ajouter_contrat(request):
     if request.method == 'POST':
         form = ContratEtudiantForm(request.POST)
