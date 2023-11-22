@@ -77,11 +77,9 @@ def signup(request):
                 enseignant.utilisateur = user
                 enseignant.save()
 
-                if enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
-                    selected_promos = request.POST.getlist('promos')  
-                    for promo_id in selected_promos:
-                        promo = Promo.objects.get(id=promo_id)
-                        EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
+                selected_promos = enseignant_form.cleaned_data.get('promos')
+                for promo in selected_promos:
+                    EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
                 return redirect('lesApprentiStage:home')
             
             elif user_type == 'secretaire' and secretaire_form.is_valid():

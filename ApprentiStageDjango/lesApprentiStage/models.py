@@ -198,4 +198,4 @@ class Evaluation(models.Model):
 # VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');
 
 # INSERT INTO lesApprentiStage_promo (nomPromo, annee, departement_id)
-# VALUES ('2A', 2023, 1);
+# VALUES ('1B', 2023, 1);

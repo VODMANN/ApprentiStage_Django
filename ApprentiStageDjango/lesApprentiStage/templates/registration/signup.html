@@ -133,16 +133,15 @@
         </div>
 
         <div class="row p-2" id="enseignant_promo_select" style="display:none;">
-          <label class="col" for="id_promos">Promos :</label>
-          <div class="col form-control">
-              {% for promo in promos %}
-                  <div>
-                      <input type="checkbox" name="promos" value="{{ promo.id }}" id="promo_{{ promo.id }}">
-                      <label for="promo_{{ promo.id }}">{{ promo.nomPromo }}</label>
-                  </div>
-              {% endfor %}
+          <label class="col-md-4 col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
+          <div class="col-md-8">
+              {{ enseignant_form.promos }}
           </div>
-        </div>     
+      </div>
+      
+      
+      
+          
         
       </div>
       
@@ -224,10 +223,10 @@
         const roleEnseignantSelect = document.getElementById('id_roleEnseignant'); // Assurez-vous que l'ID est correct
         const promoSelect = document.getElementById('enseignant_promo_select');
 
-    function togglePromoSelect() {
-        const selectedRole = roleEnseignantSelect.value;
-        promoSelect.style.display = selectedRole === 'enseignant_promo' ? 'block' : 'none'; // Assurez-vous que la valeur correspond à celle de la base de données
-    }
+        function togglePromoSelect() {
+          const selectedRole = roleEnseignantSelect.value;
+          promoSelect.style.display = selectedRole === 'enseignant_promo' ? 'block' : 'none';
+      }
 
     roleEnseignantSelect.addEventListener('change', togglePromoSelect);
     togglePromoSelect();
@@ -235,6 +234,10 @@
         // Afficher/masquer les champs au chargement de la page
         toggleFields();
       });
+      
+      $(document).ready(function() {
+        $('.selectpicker').selectpicker();
+    });
           
 </script>
 {% endblock %}

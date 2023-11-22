@@ -17,6 +17,12 @@ class EtudiantForm(forms.ModelForm):
         fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
 
 class EnseignantForm(forms.ModelForm):
+    promos = forms.ModelMultipleChoiceField(
+        queryset=Promo.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'selectpicker', 'data-live-search': 'true'}),
+        required=False
+    )
+
     class Meta:
         model = ProfilEnseignant
         numHarpege = forms.CharField(max_length=20, required=False)
@@ -24,20 +30,19 @@ class EnseignantForm(forms.ModelForm):
         nomEnseignant = forms.CharField(max_length=50, required=False)
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant',]
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant','promos']
+    
+    def __init__(self, *args, **kwargs):
+        super(EnseignantForm, self).__init__(*args, **kwargs)
+        # Si l'instance est mise à jour, initialiser le champ 'promos'
+        if self.instance and self.instance.pk:
+            self.fields['promos'].initial = self.instance.promos.all()
+
 
 class SecretaireForm(forms.ModelForm):
     class Meta:
         model = ProfilSecretaire
         fields = ['numSec', ]
-
-class EnseignantForm(forms.ModelForm):
-    promos = forms.ModelMultipleChoiceField(queryset=Promo.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
-
-    class Meta:
-        model = ProfilEnseignant
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant', 'promos']
-
 
 class DepartementForm(forms.ModelForm):
     class Meta:
