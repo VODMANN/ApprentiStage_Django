@@ -19,7 +19,7 @@ class EtudiantForm(forms.ModelForm):
 class EnseignantForm(forms.ModelForm):
     promos = forms.ModelMultipleChoiceField(
         queryset=Promo.objects.all(),
-        widget=forms.SelectMultiple(attrs={'class': 'selectpicker', 'data-live-search': 'true'}),
+        widget=forms.SelectMultiple(attrs={'class': 'selectpicker col', 'data-live-search': 'true'}),
         required=False
     )
 
@@ -31,6 +31,9 @@ class EnseignantForm(forms.ModelForm):
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
         fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant','promos']
+        labels = {
+            'promos': 'promos :',
+        }
     
     def __init__(self, *args, **kwargs):
         super(EnseignantForm, self).__init__(*args, **kwargs)

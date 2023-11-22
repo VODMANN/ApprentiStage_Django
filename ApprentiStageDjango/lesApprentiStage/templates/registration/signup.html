@@ -133,11 +133,13 @@
         </div>
 
         <div class="row p-2" id="enseignant_promo_select" style="display:none;">
-          <label class="col-md-4 col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
-          <div class="col-md-8">
+          <label class="col col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
+          <div class="col">
               {{ enseignant_form.promos }}
           </div>
       </div>
+      
+      
       
       
       
@@ -187,33 +189,33 @@
           const userType = userTypeSelect.value;
           
           if(userType === 'etudiant') {
-              etudiantFields.style.display = 'block';
+              $('#etudiant_fields').show("slow");
               [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
       
-              enseignantFields.style.display = 'none';
+              $('#enseignant_fields').hide("slow");
               [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
       
-              secretaireFields.style.display = 'none';
+              $('#secretaire_fields').hide("slow");
               [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
           } 
           else if(userType === 'enseignant') {
-              enseignantFields.style.display = 'block';
+              $('#enseignant_fields').show("slow");
               [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
       
-              etudiantFields.style.display = 'none';
+              $('#etudiant_fields').hide("slow");
               [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
       
-              secretaireFields.style.display = 'none';
+              $('#secretaire_fields').hide("slow");
               [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
           } 
           else if(userType === 'secretaire') {
-              secretaireFields.style.display = 'block';
+              $('#secretaire_fields').show("slow");
               [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
       
-              etudiantFields.style.display = 'none';
+              $('#etudiant_fields').hide("slow");
               [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
       
-              enseignantFields.style.display = 'none';
+              $('#enseignant_fields').hide("slow");
               [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
           }
         }
@@ -225,7 +227,13 @@
 
         function togglePromoSelect() {
           const selectedRole = roleEnseignantSelect.value;
-          promoSelect.style.display = selectedRole === 'enseignant_promo' ? 'block' : 'none';
+          if(selectedRole=="enseignant_promo"){
+            $('#enseignant_promo_select').show("slow")
+          }
+          else{
+            $('#enseignant_promo_select').hide("slow")
+          }
+
       }
 
     roleEnseignantSelect.addEventListener('change', togglePromoSelect);
