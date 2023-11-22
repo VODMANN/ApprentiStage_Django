@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import redirect_to_login
 
-from .models import Departement, Document, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
+from .models import Departement, Document, EnseignantPromo, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Promo, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
@@ -53,6 +53,7 @@ def home(request):
 """ @login_required
 @user_type_required('secretaire') """
 def signup(request):
+    promos = Promo.objects.all()  
     if request.method == 'POST':
         user_form = UtilisateurForm(request.POST)
         etudiant_form = EtudiantForm(request.POST)
@@ -75,14 +76,19 @@ def signup(request):
                 enseignant = enseignant_form.save(commit=False)
                 enseignant.utilisateur = user
                 enseignant.save()
-                # Log in the user here if needed
+
+                if enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
+                    selected_promos = request.POST.getlist('promos')  
+                    for promo_id in selected_promos:
+                        promo = Promo.objects.get(id=promo_id)
+                        EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
                 return redirect('lesApprentiStage:home')
+            
             elif user_type == 'secretaire' and secretaire_form.is_valid():
                 user.save()
                 secretaire = secretaire_form.save(commit=False)
                 secretaire.utilisateur = user
                 secretaire.save()
-                # Log in the user here if needed
                 return redirect('lesApprentiStage:home')
 
     else:
@@ -96,6 +102,7 @@ def signup(request):
         'etudiant_form': etudiant_form,
         'enseignant_form': enseignant_form,
         'secretaire_form': secretaire_form,
+        'promos': promos,
     })
 
 @login_required

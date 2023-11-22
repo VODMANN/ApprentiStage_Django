@@ -81,9 +81,14 @@
         </div>
 
         <div class="row p-2">
-            <label class="col" for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
-            <input class="col form-control" id="{{ etudiant_form.promo.id_for_label }}" type="text" name="{{ etudiant_form.promo.name }}" required>
-        </div>
+          <label class="col" for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
+          <select class="col form-control" id="{{ etudiant_form.promo.id_for_label }}" name="{{ etudiant_form.promo.name }}" required>
+              {% for promo in etudiant_form.promo.field.queryset %}
+                  <option value="{{ promo.pk }}">{{ promo.nomPromo }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      
         
         <div class="row p-2">
             <label class="col" for="{{ etudiant_form.idDepartement.id_for_label }}">Département :</label>
@@ -120,8 +125,24 @@
 
         <div class="row p-2">
           <label class="col" for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle :</label>
-          <input class="col form-control" id="{{ enseignant_form.roleEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.roleEnseignant.name }}" required>
+          <select class="col form-control" id="{{ enseignant_form.roleEnseignant.id_for_label }}" name="{{ enseignant_form.roleEnseignant.name }}" required>
+              {% for role in enseignant_form.roleEnseignant.field.choices %}
+                  <option value="{{ role.0 }}">{{ role.1 }}</option>
+              {% endfor %}
+          </select>
         </div>
+
+        <div class="row p-2" id="enseignant_promo_select" style="display:none;">
+          <label class="col" for="id_promos">Promos :</label>
+          <div class="col form-control">
+              {% for promo in promos %}
+                  <div>
+                      <input type="checkbox" name="promos" value="{{ promo.id }}" id="promo_{{ promo.id }}">
+                      <label for="promo_{{ promo.id }}">{{ promo.nomPromo }}</label>
+                  </div>
+              {% endfor %}
+          </div>
+        </div>     
         
       </div>
       
@@ -162,7 +183,7 @@
         const etudiantFields = document.getElementById('etudiant_fields');
         const enseignantFields = document.getElementById('enseignant_fields');
         const secretaireFields = document.getElementById('secretaire_fields');
-      
+
         function toggleFields() {
           const userType = userTypeSelect.value;
           
@@ -200,6 +221,16 @@
       
         // Afficher/masquer les champs lorsque la sélection change
         userTypeSelect.addEventListener('change', toggleFields);
+        const roleEnseignantSelect = document.getElementById('id_roleEnseignant'); // Assurez-vous que l'ID est correct
+        const promoSelect = document.getElementById('enseignant_promo_select');
+
+    function togglePromoSelect() {
+        const selectedRole = roleEnseignantSelect.value;
+        promoSelect.style.display = selectedRole === 'enseignant_promo' ? 'block' : 'none'; // Assurez-vous que la valeur correspond à celle de la base de données
+    }
+
+    roleEnseignantSelect.addEventListener('change', togglePromoSelect);
+    togglePromoSelect();
       
         // Afficher/masquer les champs au chargement de la page
         toggleFields();
