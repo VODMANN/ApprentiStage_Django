@@ -80,7 +80,7 @@
                             {% endif %}
                             {% if user.type_utilisateur == "etudiant" %}
                             <li class="nav-item ms-1">
-                                <a class="nav-link" href>Ajout</a>
+                                <a class="nav-link" href="{% url 'lesApprentiStage:ajout_stage' %}">Ajout</a>
                             </li>
                             {% endif %}
                             {% if user.is_authenticated %}

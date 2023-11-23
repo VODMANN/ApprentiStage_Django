@@ -4,22 +4,54 @@
     <h1>Fiche {{ contrat.type }}</h1>
     <h2 class="m-3">Structure d'accueil</h2>
     <div class="card border-info p-3">
-        <p><strong>Structure administratives :</strong> {{ contrat.entreprise }}</p>
+        <div class="row">
+            <div class="col input-group mb-3">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">Structure administratives</span>
+                  </div>
+                <input type="text" class="form-control" value="{{ entreprise.nomEnt }}" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            </div>
+            <div class="input-group col">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">Responsable admin. </span>
+                </div>
+                <input type="text" value="{{ responsable_entreprise.nomResp |upper }}" class="form-control">
+                <input type="text" value="{{ responsable_entreprise.prenomResp}}" class="form-control">
+              </div>
+        </div>
         <p><strong>Responsable admin. :</strong> {{ responsable_entreprise.nomResp |upper }} {{ responsable_entreprise.prenomResp }}</p>
         <p><strong>Adresse exécution {{ contrat.type }} :</strong> {{ entreprise.adresseEnt }}</p>
-        <p><strong>Tuteur entreprise :</strong> {{ tuteur.nomTuteur | upper}} {{ tuteur.prenomTuteur }}</p>
+        <p><strong>Tuteur entreprise :</strong> {{ tuteur.nomTuteur}} {{ tuteur.prenomTuteur }}</p>
     </div>
 
     <h2 class="m-3">Information pédagogique</h2>
     <div class="card border-info p-3">
+        <div class="col input-group mb-3">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">Sujet du stage</span>
+              </div>
+            <input type="text" class="form-control" value="{{ contrat.description }}" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        </div>
         <p><strong>Sujet du stage :</strong> {{ contrat.description }}</p>
         <p><strong>État validation :</strong> {{ contrat.etat }}</p>
     </div>
 
     <h2 class="m-3">Période</h2>
     <div class="card border-info p-3">
-        <p><strong>Date de début :</strong> {{ contrat.dateDeb|date:"d F Y" }}</p>
-        <p><strong>Date de fin :</strong> {{ contrat.dateFin|date:"d F Y" }}</p>
+        <div class="row">
+            <div class="col input-group mb-3">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">Date de début</span>
+                  </div>
+                <input type="date" class="form-control" value="{{ contrat.dateDeb}}" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            </div>
+            <div class="col input-group mb-3">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">Date de fin</span>
+                  </div>
+                <input type="date" class="form-control" value="{{ contrat.dateFin}}" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            </div>
+        </div>
         <p><strong>Année scolaire :</strong> {{ contrat.annee_scolaire }}</p>
     </div>
     
