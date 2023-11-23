@@ -42,12 +42,19 @@ def user_type_required(user_type):
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
+
 def home(request):
-    offre_list = Offre.objects.all()    
+    offre_list = Offre.objects.all()   
+    user = request.user
+
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
+        print(user_type)
         if user_type == 'etudiant':
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+        if user_type == 'enseignant':
+            is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
+            return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
     return render(request, 'pages/accueil.html')
 
 """ @login_required
@@ -594,3 +601,16 @@ def upload_csv(request):
             )
 
     return redirect('lesApprentiStage:home')
+
+def suivi_etudiants(request):
+    user = request.user
+    enseignant = ProfilEnseignant.objects.get(utilisateur=user)
+    etudiants = []
+
+    if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+        etudiants = ProfilEtudiant.objects.filter(idDepartement__chef=enseignant)
+    elif enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
+        promos_gerees = EnseignantPromo.objects.filter(enseignant=enseignant).values_list('promo', flat=True)
+        etudiants = ProfilEtudiant.objects.filter(promo__in=promos_gerees)
+
+    return render(request, 'enseignant/suivi_etudiants.html', {'etudiants': etudiants})

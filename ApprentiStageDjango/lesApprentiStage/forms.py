@@ -22,6 +22,12 @@ class EnseignantForm(forms.ModelForm):
         widget=forms.SelectMultiple(attrs={'class': 'selectpicker col', 'data-live-search': 'true'}),
         required=False
     )
+    departements = forms.ModelChoiceField(
+        queryset=Departement.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'selectpicker col', 'data-live-search': 'true'})
+    )
+
 
     class Meta:
         model = ProfilEnseignant
@@ -30,11 +36,13 @@ class EnseignantForm(forms.ModelForm):
         nomEnseignant = forms.CharField(max_length=50, required=False)
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant','promos']
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant', 'promos', 'departements']
+      
         labels = {
-            'promos': 'promos :',
+            'promos': 'Promos :',
+            'departements': 'Département :'
         }
-    
+
     def __init__(self, *args, **kwargs):
         super(EnseignantForm, self).__init__(*args, **kwargs)
         # Si l'instance est mise à jour, initialiser le champ 'promos'

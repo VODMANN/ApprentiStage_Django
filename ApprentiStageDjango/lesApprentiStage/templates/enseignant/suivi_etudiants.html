@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Suivi des Étudiants</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Numéro Étudiant</th>
+        <th>Promo</th>
+        <th>Département</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for etudiant in etudiants %}
+      <tr>
+        <td>{{ etudiant.nomEtu }}</td>
+        <td>{{ etudiant.prenomEtu }}</td>
+        <td>{{ etudiant.numEtu }}</td>
+        <td>{{ etudiant.promo.nomPromo }}</td>
+        <td>{{ etudiant.idDepartement.nomDep }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

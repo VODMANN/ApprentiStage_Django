@@ -76,10 +76,11 @@ class ProfilSecretaire(models.Model):
 class Departement(models.Model):
     nomDep = models.CharField(max_length=100)
     adresseDep = models.CharField(max_length=255)
+    chef = models.ForeignKey('ProfilEnseignant', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nomDep
-    
+
 
 class Entreprise(models.Model):
     numSiret = models.CharField(max_length=100, primary_key=True,unique=True)
