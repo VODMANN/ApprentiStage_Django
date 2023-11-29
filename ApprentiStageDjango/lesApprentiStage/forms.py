@@ -99,7 +99,6 @@ TYPE_CHOICES_CONTRAT = [
 class ContratEtudiantForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
     enFrance = forms.BooleanField(label='', widget=ToggleSwitchWidget, required=False)
-    promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False)
     class Meta:
         model = Contrat
         exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']

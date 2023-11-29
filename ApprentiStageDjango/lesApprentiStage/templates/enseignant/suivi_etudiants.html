@@ -1,29 +1,66 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2>Suivi des Étudiants</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Numéro Étudiant</th>
-        <th>Promo</th>
-        <th>Département</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for etudiant in etudiants %}
-      <tr>
-        <td>{{ etudiant.nomEtu }}</td>
-        <td>{{ etudiant.prenomEtu }}</td>
-        <td>{{ etudiant.numEtu }}</td>
-        <td>{{ etudiant.promo.nomPromo }}</td>
-        <td>{{ etudiant.idDepartement.nomDep }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Barre latérale pour les filtres à gauche -->
+    <div class="col-md-3">
+      <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+        <span class="fs-4">Filtres</span>
+        <form action="{% url 'lesApprentiStage:suivi_etudiants' %}" method="get">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <hr>
+            <li class="nav-item mb-3">
+              <label>Promotion :</label>
+              <select class="form-control" name="promo">
+                <option value="">Toutes les promotions</option>
+                <option value="2A">2e Année</option>
+                <option value="3A">3e Année</option>
+                <!-- Ajoutez d'autres options de promotion ici -->
+              </select>
+            </li>
+            <li>
+              <a href="?stage=sans_stage" class="btn btn-secondary">Étudiants sans stage</a>
+
+            </li>
+            <li>
+              <input type="submit" class="btn btn-primary mt-3" value="Filtrer">
+            </li>
+            <hr>
+          </ul>
+        </form>
+      </div>
+    </div>
+
+    <!-- Section principale pour afficher les étudiants -->
+    <div class="col-md-9">
+      <h2>Suivi des Étudiants</h2>
+      <div class="mb-3">
+        <a href="?" class="btn btn-primary">Réinitialiser le filtre</a>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Numéro Étudiant</th>
+            <th>Promo</th>
+            <th>Département</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for etudiant in etudiants %}
+          <tr>
+            <td>{{ etudiant.nomEtu }}</td>
+            <td>{{ etudiant.prenomEtu }}</td>
+            <td>{{ etudiant.numEtu }}</td>
+            <td>{{ etudiant.promo.nomPromo }}</td>
+            <td>{{ etudiant.idDepartement.nomDep }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

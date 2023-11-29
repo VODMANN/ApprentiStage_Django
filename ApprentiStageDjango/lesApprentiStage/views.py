@@ -14,7 +14,7 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from datetime import datetime, timedelta  
+from datetime import datetime, timedelta, timezone  
 from icalendar import Calendar, Event
 import csv
 from django.contrib.auth.hashers import make_password
@@ -70,7 +70,7 @@ def signup(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
-            user_type = user_form.cleaned_data['type_utilisateur']  # Assurez-vous que cela correspond au nom dans votre modèle
+            user_type = user_form.cleaned_data['type_utilisateur']  
 
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
@@ -83,6 +83,12 @@ def signup(request):
                 enseignant = enseignant_form.save(commit=False)
                 enseignant.utilisateur = user
                 enseignant.save()
+
+                if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+                    selected_departement = enseignant_form.cleaned_data.get('departements')
+                    if selected_departement:
+                        selected_departement.chef = enseignant
+                        selected_departement.save()
 
                 selected_promos = enseignant_form.cleaned_data.get('promos')
                 for promo in selected_promos:
@@ -605,12 +611,18 @@ def upload_csv(request):
 def suivi_etudiants(request):
     user = request.user
     enseignant = ProfilEnseignant.objects.get(utilisateur=user)
-    etudiants = []
-
+    
     if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
         etudiants = ProfilEtudiant.objects.filter(idDepartement__chef=enseignant)
     elif enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
         promos_gerees = EnseignantPromo.objects.filter(enseignant=enseignant).values_list('promo', flat=True)
         etudiants = ProfilEtudiant.objects.filter(promo__in=promos_gerees)
+    else:
+        etudiants = ProfilEtudiant.objects.none()
 
+    filter_stage = request.GET.get('stage', None)
+    if filter_stage == 'sans_stage':
+        etudiants = etudiants.exclude(
+            contrat__estValide=True,
+        )
     return render(request, 'enseignant/suivi_etudiants.html', {'etudiants': etudiants})
