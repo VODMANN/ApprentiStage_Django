@@ -23,7 +23,7 @@ class ProfilEtudiant(models.Model):
     cpEtu = models.IntegerField(null=True)
     villeEtu = models.CharField(max_length=100,null=True)
     telEtu = models.CharField(max_length=25,null=True)
-    promo = models.CharField(max_length=20,null=True)
+    promo = models.ForeignKey('Promo', on_delete=models.SET_NULL, null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -37,15 +37,34 @@ class ProfilEtudiant(models.Model):
 
 
 class ProfilEnseignant(models.Model):
+    CHEF_DEPARTEMENT = 'chef_departement'
+    ENSEIGNANT_NORMAL = 'enseignant_normal'
+    ENSEIGNANT_PROMO = 'enseignant_promo'
+    ROLE_CHOICES = [
+        (CHEF_DEPARTEMENT, 'Chef de Département'),
+        (ENSEIGNANT_NORMAL, 'Enseignant Normal'),
+        (ENSEIGNANT_PROMO, 'Enseignant de Promo')
+    ]
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     numHarpege = models.CharField(max_length=20, primary_key=True)
-    roleEnseignant = models.CharField(max_length=50, null=True)
     nomEnseignant = models.CharField(max_length=50, null=True)
     prenomEnseignant = models.CharField(max_length=50, null=True)
     mailEnseignant = models.EmailField(max_length=100, null=True)
-
+    roleEnseignant = models.CharField(max_length=50, choices=ROLE_CHOICES, null=True)
     def __str__(self):
         return self.utilisateur.username
+
+class Promo(models.Model):
+    nomPromo = models.CharField(max_length=100)
+    annee = models.IntegerField()
+    departement = models.ForeignKey('Departement', on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+        return self.nomPromo
+
+
+class EnseignantPromo(models.Model):
+    enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE)
+    promo = models.ForeignKey(Promo, on_delete=models.CASCADE)
 
 class ProfilSecretaire(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
@@ -57,9 +76,11 @@ class ProfilSecretaire(models.Model):
 class Departement(models.Model):
     nomDep = models.CharField(max_length=100)
     adresseDep = models.CharField(max_length=255)
+    chef = models.ForeignKey('ProfilEnseignant', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nomDep
+
 
 class Entreprise(models.Model):
     numSiret = models.CharField(max_length=100, primary_key=True,unique=True)
@@ -176,3 +197,6 @@ class Evaluation(models.Model):
 
 # INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
 # VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');
+
+# INSERT INTO lesApprentiStage_promo (nomPromo, annee, departement_id)
+# VALUES ('1B', 2023, 1);

@@ -1,6 +1,6 @@
 from django import forms
+from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
 
-from .models import Contrat, Departement, Entreprise, Offre, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -12,19 +12,43 @@ class EtudiantForm(forms.ModelForm):
         cpEtu = forms.IntegerField(required=False)
         villeEtu = forms.CharField(max_length=100, required=False)
         telEtu = forms.CharField(max_length=25, required=False)
-        promo = forms.CharField(max_length=20, required=False)
+        promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
         idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
         fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
 
 class EnseignantForm(forms.ModelForm):
+    promos = forms.ModelMultipleChoiceField(
+        queryset=Promo.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'selectpicker col', 'data-live-search': 'true'}),
+        required=False
+    )
+    departements = forms.ModelChoiceField(
+        queryset=Departement.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'selectpicker col', 'data-live-search': 'true'})
+    )
+
+
     class Meta:
         model = ProfilEnseignant
         numHarpege = forms.CharField(max_length=20, required=False)
-        roleEnseignant = forms.CharField(max_length=50, required=False)
+        roleEnseignant = forms.ChoiceField(choices=ProfilEnseignant.ROLE_CHOICES, required=False)
         nomEnseignant = forms.CharField(max_length=50, required=False)
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant',]
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant', 'promos', 'departements']
+      
+        labels = {
+            'promos': 'Promos :',
+            'departements': 'Département :'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(EnseignantForm, self).__init__(*args, **kwargs)
+        # Si l'instance est mise à jour, initialiser le champ 'promos'
+        if self.instance and self.instance.pk:
+            self.fields['promos'].initial = self.instance.promos.all()
+
 
 class SecretaireForm(forms.ModelForm):
     class Meta:
@@ -75,7 +99,6 @@ TYPE_CHOICES_CONTRAT = [
 class ContratEtudiantForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
     enFrance = forms.BooleanField(label='', widget=ToggleSwitchWidget, required=False)
-
     class Meta:
         model = Contrat
         exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']
@@ -161,6 +184,7 @@ class EtudiantProfilForm(forms.ModelForm):
         required=False,
         label='Code postal'
     )
+    promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
 
 
     class Meta:
