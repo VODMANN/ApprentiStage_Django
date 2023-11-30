@@ -133,7 +133,7 @@ class Contrat(models.Model):
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
-    mailRh = models.TextField()
+    mailRh = models.CharField(max_length=100)
     competences = models.TextField()
     duree = models.CharField(max_length=50)
     datePublication = models.DateField()

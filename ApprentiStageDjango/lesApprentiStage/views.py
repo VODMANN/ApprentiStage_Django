@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .forms import ContratEtudiantForm, EntrepriseForm, EtudiantProfilForm, ResponsableForm, ThemeForm, TuteurForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm, SoutenanceForm
+from .forms import ContratEtudiantForm, EntrepriseForm, EtudiantProfilForm, OffreForm, OffreFormFini, ResponsableForm, ThemeForm, TuteurForm, UtilisateurForm, EtudiantForm, EnseignantForm, SecretaireForm, SoutenanceForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from icalendar import Calendar, Event
 import csv
 from django.contrib.auth.hashers import make_password
-
+from datetime import date
 
 def user_type_required(user_type):
     def decorator(view_func):
@@ -43,11 +43,14 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 def home(request):
-    offre_list = Offre.objects.all()    
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
         if user_type == 'etudiant':
+          offre_list = Offre.objects.filter(estPublie=1)
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+        if user_type == 'secretaire':
+          offre_list = Offre.objects.all().order_by('-pk')
+          return render(request, 'secretariat/accueil_secretaria.html', {'offre_list': offre_list})
     return render(request, 'pages/accueil.html')
 
 """ @login_required
@@ -392,6 +395,44 @@ def ajouter_theme(request):
         form = ThemeForm()
 
     return render(request, 'pages/ajouter_theme.html', {'ThemeForm': form})
+
+def ajouter_offre(request):
+    if request.method == 'POST':
+        form = OffreForm(request.POST)
+        if form.is_valid():
+            cleaned_form=form.cleaned_data
+            tmp_form={
+                'titre': cleaned_form.get('titre'),
+                'mailRh': cleaned_form.get('mailRh'),
+                'duree': cleaned_form.get('duree'),
+                'description': cleaned_form.get('description'),
+                'competences': cleaned_form.get('competences'),
+                'entreprise': cleaned_form.get('entreprise'),
+                'theme': cleaned_form.get('theme'),
+                'datePublication': date.today()
+            }
+            form=OffreFormFini(tmp_form) 
+            Offre = form.save()
+            return redirect("/")
+        else:
+            return render(request, 'pages/ajouter_offre.html', {'OffreForm': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
+    else:
+        form = OffreForm()
+
+    return render(request, 'pages/ajouter_offre.html', {'OffreForm': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
+
+@login_required
+def delete_offre(request, pk):
+    instance = get_object_or_404(Offre, pk=pk)
+    instance.delete()
+    return HttpResponse("true")
+
+@login_required
+def valid_offre(request, pk):
+    instance = get_object_or_404(Offre, pk=pk)
+    instance.estPublie = 1
+    instance.save()
+    return HttpResponse("true")
 
 
 def ajouter_responsable(request, contrat_id):

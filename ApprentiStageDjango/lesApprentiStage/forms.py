@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Contrat, Departement, Entreprise, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
+from .models import Contrat, Departement, Entreprise, Offre, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -177,4 +177,32 @@ class EtudiantProfilForm(forms.ModelForm):
             'promo': 'Promotion',
             'idDepartement': 'Département',
         }
+
+
+class OffreForm(forms.ModelForm):
+
+    class Meta:
+        model = Offre
+        fields = ['titre','mailRh','duree','description','competences','entreprise','theme']
+        widgets = {
+          'description': forms.Textarea(attrs={'rows':4}),
+          'competences': forms.Textarea(attrs={'rows':4}),
+        }
+        labels = {
+            'titre': 'Titre',
+            'description': 'Description',
+            'mailRh': 'Mail',
+            'competences': 'Compétences',
+            'duree': 'Durée',
+            'entreprise': "Entreprise",
+            'theme': 'Thème',
+        }
+        
+        
+class OffreFormFini(forms.ModelForm):
+
+    class Meta:
+        model = Offre
+        fields = ['titre','mailRh','duree','description','competences','entreprise','theme','datePublication']
+
 

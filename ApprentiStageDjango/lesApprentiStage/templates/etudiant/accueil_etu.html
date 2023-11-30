@@ -52,7 +52,6 @@
       <div class="list-group">
         <!-- Offres de stage dynamiques ici -->
         {% for offre in offre_list %}
-        {% if offre.estPublie %}
         <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}"
           class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
@@ -62,7 +61,6 @@
           <p class="mb-1">{{ offre.description }}</p>
           <small>{{ offre.entreprise }}</small>
         </a>
-        {% endif %}
         
         {% endfor %}
       </div>
