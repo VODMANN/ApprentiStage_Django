@@ -64,9 +64,13 @@
                     </a>
                     <div class="collapse navbar-collapse" id="navbarText">
                         <ul class="navbar-nav mr-auto">
-                            <li class="nav-item active">
+                            <li class="nav-item">
                                 <a class="nav-link"
                                     href="{% url 'lesApprentiStage:home' %}">Accueil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                    href="{% url 'lesApprentiStage:ajouter_offre' %}">Offres</a>
                             </li>
                             {% if user.type_utilisateur == "secretaire" %}
                             <li class="nav-item">
@@ -78,11 +82,7 @@
                                     href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
                             </li>
                             {% endif %}
-                            {% if user.type_utilisateur == "etudiant" %}
-                            <li class="nav-item ms-1">
-                                <a class="nav-link" href>Ajout</a>
-                            </li>
-                            {% endif %}
+
                             {% if user.is_authenticated %}
                             <li class="nav-item ms-1">
                                 <a class="nav-link"

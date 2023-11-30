@@ -55,26 +55,29 @@
       <h2 class="text-center mb-4">Résultats de la recherche</h2>
       <div class="list-group">
         {% for offre in results %}
-        <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ offre.titre }}</h5>
-            <small>{{ offre.datePublication|date:"d/m/Y" }}</small>
-          </div>
-          <p class="mb-1">{{ offre.entreprise.nom }}</p>
-          <small>{{ offre.theme.nom }}</small>
-        </a>
-        {% empty %}
-          <div class="alert alert-warning" role="alert">
-            Aucune offre trouvée pour les critères de recherche sélectionnés.
-          </div>
-        {% endfor %}
+          {% if offre.estPublie %}
+          <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{ offre.titre }}</h5>
+              <small>{{ offre.datePublication|date:"d/m/Y" }}</small>
+            </div>
+            <p class="mb-1">{{ offre.entreprise.nom }}</p>
+            <small>{{ offre.theme.nom }}</small>
+          </a>
+          {% endif %}
+          {% empty %}
+            <div class="alert alert-warning" role="alert">
+              Aucune offre trouvée pour les critères de recherche sélectionnés.
+            </div>
+          {% endfor %}
+          
+        </div>
       </div>
-    </div>
-  {% else %}
-    <div class="alert alert-info text-center" role="alert">
-      Commencez votre recherche d'offres de stage en utilisant les filtres ci-dessus.
-    </div>
-  {% endif %}
+    {% else %}
+      <div class="alert alert-info text-center" role="alert">
+        Commencez votre recherche d'offres de stage en utilisant les filtres ci-dessus.
+      </div>
+    {% endif %}
 </div>
 
 <script type="text/javascript">

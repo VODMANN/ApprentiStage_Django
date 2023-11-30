@@ -1,0 +1,212 @@
+
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="card border-0 shadow p-4 mt-3" style="margin: 0 18%" > 
+        <h2>Publier une offre</h2>
+        <form method="post" class="row">
+            {% csrf_token %}
+            {% for field in OffreForm %}
+                {% if field.name == "entreprise" %}
+                    <div class="form-group col-12">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="input-group">
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control col-9" >
+                                {% for entreprise in field.field.queryset %}
+                                    <option value="{{ entreprise.pk }}" {% if form.initial.entreprise == entreprise.pk %}selected{% endif %}>
+                                        {{ entreprise.nomEnt }} - {{ entreprise.adresseEnt }} - {{ entreprise.cpEnt }} - {{ entreprise.villeEnt }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-primary col-3 rounded-0" style="border-top-right-radius: 4px!important;border-bottom-right-radius: 4px!important;" data-toggle="modal" data-target="#ajouterEntrepriseModal">
+                                Ajouter une entreprise
+                            </button>
+                        </div>
+                    </div>
+                {% elif field.name == "theme" %}
+                    <div class="form-group col-12">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="input-group ">
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control col-9">
+                                {% for theme in field.field.queryset %}
+                                    <option value="{{ theme.pk }}" {% if form.initial.theme == theme.pk %}selected{% endif %}>
+                                        {{ theme.nomTheme }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-primary col-3 rounded-0 rounded-right" style="border-top-right-radius: 4px!important;border-bottom-right-radius: 4px!important;" data-toggle="modal" data-target="#ajouterThemeModal" >
+                                Ajouter un thème
+                            </button>
+                        </div>
+                    </div>
+                {% elif field.name == "titre" %}
+                    <div class="form-group col-12">
+                        {{ field|as_crispy_field }}
+                    </div>
+                {% else %}
+                    <div class="form-group col-6">
+                        {{ field|as_crispy_field }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Soumettre</button>
+        </form>
+        
+    </div>
+
+        <!-- Le modal pour ajouter une entreprise -->
+        <div class="modal fade" id="ajouterEntrepriseModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter une
+                        entreprise</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="entrepriseForm" method="post"
+                        action="{% url 'lesApprentiStage:ajouter_entreprise' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ EntrepriseForm.numSiret|as_crispy_field }}
+                        </div>
+                        <div class="form-group">
+                            {{ EntrepriseForm.nomEnt|as_crispy_field }}
+                        </div>
+                        <div class="form-group">
+                            {{ EntrepriseForm.adresseEnt|as_crispy_field }}
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                {{ EntrepriseForm.cpEnt|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ EntrepriseForm.villeEnt|as_crispy_field }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Le modal pour ajouter un theme -->
+    <div class="modal fade" id="ajouterThemeModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter un Theme</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="themeForm" method="post"
+                        action="{% url 'lesApprentiStage:ajouter_theme' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ ThemeForm.nomTheme|as_crispy_field }}
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    $(document).ready(function() {
+        $('#entrepriseForm').submit(function(e) {
+            $('#ajouterEntrepriseModal').modal({backdrop: 'static', keyboard: false});
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{ csrf_token }}' }
+            });
+            
+            $.ajax({
+                type: 'POST',
+                url: "http://127.0.0.1:8000/ajouter_entreprise/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Ajouter la nouvelle entreprise au menu déroulant du formulaire principal
+                        var newOption = new Option(response.entreprise.nomEnt, response.entreprise.pk, true, true);
+                        $('#{{ OffreForm.entreprise.id_for_label }}').append(newOption).trigger('change');
+                        $('#entrepriseForm').find('input, textarea, select').val('');
+
+                        console.log("Hiding modal...");
+                        $('#ajouterEntrepriseModal').modal('hide');
+                        console.log("Modal should be hidden");
+                                                
+                    } else {
+                        alert(JSON.stringify(response.errors));
+
+                        // Gérez les erreurs ici, par exemple, affichez un message d'erreur.
+                    }
+                },
+                error: function(error) {
+                    // Gérez les erreurs de requête ici, par exemple, affichez un message d'erreur.
+                }
+            });
+            
+        });
+
+        $('#themeForm').submit(function(e) {
+        $('#ajouterThemeModal').modal({backdrop: 'static', keyboard: false});
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{ csrf_token }}' }
+            });
+            
+            $.ajax({
+                type: 'POST',
+                url: "http://127.0.0.1:8000/ajouter_theme/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // nouvelle entreprise au menu déroulant du formulaire principal
+                        var newOption = new Option(response.theme.nomTheme, response.theme.pk, true, true);
+                        $('#{{ OffreForm.theme.id_for_label }}').append(newOption).trigger('change');
+                        $('#themeForm').find('input, textarea, select').val('');
+
+                        console.log("Hiding modal...");
+                        $('#ajouterThemeModal').modal('hide');
+                        console.log("Modal should be hidden");
+                                                
+                    } else {
+                        alert(JSON.stringify(response.errors));
+
+                        // Gérez les erreurs ici, par exemple un message d'erreur.
+                    }
+                },
+                error: function(error) {
+                    // Gérez les erreurs de requête ici, par exemple un message d'erreur.
+                }
+            });
+            
+        });
+        
+        
+    });
+    
+</script>
+{% endblock %}
