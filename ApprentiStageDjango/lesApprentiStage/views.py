@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import redirect_to_login
 
-from .models import Departement, Document, EnseignantPromo, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Promo, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
+from .models import Departement, Document, EnseignantPromo, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Promo, Theme, Tuteur, Utilisateur,Soutenance,Salle,ProfilEnseignant
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
@@ -611,18 +611,68 @@ def upload_csv(request):
 def suivi_etudiants(request):
     user = request.user
     enseignant = ProfilEnseignant.objects.get(utilisateur=user)
-    
+    etudiants = ProfilEtudiant.objects.all()
+
+    # Récupération des filtres
+    promo_filter = request.GET.get('promo')
+    entreprise_filter = request.GET.get('entreprise')
+    departement_filter = request.GET.get('departement')
+    theme_filter = request.GET.get('theme')
+    promo_filter = request.GET.get('promo')
+    statut_stage = request.GET.get('statut_stage')
+    tuteur_filter = request.GET.get('tuteur')
+    recherche_etudiant = request.GET.get('recherche_etudiant', '')
+
+
     if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
-        etudiants = ProfilEtudiant.objects.filter(idDepartement__chef=enseignant)
+        etudiants = etudiants.filter(idDepartement__chef=enseignant)
     elif enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
         promos_gerees = EnseignantPromo.objects.filter(enseignant=enseignant).values_list('promo', flat=True)
-        etudiants = ProfilEtudiant.objects.filter(promo__in=promos_gerees)
-    else:
-        etudiants = ProfilEtudiant.objects.none()
+        etudiants = etudiants.filter(promo__in=promos_gerees)
 
-    filter_stage = request.GET.get('stage', None)
-    if filter_stage == 'sans_stage':
-        etudiants = etudiants.exclude(
-            contrat__estValide=True,
+    # Application des filtres
+    if promo_filter:
+        etudiants = etudiants.filter(promo_id=promo_filter)
+    if entreprise_filter:
+        etudiants = etudiants.filter(contrat__entreprise_id=entreprise_filter)
+    if departement_filter:
+        etudiants = etudiants.filter(idDepartement_id=departement_filter)
+    if theme_filter:
+        etudiants = etudiants.filter(contrat__theme_id=theme_filter)
+    if statut_stage:
+        if statut_stage == 'valide':
+            etudiants = etudiants.filter(contrat__estValide=True)
+        elif statut_stage == 'en_attente':
+            etudiants = etudiants.filter(contrat__estValide=False)
+        elif statut_stage == 'sans_stage':
+            etudiants = etudiants.exclude(contrat__isnull=False)
+    if tuteur_filter:
+        etudiants = etudiants.filter(contrat__tuteur__id=tuteur_filter)
+    if recherche_etudiant:
+        etudiants = etudiants.filter(
+            Q(nomEtu__icontains=recherche_etudiant) | 
+            Q(prenomEtu__icontains=recherche_etudiant) |
+            Q(numEtu__icontains=recherche_etudiant)
         )
-    return render(request, 'enseignant/suivi_etudiants.html', {'etudiants': etudiants})
+
+
+
+
+
+
+    # Transmettre les options de filtrage au template
+    promos = Promo.objects.all()
+    entreprises = Entreprise.objects.all()
+    departements = Departement.objects.all()
+    themes = Theme.objects.all()
+    tuteurs = Tuteur.objects.all()
+
+
+    return render(request, 'enseignant/suivi_etudiants.html', {
+        'etudiants': etudiants,
+        'tuteurs': tuteurs,
+        'promos': promos,
+        'entreprises': entreprises,
+        'departements': departements,
+        'themes': themes
+    })
