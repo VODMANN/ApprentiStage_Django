@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle
+from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle, Offre
 
 
 class EtudiantForm(forms.ModelForm):
