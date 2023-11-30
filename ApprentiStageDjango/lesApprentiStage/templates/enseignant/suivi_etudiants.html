@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+  rel="stylesheet" />
+
+  <style>
+  /* Personnalisation du style de Select2 */
+  .select2-container--default .select2-selection--single {
+    border: 1px solid #ced4da;
+    padding: .375rem .75rem;
+    height: calc(1.5em + .75rem + 2px);
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(1.5em + .75rem + 2px);
+  }
+</style>
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Barre latérale pour les filtres -->
+    <div class="col-md-3">
+      <div class="d-flex flex-column flex-shrink-0 p-3 bg-light"
+        style="width: 280px;">
+        <span class="fs-4">Filtres</span>
+        <form action="{% url 'lesApprentiStage:suivi_etudiants' %}" method="get">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <hr>
+
+            <li class="nav-item mb-3">
+              <label>Recherche d'Étudiant :</label>
+              <input type="text" class="form-control" name="recherche_etudiant" placeholder="Nom, Prénom, Numéro...">
+            </li>
+
+            <!-- Filtre par Promo -->
+            <li class="nav-item mb-3">
+              <label>Promotion :</label>
+              <select class="form-control select2" name="promo">
+                <option value>Toutes les promotions</option>
+                {% for promo in promos %}
+                <option value="{{ promo.id }}">{{ promo.nomPromo }}</option>
+                {% endfor %}
+              </select>
+            </li>
+
+            <!-- Filtre par Entreprise -->
+            <li class="nav-item mb-3">
+              <label>Entreprise :</label>
+              <select class="form-control select2" name="entreprise">
+                <option value>Toutes les entreprises</option>
+                {% for entreprise in entreprises %}
+                <option value="{{ entreprise.numSiret }}">{{ entreprise.nomEnt}}</option>
+                {% endfor %}
+              </select>
+            </li>
+
+            <li class="nav-item mb-3">
+              <label>Statut de Stage :</label>
+              <select class="form-control select2" name="statut_stage">
+                <option value>Tous les statuts</option>
+                <option value="valide">Validé</option>
+                <option value="en_attente">En attente de validation</option>
+                <option value="sans_stage">Sans stage</option>
+              </select>
+            </li>
+
+            <li class="nav-item mb-3">
+              <label>Tuteur d'Entreprise :</label>
+              <select class="form-control select2" name="tuteur">
+                <option value>Tous les tuteurs</option>
+                {% for tuteur in tuteurs %}
+                <option value="{{ tuteur.id }}">{{ tuteur.nomTuteur }} {{tuteur.prenomTuteur }}</option>
+                {% endfor %}
+              </select>
+            </li>
+
+            <!-- Filtre par Département -->
+            <li class="nav-item mb-3">
+              <label>Département :</label>
+              <select class="form-control select2" name="departement">
+                <option value>Tous les départements</option>
+                {% for departement in departements %}
+                <option value="{{ departement.id }}">{{ departement.nomDep }}</option>
+                {% endfor %}
+              </select>
+            </li>
+
+            <!-- Filtre par Thème -->
+            <li class="nav-item mb-3">
+              <label>Thème :</label>
+              <select class="form-control select2" name="theme">
+                <option value>Tous les thèmes</option>
+                {% for theme in themes %}
+                <option value="{{ theme.id }}">{{ theme.nomTheme }}</option>
+                {% endfor %}
+              </select>
+            </li>
+
+            <li>
+              <input type="submit" class="btn btn-primary mt-3" value="Filtrer">
+            </li>
+            <hr>
+          </ul>
+        </form>
+      </div>
+    </div>
+
+    <!-- Section principale pour afficher les étudiants -->
+    <div class="col-md-9">
+      <h2>Suivi des Étudiants</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Numéro Étudiant</th>
+            <th>Promo</th>
+            <th>Département</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for etudiant in etudiants %}
+          <tr>
+            <td>{{ etudiant.nomEtu }}</td>
+            <td>{{ etudiant.prenomEtu }}</td>
+            <td>{{ etudiant.numEtu }}</td>
+            <td>{{ etudiant.promo.nomPromo }}</td>
+            <td>{{ etudiant.idDepartement.nomDep }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.select2').select2();
+  });
+</script>
+{% endblock %}

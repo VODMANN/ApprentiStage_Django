@@ -11,7 +11,6 @@ urlpatterns = [
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='lesApprentiStage:home'), name='logout'),
     path('search/', views.search, name='search'),
-    # Lines from 'secretaire' branch
     path('ajout_stage/', views.ajouter_contrat, name='ajout_stage'),
     path('ajouter_entreprise_sansC/', views.ajouter_entrepriseSeul, name='ajouter_entreprise'),
     path('ajouter_entreprise/', views.ajouter_entreprise, name='ajouter_entreprise'),
@@ -20,7 +19,6 @@ urlpatterns = [
     path('details_etudiant/<str:etudiant_id>/', views.details_etudiant, name='details_etudiant'),
     path('details_entreprise/<str:entreprise_id>/', views.details_entreprise, name='details_entreprise'),
     path('affichage_contrat/<int:contrat_id>/', views.affichage_contrat, name='affichage_contrat'),
-    # Lines from 'main' branch
     path('secretariat/upload_csv/', views.upload_csv, name='upload_csv'),
     path('soutenance/', views.soutenance, name='soutenance'),
     path('supprimerSoutenance/<id>', views.supprimerSoutenance, name='supprimerSoutenance'),
@@ -30,9 +28,9 @@ urlpatterns = [
     path('api/calendar_events/', views.calendar_events, name='calendar_events'),
     path('export_calendar/', views.export_calendar, name='export_calendar'),
     path('calendar_ens/', views.calendar_ens, name='calendar_ens'),
-    # Merged lines
     path('offre/<int:offre_id>/', views.offre_detail, name='offre_detail'),
     path('etudiant/recherche_offres/', views.recherche_offres, name='recherche_offres'),
     path('etudiant/edit/', views.edit_etudiant, name='edit_etudiant'),
     path('etudiant/profil/', views.profile, name='profil_etudiant'),
+    path('suivi-etudiants/', views.suivi_etudiants, name='suivi_etudiants'),
 ]

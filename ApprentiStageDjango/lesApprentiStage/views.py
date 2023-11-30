@@ -7,14 +7,14 @@ from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import redirect_to_login
 
-from .models import Departement, Document, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Theme, Utilisateur,Soutenance,Salle,ProfilEnseignant
+from .models import Departement, Document, EnseignantPromo, Evaluation, Offre, ProfilEtudiant, Entreprise, Contrat, Promo, Theme, Tuteur, Utilisateur,Soutenance,Salle,ProfilEnseignant
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from datetime import datetime, timedelta  
+from datetime import datetime, timedelta, timezone  
 from icalendar import Calendar, Event
 import csv
 from django.contrib.auth.hashers import make_password
@@ -42,17 +42,25 @@ def user_type_required(user_type):
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
+
 def home(request):
-    offre_list = Offre.objects.all()    
+    offre_list = Offre.objects.all()   
+    user = request.user
+
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
+        print(user_type)
         if user_type == 'etudiant':
           return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+        if user_type == 'enseignant':
+            is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
+            return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
     return render(request, 'pages/accueil.html')
 
 """ @login_required
 @user_type_required('secretaire') """
 def signup(request):
+    promos = Promo.objects.all()  
     if request.method == 'POST':
         user_form = UtilisateurForm(request.POST)
         etudiant_form = EtudiantForm(request.POST)
@@ -62,7 +70,7 @@ def signup(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
-            user_type = user_form.cleaned_data['type_utilisateur']  # Assurez-vous que cela correspond au nom dans votre modèle
+            user_type = user_form.cleaned_data['type_utilisateur']  
 
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
@@ -75,14 +83,23 @@ def signup(request):
                 enseignant = enseignant_form.save(commit=False)
                 enseignant.utilisateur = user
                 enseignant.save()
-                # Log in the user here if needed
+
+                if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+                    selected_departement = enseignant_form.cleaned_data.get('departements')
+                    if selected_departement:
+                        selected_departement.chef = enseignant
+                        selected_departement.save()
+
+                selected_promos = enseignant_form.cleaned_data.get('promos')
+                for promo in selected_promos:
+                    EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
                 return redirect('lesApprentiStage:home')
+            
             elif user_type == 'secretaire' and secretaire_form.is_valid():
                 user.save()
                 secretaire = secretaire_form.save(commit=False)
                 secretaire.utilisateur = user
                 secretaire.save()
-                # Log in the user here if needed
                 return redirect('lesApprentiStage:home')
 
     else:
@@ -96,6 +113,7 @@ def signup(request):
         'etudiant_form': etudiant_form,
         'enseignant_form': enseignant_form,
         'secretaire_form': secretaire_form,
+        'promos': promos,
     })
 
 @login_required
@@ -589,3 +607,72 @@ def upload_csv(request):
             )
 
     return redirect('lesApprentiStage:home')
+
+def suivi_etudiants(request):
+    user = request.user
+    enseignant = ProfilEnseignant.objects.get(utilisateur=user)
+    etudiants = ProfilEtudiant.objects.all()
+
+    # Récupération des filtres
+    promo_filter = request.GET.get('promo')
+    entreprise_filter = request.GET.get('entreprise')
+    departement_filter = request.GET.get('departement')
+    theme_filter = request.GET.get('theme')
+    promo_filter = request.GET.get('promo')
+    statut_stage = request.GET.get('statut_stage')
+    tuteur_filter = request.GET.get('tuteur')
+    recherche_etudiant = request.GET.get('recherche_etudiant', '')
+
+
+    if enseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+        etudiants = etudiants.filter(idDepartement__chef=enseignant)
+    elif enseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
+        promos_gerees = EnseignantPromo.objects.filter(enseignant=enseignant).values_list('promo', flat=True)
+        etudiants = etudiants.filter(promo__in=promos_gerees)
+
+    # Application des filtres
+    if promo_filter:
+        etudiants = etudiants.filter(promo_id=promo_filter)
+    if entreprise_filter:
+        etudiants = etudiants.filter(contrat__entreprise_id=entreprise_filter)
+    if departement_filter:
+        etudiants = etudiants.filter(idDepartement_id=departement_filter)
+    if theme_filter:
+        etudiants = etudiants.filter(contrat__theme_id=theme_filter)
+    if statut_stage:
+        if statut_stage == 'valide':
+            etudiants = etudiants.filter(contrat__estValide=True)
+        elif statut_stage == 'en_attente':
+            etudiants = etudiants.filter(contrat__estValide=False)
+        elif statut_stage == 'sans_stage':
+            etudiants = etudiants.exclude(contrat__isnull=False)
+    if tuteur_filter:
+        etudiants = etudiants.filter(contrat__tuteur__id=tuteur_filter)
+    if recherche_etudiant:
+        etudiants = etudiants.filter(
+            Q(nomEtu__icontains=recherche_etudiant) | 
+            Q(prenomEtu__icontains=recherche_etudiant) |
+            Q(numEtu__icontains=recherche_etudiant)
+        )
+
+
+
+
+
+
+    # Transmettre les options de filtrage au template
+    promos = Promo.objects.all()
+    entreprises = Entreprise.objects.all()
+    departements = Departement.objects.all()
+    themes = Theme.objects.all()
+    tuteurs = Tuteur.objects.all()
+
+
+    return render(request, 'enseignant/suivi_etudiants.html', {
+        'etudiants': etudiants,
+        'tuteurs': tuteurs,
+        'promos': promos,
+        'entreprises': entreprises,
+        'departements': departements,
+        'themes': themes
+    })
