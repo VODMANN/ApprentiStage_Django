@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire, Departement,Entreprise,Theme,Responsable,Tuteur,Contrat,Offre
+from .models import *
 
 admin.site.register(Utilisateur)
 admin.site.register(ProfilEtudiant)
@@ -12,4 +12,5 @@ admin.site.register(Tuteur)
 admin.site.register(Responsable)
 admin.site.register(Contrat)
 admin.site.register(Offre)
+admin.site.register(Promo)
 
