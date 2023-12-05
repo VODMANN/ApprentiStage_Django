@@ -15,7 +15,7 @@ def remplacer_texte(doc, recherche, remplacement):
                 run.text = run.text.replace(recherche, remplacement)
 
 def generer_convention(contrat):
-    doc = Documents(os.path.join(settings.BASE_DIR, '/home/rochdi/iut/v2/ApprentiStage_Django/ApprentiStageDjango/lesApprentiStage/static/MODELE_CONVENTION_STAGE.docx'))
+    doc = Documents(os.path.join(settings.BASE_DIR, 'lesApprentiStage/static/MODELE_CONVENTION_STAGE.docx'))
     responsable = Responsable.objects.filter(entreprise=contrat.entreprise).first()
 
     context = {
