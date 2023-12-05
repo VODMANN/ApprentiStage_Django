@@ -3,6 +3,10 @@ from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme,
 from .NAF import *
 
 class EtudiantForm(forms.ModelForm):
+    mailEtu = forms.EmailField(required=False)
+    numDossier = forms.IntegerField(required=False)
+    ineEtu = forms.IntegerField(required=False)
+
     class Meta:
         model = ProfilEtudiant
         numEtu = forms.CharField(max_length=35, required=False)
@@ -14,7 +18,12 @@ class EtudiantForm(forms.ModelForm):
         telEtu = forms.CharField(max_length=25, required=False)
         promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
         idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
+        fields = [
+                    'numEtu', 'nomEtu', 'prenomEtu', 'prenom2Etu', 'adresseEtu', 'mailEtu', 
+                    'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 
+                    'numDossier', 'ineEtu', 'cpEtu', 'villeEtu', 'promo', 'idDepartement', 
+                    'adresseParent', 'cpParent', 'villeParent', 'telParent', 'mailParent'
+                ]
 
 class EnseignantForm(forms.ModelForm):
     promos = forms.ModelMultipleChoiceField(
@@ -27,6 +36,9 @@ class EnseignantForm(forms.ModelForm):
         required=False,
         widget=forms.Select(attrs={'class': 'selectpicker col', 'data-live-search': 'true'})
     )
+    telEnseignant = forms.CharField(max_length=25, required=False)
+    disciplineEnseignant = forms.CharField(max_length=150, required=False)
+
 
 
     class Meta:
@@ -36,8 +48,10 @@ class EnseignantForm(forms.ModelForm):
         nomEnseignant = forms.CharField(max_length=50, required=False)
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant', 'promos', 'departements']
-      
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant',
+                  'mailEnseignant', 'telEnseignant', 'disciplineEnseignant',
+                  'promos', 'departements']
+
         labels = {
             'promos': 'Promos :',
             'departements': 'Département :'

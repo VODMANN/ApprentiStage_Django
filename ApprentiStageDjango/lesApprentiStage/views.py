@@ -258,7 +258,6 @@ def signup(request):
         etudiant_form = EtudiantForm(request.POST)
         enseignant_form = EnseignantForm(request.POST)
         secretaire_form = SecretaireForm(request.POST)
-
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])

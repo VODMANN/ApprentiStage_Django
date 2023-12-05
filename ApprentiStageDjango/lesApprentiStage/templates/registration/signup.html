@@ -130,7 +130,74 @@
           {% endfor %}
         </select>
       </div>
-
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.prenom2Etu.id_for_label }}">Deuxième Prénom :</label>
+        <input class="col form-control" id="{{ etudiant_form.prenom2Etu.id_for_label }}" type="text" name="{{ etudiant_form.prenom2Etu.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.dateNEtu.id_for_label }}">Date de Naissance :</label>
+        <input class="col form-control" id="{{ etudiant_form.dateNEtu.id_for_label }}" type="date" name="{{ etudiant_form.dateNEtu.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.lieuNEtu.id_for_label }}">Lieu de Naissance :</label>
+        <input class="col form-control" id="{{ etudiant_form.lieuNEtu.id_for_label }}" type="text" name="{{ etudiant_form.lieuNEtu.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.departementNEtu.id_for_label }}">Département de Naissance :</label>
+        <input class="col form-control" id="{{ etudiant_form.departementNEtu.id_for_label }}" type="text" name="{{ etudiant_form.departementNEtu.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.nationaliteEtu.id_for_label }}">Nationalité :</label>
+        <input class="col form-control" id="{{ etudiant_form.nationaliteEtu.id_for_label }}" type="text" name="{{ etudiant_form.nationaliteEtu.name }}">
+      </div>
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.adresseParent.id_for_label }}">Adresse des Parents :</label>
+        <input class="col form-control" id="{{ etudiant_form.adresseParent.id_for_label }}" type="text" name="{{ etudiant_form.adresseParent.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.cpParent.id_for_label }}">Code Postal des Parents :</label>
+        <input class="col form-control" id="{{ etudiant_form.cpParent.id_for_label }}" type="text" name="{{ etudiant_form.cpParent.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.villeParent.id_for_label }}">Ville des Parents :</label>
+        <input class="col form-control" id="{{ etudiant_form.villeParent.id_for_label }}" type="text" name="{{ etudiant_form.villeParent.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.telParent.id_for_label }}">Téléphone des Parents :</label>
+        <input class="col form-control" id="{{ etudiant_form.telParent.id_for_label }}" type="text" name="{{ etudiant_form.telParent.name }}">
+      </div>
+      
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.mailParent.id_for_label }}">E-mail des Parents :</label>
+        <input class="col form-control" id="{{ etudiant_form.mailParent.id_for_label }}" type="email" name="{{ etudiant_form.mailParent.name }}">
+      </div>
+      <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.mailEtu.id_for_label }}">E-mail etudiant :</label>
+        <input class="col form-control" id="{{ etudiant_form.mailEtu.id_for_label }}" type="email" name="{{ etudiant_form.mailEtu.name }}">
+    </div>
+    
+    <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.numDossier.id_for_label }}">Numéro de Dossier :</label>
+        <input class="col form-control" id="{{ etudiant_form.numDossier.id_for_label }}" type="number" name="{{ etudiant_form.numDossier.name }}">
+    </div>
+    
+    <div class="row p-2">
+        <label class="col" for="{{ etudiant_form.ineEtu.id_for_label }}">Numéro INE :</label>
+        <input class="col form-control" id="{{ etudiant_form.ineEtu.id_for_label }}" type="number" name="{{ etudiant_form.ineEtu.name }}">
+    </div>
+      {% if etudiant_form.errors %}
+  <div class="alert alert-danger" role="alert">
+    <strong>Erreur lors de la soumission du formulaire :</strong>
+    {{ etudiant_form.errors }}
+  </div>
+{% endif %}
     </div>
 
     <div id="enseignant_fields" style="display:none;">
@@ -194,6 +261,22 @@
             {{ enseignant_form.departements }}
         </div>
     </div>
+    <div class="row p-2">
+      <label class="col" for="{{ enseignant_form.telEnseignant.id_for_label }}">Numéro de Téléphone :</label>
+      <input class="col form-control" id="{{ enseignant_form.telEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.telEnseignant.name }}">
+  </div>
+
+  <div class="row p-2">
+      <label class="col" for="{{ enseignant_form.disciplineEnseignant.id_for_label }}">Discipline :</label>
+      <input class="col form-control" id="{{ enseignant_form.disciplineEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.disciplineEnseignant.name }}">
+  </div>
+  {% if etudiant_form.errors %}
+  <div class="alert alert-danger" role="alert">
+    <strong>Erreur lors de la soumission du formulaire :</strong>
+    {{ etudiant_form.errors }}
+  </div>
+{% endif %}
+
 
     </div>
 
@@ -242,41 +325,31 @@
 
         function toggleFields() {
           const userType = userTypeSelect.value;
-          
-          if(userType === 'etudiant') {
+        
+          $('#etudiant_fields').hide();
+          [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+          $('#enseignant_fields').hide();
+          [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+          $('#secretaire_fields').hide();
+          [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
+      
+          if (userType === 'etudiant') {
               $('#etudiant_fields').show("slow");
               [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-      
-              $('#enseignant_fields').hide("slow");
-              [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-      
-              $('#secretaire_fields').hide("slow");
-              [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-          } 
-          else if(userType === 'enseignant') {
+          } else if (userType === 'enseignant') {
               $('#enseignant_fields').show("slow");
               [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-      
-              $('#etudiant_fields').hide("slow");
-              [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-      
-              $('#secretaire_fields').hide("slow");
-              [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-          } 
-          else if(userType === 'secretaire') {
+          } else if (userType === 'secretaire') {
               $('#secretaire_fields').show("slow");
               [...secretaireFields.querySelectorAll('input, select')].forEach(input => input.disabled = false);
-      
-              $('#etudiant_fields').hide("slow");
-              [...etudiantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
-      
-              $('#enseignant_fields').hide("slow");
-              [...enseignantFields.querySelectorAll('input, select')].forEach(input => input.disabled = true);
           }
-        }
+      }
       
-        // Afficher/masquer les champs lorsque la sélection change
-        userTypeSelect.addEventListener('change', toggleFields);
+      userTypeSelect.addEventListener('change', toggleFields);
+      toggleFields(); // Au chargement de la page
+      
         const roleEnseignantSelect = document.getElementById('id_roleEnseignant'); // Assurez-vous que l'ID est correct
         const promoSelect = document.getElementById('enseignant_promo_select');
 
