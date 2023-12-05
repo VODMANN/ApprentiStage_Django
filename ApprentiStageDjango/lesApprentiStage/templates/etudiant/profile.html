@@ -16,17 +16,15 @@
                         Plus d'infos
                     </button>
                     <!-- Informations supplémentaires sur l'étudiant -->
-                    <div class="collapse" id="moreInfo">
-                        <div class="card card-body">
-                            <p class="card-text">Numéro Étudiant : {{ etudiant.numEtu }}</p>
-                            <p class="card-text">Adresse : {{ etudiant.adresseEtu }}</p>
-                            <p class="card-text">Ville : {{ etudiant.villeEtu }}</p>
-                            <p class="card-text">Code Postal : {{ etudiant.cpEtu }}</p>
-                            <p class="card-text">Téléphone : {{ etudiant.telEtu }}</p>
-                            <p class="card-text">Promotion : {{ etudiant.promo }}</p>
-                            <p class="card-text">Département : {{ etudiant.idDepartement.nom }}</p>
-                            <!-- Ajouter ici d'autres informations si nécessaire -->
-                        </div>
+                    <div class="mt-2 card card-body collapse" id="moreInfo">
+                        <p class="card-text">Numéro Étudiant : {{ etudiant.numEtu }}</p>
+                        <p class="card-text">Adresse : {{ etudiant.adresseEtu }}</p>
+                        <p class="card-text">Ville : {{ etudiant.villeEtu }}</p>
+                        <p class="card-text">Code Postal : {{ etudiant.cpEtu }}</p>
+                        <p class="card-text">Téléphone : {{ etudiant.telEtu }}</p>
+                        <p class="card-text">Promotion : {{ etudiant.promo }}</p>
+                        <p class="card-text">Département : {{ etudiant.idDepartement.nom }}</p>
+                        <!-- Ajouter ici d'autres informations si nécessaire -->
                     </div>
                 </div>
             </div>
