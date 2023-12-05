@@ -59,6 +59,9 @@
                             <button class="btn btn-secondary btn-sm" type="button" data-toggle="modal" data-target="#contratDetail{{ contrat.id }}">
                                 Détails
                             </button>
+                            {% if contrat.estValide %}
+                                <a href="{% url 'lesApprentiStage:generer_convention_view' contrat.id %}" class="btn btn-success btn-sm">Générer Convention</a>
+                            {% endif %}
                             <!-- Modal pour les détails du contrat -->
                             <div class="modal fade" id="contratDetail{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="contratDetailLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

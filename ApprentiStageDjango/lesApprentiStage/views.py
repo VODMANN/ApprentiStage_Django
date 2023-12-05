@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
+from .utils import generer_convention
+
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
@@ -793,6 +795,17 @@ def profile(request):
     }
     return render(request, 'etudiant/profile.html', context)
 
+@login_required
+def generer_convention_view(request, contrat_id):
+    try:
+        contrat = Contrat.objects.get(id=contrat_id, estValide=True, etudiant=request.user.profiletudiant)
+        document_path = generer_convention(contrat)
+        with open(document_path, 'rb') as doc:
+            response = HttpResponse(doc.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.docx"'
+            return response
+    except Contrat.DoesNotExist:
+        return HttpResponse("Contrat non valide ou inexistant.")
 
 
 def upload_csv(request):
@@ -882,11 +895,6 @@ def suivi_etudiants(request):
             Q(prenomEtu__icontains=recherche_etudiant) |
             Q(numEtu__icontains=recherche_etudiant)
         )
-
-
-
-
-
 
     # Transmettre les options de filtrage au template
     promos = Promo.objects.all()
