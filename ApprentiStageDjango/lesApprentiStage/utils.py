@@ -33,7 +33,6 @@ def generer_convention(contrat):
     '{{ sexeM_etu }}': 'M ☑ ' if contrat.etudiant.civiliteEtu == 'M.' else 'M ◻ ',
     '{{ sexeF_etu }}': 'F ◻ ' if contrat.etudiant.civiliteEtu == 'M.' else 'F ☑ ',
     }
-
     # Remplacement dans les paragraphes
     for p in doc.paragraphs:
         for key, value in context.items():
@@ -50,19 +49,19 @@ def generer_convention(contrat):
 
 
 
-    save_dir = os.path.join(settings.MEDIA_ROOT, 'conventions')
+    save_dir = os.path.join(settings.BASE_DIR, 'documents', 'conventions')
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
     file_name = f'Convention_{contrat.etudiant.nomEtu}_{contrat.etudiant.prenomEtu}.docx'
-    save_path = os.path.join(settings.MEDIA_ROOT, 'documents', 'conventions', file_name)
+    save_path = os.path.join(settings.BASE_DIR, 'documents', 'conventions', file_name)
 
     doc.save(save_path)
 
     with open(save_path, 'rb') as file:
         django_file = ContentFile(file.read(), name=file_name)
         nouveau_document = Document(titre=file_name, fichier=django_file, contrat=contrat)
-        # Sauvegardez le document pour enregistrer le fichier dans MEDIA_ROOT
+        # Sauvegardez le document pour enregistrer le fichier dans BASE_DIR
         nouveau_document.save()
 
     return save_path
