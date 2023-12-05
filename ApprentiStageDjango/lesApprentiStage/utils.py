@@ -18,39 +18,20 @@ def generer_convention(contrat):
     doc = Documents(os.path.join(settings.BASE_DIR, '/home/rochdi/iut/v2/ApprentiStage_Django/ApprentiStageDjango/lesApprentiStage/static/MODELE_CONVENTION_STAGE.docx'))
     responsable = Responsable.objects.filter(entreprise=contrat.entreprise).first()
 
-    if contrat.etudiant.civiliteEtu == 'M.':
-        context = {
-        '{{ nom_etudiant }}': contrat.etudiant.nomEtu,
-        '{{ prenom_etudiant }}': contrat.etudiant.prenomEtu,
-        '{{ nom_entreprise }}': contrat.entreprise.nomEnt,
-        '{{ adresse_entreprise }}': contrat.entreprise.adresseEnt,
-        '{{ nom_responsable }}': responsable.nomResp if responsable else '',
-        '{{ email_responsable }}': responsable.emailResp if responsable else '',
-        '{{ adresse_etudiant }}': contrat.etudiant.adresseEtu,
-        '{{ nom_tuteur }}': contrat.tuteur.nomTuteur,
-        '{{ prenom_tuteur }}': contrat.tuteur.prenomTuteur,
-        '{{ metier_tuteur }}': contrat.tuteur.metierTuteur,
-        '{{ mail_tuteur }}': contrat.tuteur.emailTuteur,
-        '{{ sexeM_etu }}': 'M ☑ ',
-        '{{ sexeF_etu }}': 'F ◻ ',
-
-    }
-
-    else:
-        context = {
-        '{{ nom_etudiant }}': contrat.etudiant.nomEtu,
-        '{{ prenom_etudiant }}': contrat.etudiant.prenomEtu,
-        '{{ nom_entreprise }}': contrat.entreprise.nomEnt,
-        '{{ adresse_entreprise }}': contrat.entreprise.adresseEnt,
-        '{{ nom_responsable }}': responsable.nomResp if responsable else '',
-        '{{ email_responsable }}': responsable.emailResp if responsable else '',
-        '{{ adresse_etudiant }}': contrat.etudiant.adresseEtu,
-        '{{ nom_tuteur }}': contrat.tuteur.nomTuteur,
-        '{{ prenom_tuteur }}': contrat.tuteur.prenomTuteur,
-        '{{ metier_tuteur }}': contrat.tuteur.metierTuteur,
-        '{{ mail_tuteur }}': contrat.tuteur.emailTuteur,
-        '{{ sexeF_etu }}': '☑ F',
-        {{ 'sexeM_etu' }} : '◻ M'
+    context = {
+    '{{ nom_etudiant }}': contrat.etudiant.nomEtu,
+    '{{ prenom_etudiant }}': contrat.etudiant.prenomEtu,
+    '{{ nom_entreprise }}': contrat.entreprise.nomEnt,
+    '{{ adresse_entreprise }}': contrat.entreprise.adresseEnt,
+    '{{ nom_responsable }}': responsable.nomResp if responsable else '',
+    '{{ email_responsable }}': responsable.emailResp if responsable else '',
+    '{{ adresse_etudiant }}': contrat.etudiant.adresseEtu,
+    '{{ nom_tuteur }}': contrat.tuteur.nomTuteur,
+    '{{ prenom_tuteur }}': contrat.tuteur.prenomTuteur,
+    '{{ metier_tuteur }}': contrat.tuteur.metierTuteur,
+    '{{ mail_tuteur }}': contrat.tuteur.emailTuteur,
+    '{{ sexeM_etu }}': 'M ☑ ' if contrat.etudiant.civiliteEtu == 'M.' else 'M ◻ ',
+    '{{ sexeF_etu }}': 'F ◻ ' if contrat.etudiant.civiliteEtu == 'M.' else 'F ☑ ',
     }
 
     # Remplacement dans les paragraphes
