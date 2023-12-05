@@ -113,18 +113,22 @@ class ContratEtudiantForm(forms.ModelForm):
 
 class EntrepriseForm(forms.ModelForm):
     codeNaf = forms.ChoiceField(choices=NAF, required=False)
-
+    
     class Meta:
         model = Entreprise
-        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt']
-
+        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt', 'formeJuridique', 'telEnt', 'siteWeb', 'numSiren', 'mailEnt']
         labels = {
             'numSiret': 'Numéro SIRET :',
-            'codeNaf': 'Code NAF :',
             'nomEnt': 'Nom de l\'entreprise :',
             'adresseEnt': 'Adresse :',
             'cpEnt': 'Code postal :',
             'villeEnt': 'Ville :',
+            'formeJuridique': 'Forme juridique :',
+            'telEnt': 'Téléphone :',
+            'siteWeb': 'Site Web :',
+            'numSiren': 'Numéro SIREN :',
+            'mailEnt': 'Email :',
+            'codeNaf': 'Code NAF :',
         }
 
 
@@ -149,7 +153,7 @@ class ResponsableForm(forms.ModelForm):
     
     class Meta:
         model = Responsable
-        fields = ['nomResp', 'prenomResp', 'emailResp']
+        fields = ['nomResp', 'prenomResp', 'emailResp', 'posteResp', 'telResp']
 
     def __init__(self, *args, **kwargs):
         entreprise = kwargs.pop('entreprise', None)
@@ -166,7 +170,7 @@ class TuteurForm(forms.ModelForm):
     class Meta:
         model = Tuteur
         fields = ['nomTuteur', 'prenomTuteur', 'metierTuteur', 'telTuteur', 'emailTuteur']
-
+        
     def __init__(self, *args, **kwargs):
         super(TuteurForm, self).__init__(*args, **kwargs)
         
