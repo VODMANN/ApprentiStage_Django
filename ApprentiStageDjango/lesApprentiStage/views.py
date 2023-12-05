@@ -763,7 +763,7 @@ def edit_etudiant(request):
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
 
     if request.method == 'POST':
-        form = EtudiantForm(request.POST, instance=profil_etudiant)
+        form = EtudiantProfilForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
             form.save()
             # Ajouter un message de succès

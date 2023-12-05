@@ -189,21 +189,47 @@ class EtudiantProfilForm(forms.ModelForm):
     )
     promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
 
+    def __init__(self, *args, **kwargs):
+        super(EtudiantProfilForm, self).__init__(*args, **kwargs)
+        # Mettre les champs numDossier et ineEtu en lecture seule
+        self.fields['numDossier'].widget.attrs['readonly'] = True
+        self.fields['ineEtu'].widget.attrs['readonly'] = True
+
 
     class Meta:
         model = ProfilEtudiant
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'civiliteEtu','telEtu', 'idDepartement', 'promo']
+        fields = [
+            'numEtu', 'nomEtu', 'prenomEtu', 'prenom2Etu', 'adresseEtu', 'cpEtu', 'villeEtu', 'civiliteEtu',
+            'mailEtu', 'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 'numDossier',
+            'ineEtu', 'promo', 'idDepartement', 'adresseParent', 'cpParent', 'villeParent', 'telParent',
+            'mailParent'
+        ]
         labels = {
-            'numEtu': 'Numéro d\'étudiant',
-            'nomEtu': 'Nom',
-            'prenomEtu': 'Prénom',
-            'adresseEtu': 'Adresse',
-            'cpEtu': 'Code postal',
-            'villeEtu': 'Ville',
-            'telEtu': 'Téléphone',
-            'promo': 'Promotion',
-            'idDepartement': 'Département',
-        }
+        'numEtu': 'Numéro d\'étudiant',
+        'nomEtu': 'Nom',
+        'prenomEtu': 'Prénom',
+        'prenom2Etu': 'Deuxième prénom',
+        'adresseEtu': 'Adresse',
+        'cpEtu': 'Code postal',
+        'villeEtu': 'Ville',
+        'civiliteEtu': 'Civilité',
+        'mailEtu': 'E-mail',
+        'telEtu': 'Téléphone',
+        'dateNEtu': 'Date de naissance',
+        'lieuNEtu': 'Lieu de naissance',
+        'departementNEtu': 'Département de naissance',
+        'nationaliteEtu': 'Nationalité',
+        'numDossier': 'Numéro de dossier',
+        'ineEtu': 'Numéro INE',
+        'promo': 'Promotion',
+        'idDepartement': 'Département',
+        'adresseParent': 'Adresse des parents',
+        'cpParent': 'Code postal des parents',
+        'villeParent': 'Ville des parents',
+        'telParent': 'Téléphone des parents',
+        'mailParent': 'E-mail des parents'
+    }
+
 
 
 class OffreForm(forms.ModelForm):
