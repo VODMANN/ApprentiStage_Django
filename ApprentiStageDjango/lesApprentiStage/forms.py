@@ -1,6 +1,6 @@
 from django import forms
 from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle, Offre
-
+from .NAF import *
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -112,12 +112,15 @@ class ContratEtudiantForm(forms.ModelForm):
 
 
 class EntrepriseForm(forms.ModelForm):
+    codeNaf = forms.ChoiceField(choices=NAF, required=False)
+
     class Meta:
         model = Entreprise
-        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'cpEnt', 'villeEnt']
+        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt']
 
         labels = {
             'numSiret': 'Numéro SIRET :',
+            'codeNaf': 'Code NAF :',
             'nomEnt': 'Nom de l\'entreprise :',
             'adresseEnt': 'Adresse :',
             'cpEnt': 'Code postal :',

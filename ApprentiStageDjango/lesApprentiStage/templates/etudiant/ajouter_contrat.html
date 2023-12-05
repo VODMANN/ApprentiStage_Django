@@ -77,6 +77,14 @@
                         <div class="form-group">
                             {{ EntrepriseForm.adresseEnt|as_crispy_field }}
                         </div>
+                        <div class="form-group">
+                            <label for="{{ EntrepriseForm.codeNaf.id_for_label }}">Code NAF</label>
+                            <select class="selectpicker col form-control" data-live-search="true" id="{{ EntrepriseForm.codeNaf.id_for_label }}" data-dropup-auto="false" name="{{ EntrepriseForm.codeNaf.name }}" data-size="5" required>
+                            {% for code in EntrepriseForm.codeNaf.field.choices %}
+                                <option value="{{ code.0 }}" data-tokens="{{ code.0 }}{{ code.1 }}">{{ code.0 }} - {{ code.1 }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 {{ EntrepriseForm.cpEnt|as_crispy_field }}

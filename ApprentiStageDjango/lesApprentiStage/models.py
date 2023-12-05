@@ -17,14 +17,30 @@ class ProfilEtudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     nomEtu = models.CharField(max_length=50,null=True)
     prenomEtu = models.CharField(max_length=50,null=True)
+    prenom2Etu = models.CharField(max_length=50,null=True)
     numEtu = models.CharField(max_length=35, primary_key=True)
     civiliteEtu = models.CharField(max_length=5,null=True)
     adresseEtu = models.CharField(max_length=255,null=True)
+    mailEtu = models.EmailField(max_length=255,null=True)
+    telEtu = models.IntegerField(null=True)
+    dateNEtu = models.DateField(null=True)
+    lieuNEtu = models.CharField(max_length=100,null=True)
+    departementNEtu = models.CharField(max_length=100,null=True)
+    nationaliteEtu = models.CharField(max_length=100,null=True)
+    numDossier = models.IntegerField(null=True)
+    ineEtu = models.IntegerField(null=True)
     cpEtu = models.IntegerField(null=True)
     villeEtu = models.CharField(max_length=100,null=True)
     telEtu = models.CharField(max_length=25,null=True)
     promo = models.ForeignKey('Promo', on_delete=models.SET_NULL, null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
+    
+    adresseParent = models.CharField(max_length=255,null=True)
+    cpParent = models.IntegerField(null=True)
+    villeParent = models.CharField(max_length=100,null=True)
+    telParent = models.IntegerField(null=True)
+    mailParent = models.EmailField(max_length=100,null=True)
+    remarques = models.TextField(null=True)
 
     def __str__(self):
         return self.utilisateur.username
@@ -49,8 +65,10 @@ class ProfilEnseignant(models.Model):
     numHarpege = models.CharField(max_length=20, primary_key=True)
     nomEnseignant = models.CharField(max_length=50, null=True)
     prenomEnseignant = models.CharField(max_length=50, null=True)
+    telEnseignant = models.IntegerField(null=True)
     mailEnseignant = models.EmailField(max_length=100, null=True)
     roleEnseignant = models.CharField(max_length=50, choices=ROLE_CHOICES, null=True)
+    disciplineEnseignant = models.CharField(max_length=150, null=True)
     def __str__(self):
         return self.utilisateur.username
 
@@ -58,6 +76,8 @@ class Promo(models.Model):
     nomPromo = models.CharField(max_length=100)
     annee = models.IntegerField()
     departement = models.ForeignKey('Departement', on_delete=models.SET_NULL, null=True)
+    parcours = models.CharField(max_length=100, null=True)
+    volumeHoraire = models.IntegerField(null=True)
     def __str__(self):
         return self.nomPromo
 
@@ -84,10 +104,16 @@ class Departement(models.Model):
 
 class Entreprise(models.Model):
     numSiret = models.CharField(max_length=100, primary_key=True,unique=True)
+    numSiren = models.CharField(max_length=100,unique=True,null=True)
     nomEnt = models.CharField(max_length=50)
+    mailEnt = models.EmailField(max_length=100,null=True)
+    codeNaf = models.CharField(max_length=50,null=True)
     adresseEnt = models.CharField(max_length=255)
     cpEnt = models.IntegerField()
     villeEnt = models.CharField(max_length=100)
+    formeJuridique = models.CharField(max_length=100,null=True)
+    telEnt = models.IntegerField(null=True)
+    siteWeb = models.CharField(max_length=100,null=True)
 
     def __str__(self):
         return self.nomEnt
@@ -103,8 +129,10 @@ class Responsable(models.Model):
     nomResp = models.CharField(max_length=50)
     prenomResp = models.CharField(max_length=50)
     emailResp = models.EmailField(max_length=100)
+    posteResp = models.CharField(max_length=50,null=True)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
-
+    telResp = models.CharField(max_length=25,null=True)
+    
     def __str__(self):
         return self.nomResp
 
@@ -112,7 +140,7 @@ class Tuteur(models.Model):
     nomTuteur = models.CharField(max_length=50)
     prenomTuteur = models.CharField(max_length=50)
     metierTuteur = models.CharField(max_length=50,default='')
-    telTuteur = models.CharField(max_length=25)
+    telTuteur = models.CharField(max_length=25, null=True)
     emailTuteur = models.EmailField(max_length=100)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
 
@@ -121,7 +149,9 @@ class Tuteur(models.Model):
 
 class Contrat(models.Model):
     type = models.CharField(max_length=50)
+    titre = models.CharField(max_length=100,null=True)
     description = models.TextField()
+    competences = models.TextField(null=True)
     etat = models.CharField(max_length=50)
     gratification = models.CharField(max_length=50,null=True)
     dateDeb = models.DateField()
@@ -154,7 +184,7 @@ class Contrat(models.Model):
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
-    mailRh = models.CharField(max_length=100)
+    mailRh = models.EmailField(max_length=100)
     competences = models.TextField()
     duree = models.CharField(max_length=50)
     datePublication = models.DateField()
@@ -194,6 +224,22 @@ class Evaluation(models.Model):
     def __str__(self):
         return f"Évaluation de {self.contrat.etudiant.utilisateur.username} par {self.enseignant.utilisateur.username}"
         
+
+class Etablissement(models.Model):
+    nomUniversite = models.CharField(max_length=100)
+    adresseUniversite = models.CharField(max_length=255)
+    cpEtablissement = models.IntegerField()
+    villeEtablissement = models.CharField(max_length=100)
+    telEtablissement = models.CharField(max_length=25)
+    mailEtablissement = models.EmailField(max_length=100)
+    siretEtablissement = models.CharField(max_length=100)
+    adresseEtablissement = models.CharField(max_length=255)
+    nomEtablissement = models.CharField(max_length=100)
+    directeurEtablissement = models.CharField(max_length=100)
+
+
+    def __str__(self):
+        return self.nomEtablissement
 
 # INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
 # VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');
