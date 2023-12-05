@@ -23,8 +23,7 @@
                         <p class="card-text">Code Postal : {{ etudiant.cpEtu }}</p>
                         <p class="card-text">Téléphone : {{ etudiant.telEtu }}</p>
                         <p class="card-text">Promotion : {{ etudiant.promo }}</p>
-                        <p class="card-text">Département : {{ etudiant.idDepartement.nom }}</p>
-                        <!-- Ajouter ici d'autres informations si nécessaire -->
+                        <p class="card-text">Département : {{ etudiant.idDepartement }}</p>
                     </div>
                 </div>
             </div>
@@ -121,6 +120,8 @@
                         {% endfor %}
                     </ul>
                 </div>
+                
+                
                 <!-- Onglet Évaluations -->
                 <div class="tab-pane fade" id="evaluations" role="tabpanel" aria-labelledby="evaluations-tab">
                     <ul class="list-group list-group-flush">
