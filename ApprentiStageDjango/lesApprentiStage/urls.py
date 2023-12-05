@@ -37,5 +37,6 @@ urlpatterns = [
     path('etudiant/profil/', views.profile, name='profil_etudiant'),
     path('suivi_etudiants/', views.suivi_etudiants, name='suivi_etudiants'),
     path('insert/', views.insertion, name='insert'),
+    path('generer-convention/<int:contrat_id>/', views.generer_convention_view, name='generer_convention_view'),
 
 ]
