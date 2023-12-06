@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'lesApprentiStage'
 
@@ -39,4 +41,4 @@ urlpatterns = [
     path('insert/', views.insertion, name='insert'),
     path('generer-convention/<int:contrat_id>/', views.generer_convention_view, name='generer_convention_view'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

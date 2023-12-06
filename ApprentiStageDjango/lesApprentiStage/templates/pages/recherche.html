@@ -6,19 +6,19 @@
       <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
       <span class="fs-4">Recherches</span>
     </a>
-    <form action="/search/" method="get">
+    <form action="{% url 'lesApprentiStage:search' %}" method="get">
       <ul class="p-3 nav nav-pills flex-column mb-auto">
         <hr>
         <li class="nav-item mb-3">
           <label>Texte à rechercher</label>
-          <input type="text" class="form-control" placeholder="recherche" name="query">
+          <input type="text" class="form-control" placeholder="recherche" name="query" value="{{ request.GET.query }}">
         </li>
         <li class="nav-item">
           <label>Rechercher dans</label>
           <select class="form-control form-control" id="typeSelect" name="type">
-            <option value="ETUDIANT">Etudiant / Diplômé</option>
-            <option value="ENTREPRISE">Structure</option>
-            <option value="CONTRAT">Stage / Apprentissage</option>
+            <option value="ETUDIANT" {% if search_type == 'ETUDIANT' %} selected {% endif %}>Etudiant / Diplômé</option>
+            <option value="ENTREPRISE" {% if search_type == 'ENTREPRISE' %} selected {% endif %}>Structure</option>
+            <option value="CONTRAT" {% if search_type == 'CONTRAT' %} selected {% endif %}>Stage / Apprentissage</option>
           </select>        
         </li>
         <hr class="hr" />
@@ -27,8 +27,9 @@
           <label for="promoSelect">Promotion :</label>
           <select class="form-control" id="promoSelect" name="promo">
             <option value="">Toutes les promotions</option>
-            <option value="2A" {% if request.GET.promo == '2A' %} selected {% endif %}>2e Année</option>
-            <option value="3A" {% if request.GET.promo == '3A' %} selected {% endif %}>3e Année</option>
+            {% for promotion in promotions %}
+              <option value="{{ promotion.annee }}" {% if promotion.annee == request.GET.promo %} selected {% endif %}>{{ promotion.nomPromo }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="form-group m-2" id="filtresEnt">
@@ -45,7 +46,7 @@
   <div class="col p-3">
     <div class="col">
       {% if results %}
-        <table table class="table table-bordered table-sm">
+        <table class="table table-bordered table-sm">
           <thead>
             <tr class="bg-primary">
               {% if search_type == "ETUDIANT" %}
@@ -55,6 +56,7 @@
                 <th class="text-center"> Numéro de téléphone </th>
                 <th class="text-center"> Département </th>
                 <th class="text-center"> Promo </th>
+                <th class="text-center"> Année de Promotion </th>
                 <!-- Ajoutez d'autres en-têtes de colonnes si nécessaire -->
               {% elif search_type == "ENTREPRISE" %}
                 <th class="text-center"> Numéro SIRET </th>
@@ -85,6 +87,7 @@
                   <td> {{ result.telEtu }} </td>
                   <td> {{ result.idDepartement__nomDep }} </td>
                   <td> {{ result.promo }} </td>
+                  <td> {{ result.promo__annee }} </td>
                   <!-- Ajoutez d'autres cellules de tableau en fonction de vos résultats pour les étudiants -->
                 {% elif search_type == "ENTREPRISE" %}
                 <tr class="clickable-row" data-href="{% url 'lesApprentiStage:details_entreprise' result.numSiret %}">
@@ -112,7 +115,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="{% if search_type == 'ETUDIANT' %} 2 {% else %} 1 {% endif %}">Aucun résultat trouvé.</td>
+                <td colspan="{% if search_type == 'ETUDIANT' %} 7 {% elif search_type == 'ENTREPRISE' %} 5 {% elif search_type == 'CONTRAT' %} 8 {% endif %}">Aucun résultat trouvé.</td>
                 <!-- Colspan indique le nombre de colonnes dans votre tableau -->
               </tr>
             {% endfor %}
@@ -128,7 +131,6 @@
 </div>
 
 <script>
-
   // Rendre les lignes du tableau cliquables
   document.addEventListener("DOMContentLoaded", function() {
     var tableRows = document.querySelectorAll(".clickable-row");
@@ -146,12 +148,11 @@
     var filtresEtu = document.getElementById("filtresEtu");
     var filtresEnt = document.getElementById("filtresEnt");
     var promoSelect = document.getElementById("promoSelect");
-  
+
     typeSelect.addEventListener("change", function() {
       if (typeSelect.value === "ENTREPRISE") {
         filtresEtu.style.display = "none";
         filtresEnt.style.display = "block";
-        // Réinitialisez la valeur du champ de sélection "promo"
         promoSelect.value = "";
       } else if (typeSelect.value === "ETUDIANT") {
         filtresEtu.style.display = "block";
@@ -159,16 +160,14 @@
       } else {
         filtresEtu.style.display = "none";
         filtresEnt.style.display = "none";
-        // Réinitialisez la valeur du champ de sélection "promo"
         promoSelect.value = "";
       }
     });
-  
+
     // Vérifiez la valeur initiale lors du chargement de la page
     if (typeSelect.value === "ENTREPRISE") {
       filtresEtu.style.display = "none";
       filtresEnt.style.display = "block";
-      // Réinitialisez la valeur du champ de sélection "promo"
       promoSelect.value = "";
     } else if (typeSelect.value === "ETUDIANT") {
       filtresEtu.style.display = "block";
@@ -176,53 +175,49 @@
     } else {
       filtresEtu.style.display = "none";
       filtresEnt.style.display = "none";
-      // Réinitialisez la valeur du champ de sélection "promo"
       promoSelect.value = "";
     }
   });
-  
 
   // Fonction pour définir un cookie
   function setCookie(name, value, days) {
-      var expires = "";
-      if (days) {
-          var date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-          expires = "; expires=" + date.toUTCString();
-      }
-      document.cookie = name + "=" + value + expires + "; path=/";
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
   }
 
   // Fonction pour récupérer la valeur du cookie
   function getCookie(name) {
-      var nameEQ = name + "=";
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i];
-          while (cookie.charAt(0) == ' ') {
-              cookie = cookie.substring(1, cookie.length);
-          }
-          if (cookie.indexOf(nameEQ) == 0) {
-              return cookie.substring(nameEQ.length, cookie.length);
-          }
+    var nameEQ = name + "=";
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i];
+      while (cookie.charAt(0) == ' ') {
+        cookie = cookie.substring(1, cookie.length);
       }
-      return null;
+      if (cookie.indexOf(nameEQ) == 0) {
+        return cookie.substring(nameEQ.length, cookie.length);
+      }
+    }
+    return null;
   }
 
   // Récupérer la valeur du cookie et la définir comme option sélectionnée
   var typeSelect = document.getElementById("typeSelect");
   var savedValue = getCookie("selectedType");
-  
+
   if (savedValue) {
-      typeSelect.value = savedValue;
+    typeSelect.value = savedValue;
   }
 
   // Écouter le changement de sélection du menu déroulant et mettre à jour le cookie
   typeSelect.addEventListener("change", function() {
-      var selectedValue = typeSelect.value;
-      setCookie("selectedType", selectedValue, 365); // Conserver la sélection pendant un an
+    var selectedValue = typeSelect.value;
+    setCookie("selectedType", selectedValue, 365); // Conserver la sélection pendant un an
   });
 </script>
-
-
 {% endblock %}

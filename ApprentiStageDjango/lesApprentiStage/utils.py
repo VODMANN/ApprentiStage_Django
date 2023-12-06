@@ -59,10 +59,11 @@ def generer_convention(contrat):
     doc.save(save_path)
 
     with open(save_path, 'rb') as file:
+        # Exemple de sauvegarde de fichier dans votre fonction generer_convention
         django_file = ContentFile(file.read(), name=file_name)
         nouveau_document = Document(titre=file_name, fichier=django_file, contrat=contrat)
-        # Sauvegardez le document pour enregistrer le fichier dans BASE_DIR
         nouveau_document.save()
+
 
     return save_path
 

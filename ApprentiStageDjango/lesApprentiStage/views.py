@@ -258,12 +258,11 @@ def signup(request):
         etudiant_form = EtudiantForm(request.POST)
         enseignant_form = EnseignantForm(request.POST)
         secretaire_form = SecretaireForm(request.POST)
-
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
             user_type = user_form.cleaned_data['type_utilisateur']  
-
+            print('////////////////////////',user_type)
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
                 etudiant = etudiant_form.save(commit=False)
@@ -294,11 +293,14 @@ def signup(request):
                 secretaire.save()
                 return redirect('lesApprentiStage:home')
 
-    else:
-        user_form = UtilisateurForm()
-        etudiant_form = EtudiantForm()
-        enseignant_form = EnseignantForm()
-        secretaire_form = SecretaireForm()
+    user_form = UtilisateurForm(request.POST)  # Ajoutez le request.POST ici pour voir les erreurs
+    etudiant_form = EtudiantForm()
+    enseignant_form = EnseignantForm()
+    secretaire_form = SecretaireForm()
+
+    if not user_form.is_valid():
+        print('Erreurs dans le formulaire UtilisateurForm:', user_form.errors)
+
 
     return render(request, 'registration/signup.html', {
         'user_form': user_form,
@@ -319,10 +321,10 @@ def pageRecherche(request):
 def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
-    promo_filter = request.GET.get('promo', '')  # Récupère la valeur de la promotion depuis la requête GET
+    promo_filter = request.GET.get('promo', '')
 
     search_mapping = {
-        'ETUDIANT': (ProfilEtudiant, ['civiliteEtu','nomEtu', 'prenomEtu', 'numEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement__nomDep']),
+        'ETUDIANT': (ProfilEtudiant, ['civiliteEtu', 'nomEtu', 'prenomEtu', 'numEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo__annee', 'idDepartement__nomDep']),
         'ENTREPRISE': (Entreprise, ['nomEnt', 'numSiret', 'adresseEnt', 'cpEnt', 'villeEnt', 'responsable__nomResp', 'responsable__prenomResp', 'responsable__emailResp']),
         'CONTRAT': (Contrat, ['type', 'description', 'etat', 'dateDeb', 'dateFin', 'etudiant__civiliteEtu', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'etudiant__numEtu', 'entreprise__nomEnt', 'entreprise__adresseEnt', 'entreprise__cpEnt', 'entreprise__villeEnt']),
     }
@@ -332,10 +334,10 @@ def search(request):
         model, fields = search_mapping[search_type]
         query_objects = Q()
         for field in fields:
-            query_objects |= Q(**{f'{field}__icontains': query})
-
-        if promo_filter:  # Vérifie si un filtre de promotion est appliqué
-            query_objects &= Q(promo__icontains=promo_filter)
+            if field == 'promo__annee' and promo_filter:
+                query_objects |= Q(**{f'{field}__icontains': promo_filter})
+            else:
+                query_objects |= Q(**{f'{field}__icontains': query})
 
         results = model.objects.filter(query_objects).values(*fields)
 
@@ -343,7 +345,9 @@ def search(request):
         data = list(results)
         return JsonResponse(data, safe=False)
 
-    return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type})
+    # Obtenez toutes les promotions pour l'affichage dans le formulaire
+    promotions = Promo.objects.all()
+    return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type, "promotions": promotions})
 
 @login_required
 def soutenance(request):
@@ -763,7 +767,7 @@ def edit_etudiant(request):
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
 
     if request.method == 'POST':
-        form = EtudiantForm(request.POST, instance=profil_etudiant)
+        form = EtudiantProfilForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
             form.save()
             # Ajouter un message de succès
@@ -808,6 +812,11 @@ def generer_convention_view(request, contrat_id):
         return HttpResponse("Contrat non valide ou inexistant.")
 
 
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Departement, Utilisateur, ProfilEtudiant, Promo
+
 def upload_csv(request):
     if request.method == "GET":
         return render(request, 'secretariat/upload_csv.html')
@@ -822,6 +831,17 @@ def upload_csv(request):
     for line in lines:
         fields = line.split(",")
         if fields and len(fields) > 1:
+            # Utilisez les nouvelles informations pour les étudiants
+            annee = fields[0]
+            nom = fields[1]
+            prenom = fields[2]
+            numEtu = fields[3]
+            civilite = fields[4]
+            adresse = fields[5]
+            cp = fields[6]
+            ville = fields[7]
+            tel = fields[8]
+            promo_nom = fields[9]
             departement_id = fields[10]
 
             try:
@@ -829,21 +849,23 @@ def upload_csv(request):
             except Departement.DoesNotExist:
                 return HttpResponse(f"Erreur : le département avec l'ID {departement_id} n'existe pas", status=400)
 
-            username = fields[1] + '_' + fields[2]
+            username = nom + '_' + prenom
             password = make_password('password_par_defaut')
             user, created = Utilisateur.objects.get_or_create(username=username, defaults={'password': password, 'type_utilisateur': 'etudiant'})
             
+            promo, created = Promo.objects.get_or_create(nomPromo=promo_nom, annee=annee, departement=departement)
+
             ProfilEtudiant.objects.update_or_create(
                 utilisateur=user,
-                nomEtu=fields[1],
-                prenomEtu=fields[2],
-                numEtu=fields[3],
-                civiliteEtu=fields[4],
-                adresseEtu=fields[5],
-                cpEtu=fields[6],
-                villeEtu=fields[7],
-                telEtu=fields[8],
-                promo=fields[9],
+                nomEtu=nom,
+                prenomEtu=prenom,
+                numEtu=numEtu,
+                civiliteEtu=civilite,
+                adresseEtu=adresse,
+                cpEtu=cp,
+                villeEtu=ville,
+                telEtu=tel,
+                promo=promo,
                 idDepartement=departement,
             )
 

@@ -3,6 +3,10 @@ from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme,
 from .NAF import *
 
 class EtudiantForm(forms.ModelForm):
+    mailEtu = forms.EmailField(required=False)
+    numDossier = forms.IntegerField(required=False)
+    ineEtu = forms.IntegerField(required=False)
+
     class Meta:
         model = ProfilEtudiant
         numEtu = forms.CharField(max_length=35, required=False)
@@ -14,7 +18,12 @@ class EtudiantForm(forms.ModelForm):
         telEtu = forms.CharField(max_length=25, required=False)
         promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
         idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'civiliteEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'telEtu', 'promo', 'idDepartement',]
+        fields = [
+                    'numEtu', 'nomEtu', 'prenomEtu', 'prenom2Etu', 'adresseEtu', 'mailEtu', 
+                    'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 
+                    'numDossier', 'ineEtu', 'cpEtu', 'villeEtu', 'promo', 'idDepartement', 
+                    'adresseParent', 'cpParent', 'villeParent', 'telParent', 'mailParent'
+                ]
 
 class EnseignantForm(forms.ModelForm):
     promos = forms.ModelMultipleChoiceField(
@@ -27,6 +36,9 @@ class EnseignantForm(forms.ModelForm):
         required=False,
         widget=forms.Select(attrs={'class': 'selectpicker col', 'data-live-search': 'true'})
     )
+    telEnseignant = forms.CharField(max_length=25, required=False)
+    disciplineEnseignant = forms.CharField(max_length=150, required=False)
+
 
 
     class Meta:
@@ -36,8 +48,10 @@ class EnseignantForm(forms.ModelForm):
         nomEnseignant = forms.CharField(max_length=50, required=False)
         prenomEnseignant = forms.CharField(max_length=50, required=False)
         mailEnseignant = forms.EmailField(max_length=100, required=False)
-        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant', 'mailEnseignant', 'promos', 'departements']
-      
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant',
+                  'mailEnseignant', 'telEnseignant', 'disciplineEnseignant',
+                  'promos', 'departements']
+
         labels = {
             'promos': 'Promos :',
             'departements': 'Département :'
@@ -113,18 +127,22 @@ class ContratEtudiantForm(forms.ModelForm):
 
 class EntrepriseForm(forms.ModelForm):
     codeNaf = forms.ChoiceField(choices=NAF, required=False)
-
+    
     class Meta:
         model = Entreprise
-        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt']
-
+        fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt', 'formeJuridique', 'telEnt', 'siteWeb', 'numSiren', 'mailEnt']
         labels = {
             'numSiret': 'Numéro SIRET :',
-            'codeNaf': 'Code NAF :',
             'nomEnt': 'Nom de l\'entreprise :',
             'adresseEnt': 'Adresse :',
             'cpEnt': 'Code postal :',
             'villeEnt': 'Ville :',
+            'formeJuridique': 'Forme juridique :',
+            'telEnt': 'Téléphone :',
+            'siteWeb': 'Site Web :',
+            'numSiren': 'Numéro SIREN :',
+            'mailEnt': 'Email :',
+            'codeNaf': 'Code NAF :',
         }
 
 
@@ -149,7 +167,7 @@ class ResponsableForm(forms.ModelForm):
     
     class Meta:
         model = Responsable
-        fields = ['nomResp', 'prenomResp', 'emailResp']
+        fields = ['nomResp', 'prenomResp', 'emailResp', 'posteResp', 'telResp']
 
     def __init__(self, *args, **kwargs):
         entreprise = kwargs.pop('entreprise', None)
@@ -166,7 +184,7 @@ class TuteurForm(forms.ModelForm):
     class Meta:
         model = Tuteur
         fields = ['nomTuteur', 'prenomTuteur', 'metierTuteur', 'telTuteur', 'emailTuteur']
-
+        
     def __init__(self, *args, **kwargs):
         super(TuteurForm, self).__init__(*args, **kwargs)
         
@@ -189,21 +207,47 @@ class EtudiantProfilForm(forms.ModelForm):
     )
     promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
 
+    def __init__(self, *args, **kwargs):
+        super(EtudiantProfilForm, self).__init__(*args, **kwargs)
+        # Mettre les champs numDossier et ineEtu en lecture seule
+        self.fields['numDossier'].widget.attrs['readonly'] = True
+        self.fields['ineEtu'].widget.attrs['readonly'] = True
+
 
     class Meta:
         model = ProfilEtudiant
-        fields = ['numEtu', 'nomEtu', 'prenomEtu', 'adresseEtu', 'cpEtu', 'villeEtu', 'civiliteEtu','telEtu', 'idDepartement', 'promo']
+        fields = [
+            'numEtu', 'nomEtu', 'prenomEtu', 'prenom2Etu', 'adresseEtu', 'cpEtu', 'villeEtu', 'civiliteEtu',
+            'mailEtu', 'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 'numDossier',
+            'ineEtu', 'promo', 'idDepartement', 'adresseParent', 'cpParent', 'villeParent', 'telParent',
+            'mailParent'
+        ]
         labels = {
-            'numEtu': 'Numéro d\'étudiant',
-            'nomEtu': 'Nom',
-            'prenomEtu': 'Prénom',
-            'adresseEtu': 'Adresse',
-            'cpEtu': 'Code postal',
-            'villeEtu': 'Ville',
-            'telEtu': 'Téléphone',
-            'promo': 'Promotion',
-            'idDepartement': 'Département',
-        }
+        'numEtu': 'Numéro d\'étudiant',
+        'nomEtu': 'Nom',
+        'prenomEtu': 'Prénom',
+        'prenom2Etu': 'Deuxième prénom',
+        'adresseEtu': 'Adresse',
+        'cpEtu': 'Code postal',
+        'villeEtu': 'Ville',
+        'civiliteEtu': 'Civilité',
+        'mailEtu': 'E-mail',
+        'telEtu': 'Téléphone',
+        'dateNEtu': 'Date de naissance',
+        'lieuNEtu': 'Lieu de naissance',
+        'departementNEtu': 'Département de naissance',
+        'nationaliteEtu': 'Nationalité',
+        'numDossier': 'Numéro de dossier',
+        'ineEtu': 'Numéro INE',
+        'promo': 'Promotion',
+        'idDepartement': 'Département',
+        'adresseParent': 'Adresse des parents',
+        'cpParent': 'Code postal des parents',
+        'villeParent': 'Ville des parents',
+        'telParent': 'Téléphone des parents',
+        'mailParent': 'E-mail des parents'
+    }
+
 
 
 class OffreForm(forms.ModelForm):
