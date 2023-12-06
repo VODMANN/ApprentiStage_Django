@@ -71,7 +71,14 @@
                     {{ EntrepriseForm.villeEnt|as_crispy_field }}
                     {{ EntrepriseForm.numSiren|as_crispy_field }}
                     {{ EntrepriseForm.mailEnt|as_crispy_field }}
-                    {{ EntrepriseForm.codeNaf|as_crispy_field }}
+                    <div class="form-group">
+                        <label for="{{ EntrepriseForm.codeNaf.id_for_label }}">Code NAF</label>
+                        <select class="selectpicker col form-control" data-live-search="true" id="{{ EntrepriseForm.codeNaf.id_for_label }}" data-dropup-auto="false" name="{{ EntrepriseForm.codeNaf.name }}" data-size="5" required>
+                        {% for code in EntrepriseForm.codeNaf.field.choices %}
+                            <option value="{{ code.0 }}" data-tokens="{{ code.0 }}{{ code.1 }}">{{ code.0 }} - {{ code.1 }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
                     {{ EntrepriseForm.formeJuridique|as_crispy_field }}
                     {{ EntrepriseForm.telEnt|as_crispy_field }}
                     {{ EntrepriseForm.siteWeb|as_crispy_field }}

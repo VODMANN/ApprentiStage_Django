@@ -22,7 +22,7 @@ class ProfilEtudiant(models.Model):
     civiliteEtu = models.CharField(max_length=5,null=True)
     adresseEtu = models.CharField(max_length=255,null=True)
     mailEtu = models.EmailField(max_length=255,null=True)
-    telEtu = models.IntegerField(null=True)
+    telEtu = models.CharField(max_length=25,null=True)
     dateNEtu = models.DateField(null=True)
     lieuNEtu = models.CharField(max_length=100,null=True)
     departementNEtu = models.CharField(max_length=100,null=True)
@@ -31,14 +31,13 @@ class ProfilEtudiant(models.Model):
     ineEtu = models.IntegerField(null=True)
     cpEtu = models.IntegerField(null=True)
     villeEtu = models.CharField(max_length=100,null=True)
-    telEtu = models.CharField(max_length=25,null=True)
     promo = models.ForeignKey('Promo', on_delete=models.SET_NULL, null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
     
     adresseParent = models.CharField(max_length=255,null=True)
     cpParent = models.IntegerField(null=True)
     villeParent = models.CharField(max_length=100,null=True)
-    telParent = models.IntegerField(null=True)
+    telParent = models.CharField(max_length=25,null=True)
     mailParent = models.EmailField(max_length=100,null=True)
     remarques = models.TextField(null=True)
 
@@ -65,7 +64,7 @@ class ProfilEnseignant(models.Model):
     numHarpege = models.CharField(max_length=20, primary_key=True)
     nomEnseignant = models.CharField(max_length=50, null=True)
     prenomEnseignant = models.CharField(max_length=50, null=True)
-    telEnseignant = models.IntegerField(null=True)
+    telEnseignant = models.CharField(max_length=25,null=True)
     mailEnseignant = models.EmailField(max_length=100, null=True)
     roleEnseignant = models.CharField(max_length=50, choices=ROLE_CHOICES, null=True)
     disciplineEnseignant = models.CharField(max_length=150, null=True)
@@ -112,7 +111,7 @@ class Entreprise(models.Model):
     cpEnt = models.IntegerField()
     villeEnt = models.CharField(max_length=100)
     formeJuridique = models.CharField(max_length=100,null=True)
-    telEnt = models.IntegerField(null=True)
+    telEnt = models.CharField(max_length=25,null=True)
     siteWeb = models.CharField(max_length=100,null=True)
 
     def __str__(self):

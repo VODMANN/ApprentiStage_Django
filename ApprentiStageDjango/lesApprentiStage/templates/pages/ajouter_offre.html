@@ -70,18 +70,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="entrepriseForm" method="post"
-                        action="{% url 'lesApprentiStage:ajouter_entreprise' %}">
+                    <form id="entrepriseForm" method="post" action="{% url 'lesApprentiStage:ajouter_entreprise' %}">
                         {% csrf_token %}
-                        <div class="form-group">
-                            {{ EntrepriseForm.numSiret|as_crispy_field }}
-                        </div>
-                        <div class="form-group">
-                            {{ EntrepriseForm.nomEnt|as_crispy_field }}
-                        </div>
-                        <div class="form-group">
-                            {{ EntrepriseForm.adresseEnt|as_crispy_field }}
-                        </div>
+                        {{ EntrepriseForm.numSiret|as_crispy_field }}
+                        {{ EntrepriseForm.nomEnt|as_crispy_field }}
+                        {{ EntrepriseForm.adresseEnt|as_crispy_field }}
+                        {{ EntrepriseForm.cpEnt|as_crispy_field }}
+                        {{ EntrepriseForm.villeEnt|as_crispy_field }}
+                        {{ EntrepriseForm.numSiren|as_crispy_field }}
+                        {{ EntrepriseForm.mailEnt|as_crispy_field }}
                         <div class="form-group">
                             <label for="{{ EntrepriseForm.codeNaf.id_for_label }}">Code NAF</label>
                             <select class="selectpicker col form-control" data-live-search="true" id="{{ EntrepriseForm.codeNaf.id_for_label }}" data-dropup-auto="false" name="{{ EntrepriseForm.codeNaf.name }}" data-size="5" required>
@@ -90,17 +87,11 @@
                             {% endfor %}
                             </select>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                {{ EntrepriseForm.cpEnt|as_crispy_field }}
-                            </div>
-                            <div class="form-group col-md-6">
-                                {{ EntrepriseForm.villeEnt|as_crispy_field }}
-                            </div>
-                        </div>
+                        {{ EntrepriseForm.formeJuridique|as_crispy_field }}
+                        {{ EntrepriseForm.telEnt|as_crispy_field }}
+                        {{ EntrepriseForm.siteWeb|as_crispy_field }}
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal">Fermer</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                             <button type="submit" class="btn btn-primary">Ajouter</button>
                         </div>
                     </form>
