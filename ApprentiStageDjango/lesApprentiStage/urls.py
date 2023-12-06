@@ -39,6 +39,9 @@ urlpatterns = [
     path('etudiant/profil/', views.profile, name='profil_etudiant'),
     path('suivi_etudiants/', views.suivi_etudiants, name='suivi_etudiants'),
     path('insert/', views.insertion, name='insert'),
-    path('generer-convention/<int:contrat_id>/', views.generer_convention_view, name='generer_convention_view'),
+    path('generer_convention/<int:contrat_id>/', views.generer_convention_view, name='generer_convention_view'),
+    path('contrats_non_valides/', views.contrats_non_valides, name='contrats_non_valides'),
+    path('valider_contrat/<int:contrat_id>/', views.valider_contrat, name='valider_contrat'),
+    path('refuser_contrat/<int:contrat_id>/', views.refuser_contrat, name='refuser_contrat'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

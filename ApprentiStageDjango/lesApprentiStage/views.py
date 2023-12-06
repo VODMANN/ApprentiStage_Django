@@ -350,6 +350,30 @@ def search(request):
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type, "promotions": promotions})
 
 @login_required
+@user_type_required('secretaire')
+def contrats_non_valides(request):
+    contrats_non_valides = Contrat.objects.filter(estValide__isnull=True)
+
+    return render(request, 'secretariat/contrats_non_valides.html', {'contrats_non_valides': contrats_non_valides})
+
+@login_required
+@user_type_required('secretaire')
+def valider_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, pk=contrat_id)
+    contrat.estValide = True
+    contrat.save()
+    return redirect('lesApprentiStage:contrats_non_valides')
+
+@login_required
+@user_type_required('secretaire')
+def refuser_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, pk=contrat_id)
+    contrat.estValide = False
+    contrat.save()
+    return redirect('lesApprentiStage:contrats_non_valides')
+
+
+@login_required
 def soutenance(request):
     print(request.user.type_utilisateur)
     user_type_to_view_func = {
