@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load custom_filters %}  <!-- Assurez-vous que vos filtres personnalisés sont chargés -->
+{% load custom_filters %} 
 {% block content %}
 <div class="container py-5">
     <div class="row">
@@ -46,6 +46,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <p><strong>Type :</strong> {{ contrat.type }}</p>
+                                                <p><strong>titre :</strong> {{ contrat.titre }}</p>
                                                 <p><strong>Étudiant :</strong> {{ contrat.etudiant }}</p>
                                                 <p><strong>Entreprise :</strong> {{ contrat.entreprise }}</p>
                                                 <p><strong>Date de Début :</strong> {{ contrat.dateDeb }}</p>
@@ -76,8 +77,8 @@
         border-radius: 10px;
         border: 1px solid #e3e3e3;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        height: 700px; /* Définissez la hauteur maximale de la carte ici */
-        overflow-y: auto; /* Activez la barre de défilement verticale si nécessaire */
+        height: 700px; 
+        overflow-y: auto;
     }
     .profile-edit-card {
         background-color: #ffffff;
@@ -88,7 +89,6 @@
     .table {
         margin-top: 20px;
     }
-    /* Assurez-vous d'ajouter le CDN de FontAwesome dans votre base.html ou ici pour que les icônes s'affichent */
 </style>
 
 {% endblock %}

@@ -23,6 +23,7 @@ urlpatterns = [
     path('details_entreprise/<str:entreprise_id>/', views.details_entreprise, name='details_entreprise'),
     path('affichage_contrat/<int:contrat_id>/', views.affichage_contrat, name='affichage_contrat'),
     path('secretariat/upload_csv/', views.upload_csv, name='upload_csv'),
+    path('secretariat/validation_offre/', views.validation_offre, name='validation_offre'),
     path('secretariat/delete_offre/<int:pk>', views.delete_offre, name='delete_offre'),
     path('secretariat/valid_offre/<int:pk>', views.valid_offre, name='valid_offre'),
     path('soutenance/', views.soutenance, name='soutenance'),

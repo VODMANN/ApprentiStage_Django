@@ -241,13 +241,18 @@ def home(request):
 
         if user_type == 'secretaire':
           offre_list = Offre.objects.all().order_by('-pk')
-          return render(request, 'secretariat/accueil_secretaria.html', {'offre_list': offre_list})
+          return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
             return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
 
     return render(request, 'pages/accueil.html')
+
+def validation_offre(request):
+    offre_list = Offre.objects.all().order_by('-pk')
+    return render(request, 'secretariat/validation_offre.html', {'offre_list': offre_list})
+
 
 """ @login_required
 @user_type_required('secretaire') """
@@ -262,7 +267,7 @@ def signup(request):
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
             user_type = user_form.cleaned_data['type_utilisateur']  
-            print('////////////////////////',user_type)
+            # print('////////////////////////',user_type)
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
                 etudiant = etudiant_form.save(commit=False)
@@ -293,7 +298,7 @@ def signup(request):
                 secretaire.save()
                 return redirect('lesApprentiStage:home')
 
-    user_form = UtilisateurForm(request.POST)  # Ajoutez le request.POST ici pour voir les erreurs
+    user_form = UtilisateurForm(request.POST)
     etudiant_form = EtudiantForm()
     enseignant_form = EnseignantForm()
     secretaire_form = SecretaireForm()
@@ -345,7 +350,6 @@ def search(request):
         data = list(results)
         return JsonResponse(data, safe=False)
 
-    # Obtenez toutes les promotions pour l'affichage dans le formulaire
     promotions = Promo.objects.all()
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type, "promotions": promotions})
 
@@ -361,6 +365,7 @@ def contrats_non_valides(request):
 def valider_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     contrat.estValide = True
+    contrat.etat = 0
     contrat.save()
     return redirect('lesApprentiStage:contrats_non_valides')
 
@@ -561,8 +566,6 @@ def desinscrireSoutenance(request,id):
     unesoutenance.candide = None
     unesoutenance.save()
     return redirect('lesApprentiStage:soutenance')
-
-
 
 
 @login_required
