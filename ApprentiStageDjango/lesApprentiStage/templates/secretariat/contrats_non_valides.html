@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load custom_filters %} 
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="mx-auto">
+            <div class="profile-edit-wrapper">
+                <div class="profile-edit-card">
+                    <h2 class="text-center mb-4">Validation des Contrats</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Étudiant</th>
+                                <th>Entreprise</th>
+                                <th>Date de Début</th>
+                                <th>Date de Fin</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrat in contrats_non_valides %}
+                                <tr>
+                                    <td>{{ contrat.type }}</td>
+                                    <td>{{ contrat.etudiant }}</td>
+                                    <td>{{ contrat.entreprise }}</td>
+                                    <td>{{ contrat.dateDeb }}</td>
+                                    <td>{{ contrat.dateFin }}</td>
+                                    <td>
+                                        <a href="{% url 'lesApprentiStage:valider_contrat' contrat.id %}" class="btn btn-success mr-2">Valider</a>
+                                        <a href="{% url 'lesApprentiStage:refuser_contrat' contrat.id %}" class="btn btn-danger mr-2">Refuser</a>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
+                                            Voir Détails
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalContrat{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="modalContrat{{ contrat.id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalContrat{{ contrat.id }}Label">Détails du Contrat</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Type :</strong> {{ contrat.type }}</p>
+                                                <p><strong>titre :</strong> {{ contrat.titre }}</p>
+                                                <p><strong>Étudiant :</strong> {{ contrat.etudiant }}</p>
+                                                <p><strong>Entreprise :</strong> {{ contrat.entreprise }}</p>
+                                                <p><strong>Date de Début :</strong> {{ contrat.dateDeb }}</p>
+                                                <p><strong>Date de Fin :</strong> {{ contrat.dateFin }}</p>
+                                                <p><strong>Description :</strong> {{ contrat.description }}</p>
+                                                <!-- Ajoutez d'autres informations importantes ici -->
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block additional_css %}
+<style>
+    .profile-edit-wrapper {
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 10px;
+        border: 1px solid #e3e3e3;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        height: 700px; 
+        overflow-y: auto;
+    }
+    .profile-edit-card {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .table {
+        margin-top: 20px;
+    }
+</style>
+
+{% endblock %}

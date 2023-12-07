@@ -155,7 +155,7 @@ class Contrat(models.Model):
     gratification = models.CharField(max_length=50,null=True)
     dateDeb = models.DateField()
     dateFin = models.DateField()
-    estValide = models.BooleanField(default=False)
+    estValide = models.BooleanField(null=True)
     etudiant = models.ForeignKey(ProfilEtudiant, on_delete=models.CASCADE)
     enseignant = models.ForeignKey(ProfilEnseignant, on_delete=models.CASCADE,null=True)
     tuteur = models.ForeignKey(Tuteur, on_delete=models.CASCADE,null=True)
