@@ -44,5 +44,6 @@ urlpatterns = [
     path('contrats_non_valides/', views.contrats_non_valides, name='contrats_non_valides'),
     path('valider_contrat/<int:contrat_id>/', views.valider_contrat, name='valider_contrat'),
     path('refuser_contrat/<int:contrat_id>/', views.refuser_contrat, name='refuser_contrat'),
-
+    path('upload_convention/', views.upload_convention, name='upload_convention'),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
