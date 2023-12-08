@@ -23,6 +23,7 @@ from django.contrib.auth.hashers import make_password
 from datetime import date
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.mail import send_mail
 
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
@@ -383,17 +384,21 @@ def upload_convention(request):
         contrat_id = request.POST.get('contrat_id')
         fichier_upload = request.FILES.get('fichier')
 
-        # print("Contrat ID:", contrat_id) 
-        # print("Fichier:", fichier_upload)
-
         if fichier_upload:
             contrat = get_object_or_404(Contrat, pk=contrat_id)
+            etudiant_email = contrat.etudiant.mailEtu
             document, created = Document.objects.update_or_create(
                 contrat=contrat,
                 defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
             )
             contrat.etat = 1
             contrat.save()
+
+            sujet = "Nouvelle Convention Téléversée"
+            message = "Une nouvelle convention a été téléversée et nécessite votre attention."
+            destinataire = ['rochdi53sami@gmail.com']
+
+            send_mail(sujet, message, 'samidevtest53@gmail.com', destinataire)
             return HttpResponse("Fichier uploadé avec succès !")
         else:
             return HttpResponse("Aucun fichier fourni.", status=400)
@@ -424,15 +429,23 @@ def upload_convention_secretaire(request):
     if request.method == 'POST':
         contrat_id = request.POST.get('contrat_id')
         fichier_upload = request.FILES.get('fichier')
-
+        
         if fichier_upload:
             contrat = get_object_or_404(Contrat, pk=contrat_id)
+            etudiant_email = contrat.etudiant.mailEtu
             document, created = Document.objects.update_or_create(
                 contrat=contrat,
                 defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
             )
             contrat.etat = "2"
             contrat.save()
+
+            sujet = "Nouvelle Convention Téléversée"
+            message = "Une nouvelle convention a été téléversée et nécessite votre attention."
+            destinataire = [etudiant_email]
+
+            send_mail(sujet, message, 'samidevtest53@gmail.com', destinataire)
+
             return JsonResponse({'success': True, 'message': 'Fichier uploadé avec succès !'})
         else:
             return JsonResponse({'success': False, 'message': 'Aucun fichier fourni !'})
