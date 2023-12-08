@@ -402,6 +402,45 @@ def upload_convention(request):
 
 
 @login_required
+@user_type_required('secretaire')
+def liste_contrats_signes(request):
+    contrats_signes = Contrat.objects.filter(etat='1')
+    for contrat in contrats_signes:
+        # Supposons que vous avez une relation de un à un entre Contrat et Document
+        contrat.document = Document.objects.filter(contrat=contrat).first()
+    return render(request, 'secretariat/liste_contrats_signes.html', {'contrats_signes': contrats_signes})
+
+@login_required
+@user_type_required('secretaire')
+def telecharger_convention_secretaire(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    response = HttpResponse(document.fichier.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = f'attachment; filename="{document.titre}"'
+    return response
+
+@login_required
+@user_type_required('secretaire')
+def upload_convention_secretaire(request):
+    if request.method == 'POST':
+        contrat_id = request.POST.get('contrat_id')
+        fichier_upload = request.FILES.get('fichier')
+
+        if fichier_upload:
+            contrat = get_object_or_404(Contrat, pk=contrat_id)
+            document, created = Document.objects.update_or_create(
+                contrat=contrat,
+                defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
+            )
+            contrat.etat = "2"
+            contrat.save()
+            return JsonResponse({'success': True, 'message': 'Fichier uploadé avec succès !'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Aucun fichier fourni !'})
+            
+    return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
+
+
+@login_required
 def soutenance(request):
     print(request.user.type_utilisateur)
     user_type_to_view_func = {
