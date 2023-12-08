@@ -56,7 +56,7 @@
                             <button class="btn btn-secondary btn-sm" type="button" data-toggle="modal" data-target="#contratDetail{{ contrat.id }}">
                                 Détails
                             </button>
-                            {% if contrat.estValide %}
+                            {% if contrat.estValide and contrat.etat is None  %}
                                 <a href="{% url 'lesApprentiStage:generer_convention_view' contrat.id %}" class="btn btn-success btn-sm">Générer Convention</a>
                             {% endif %}
                             {% if contrat.etat == '0' %}
@@ -139,18 +139,17 @@
                 <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
                     <ul class="list-group list-group-flush">
                         {% for document in documents %}
-                        <li class="list-group-item">
-                            {% if contrat.etat == "1" %}
-                                <p>convention signé par l'etudiant et l'entreprise: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
-                            {% elif contrat.etat == "2" %}
-                                <p>convention signé par tous: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
-                            {% else %}                    
-                                <p>convention non signé: <a href="{{ document.fichier.url }}"> {{ document.titre }}</a></p>
-                            {% endif %}
-
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item">Aucun document trouvé.</li>
+                            <li class="list-group-item">
+                                {% if document.contrat.etat == "1" %}
+                                    <p>Convention signée par l'étudiant et l'entreprise: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
+                                {% elif document.contrat.etat == "2" %}
+                                    <p>Convention signée par tous: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
+                                {% else %}                    
+                                    <p>Convention non signée: <a href="{{ document.fichier.url }}"> {{ document.titre }}</a></p>
+                                {% endif %}
+                            </li>
+                            {% empty %}
+                                <li class="list-group-item">Aucun document trouvé.</li>
                         {% endfor %}
                     </ul>
                 </div>

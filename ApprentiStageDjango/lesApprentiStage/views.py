@@ -383,8 +383,8 @@ def upload_convention(request):
         contrat_id = request.POST.get('contrat_id')
         fichier_upload = request.FILES.get('fichier')
 
-        print("Contrat ID:", contrat_id)  # Ajouter pour le débogage
-        print("Fichier:", fichier_upload)  # Ajouter pour le débogage
+        # print("Contrat ID:", contrat_id) 
+        # print("Fichier:", fichier_upload)
 
         if fichier_upload:
             contrat = get_object_or_404(Contrat, pk=contrat_id)
@@ -392,6 +392,8 @@ def upload_convention(request):
                 contrat=contrat,
                 defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
             )
+            contrat.etat = 1
+            contrat.save()
             return HttpResponse("Fichier uploadé avec succès !")
         else:
             return HttpResponse("Aucun fichier fourni.", status=400)
