@@ -280,3 +280,8 @@ class OffreFormFini(forms.ModelForm):
 
 class ConventionUploadForm(forms.Form):
     fichier = forms.FileField(label='Sélectionnez votre fichier')
+
+class ContratForm(forms.ModelForm):
+    class Meta:
+        model = Contrat
+        fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']

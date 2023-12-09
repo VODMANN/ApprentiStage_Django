@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-3 p-3">
+    <h2>Ajouter un Contrat</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <a href="{% url 'lesApprentiStage:liste_contrats' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

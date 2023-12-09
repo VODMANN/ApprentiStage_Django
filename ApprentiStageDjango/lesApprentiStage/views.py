@@ -24,6 +24,8 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.mail import send_mail
+from django_filters import FilterSet, CharFilter
+from .filters import *
 
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
@@ -404,6 +406,52 @@ def upload_convention(request):
             return HttpResponse("Aucun fichier fourni.", status=400)
 
     return HttpResponse("Requête invalide.", status=400)
+
+
+
+
+
+
+
+def liste_contrats(request):
+    contrats = Contrat.objects.all()
+    contrat_filter = ContratFilter(request.GET, queryset=contrats)
+    context = {
+        'contrats': contrat_filter.qs,
+        'contrat_filter': contrat_filter,
+    }
+    return render(request, 'secretariat/contrats/liste_contrats.html', context)
+
+# Création d'un nouveau contrat
+def creer_contrat(request):
+    if request.method == 'POST':
+        form = ContratForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_contrats')
+    else:
+        form = ContratForm()
+    return render(request, 'secretariat/contrats/creer_contrat.html', {'form': form})
+
+# Modification d'un contrat existant
+def modifier_contrat(request, pk):
+    contrat = get_object_or_404(Contrat, pk=pk)
+    if request.method == 'POST':
+        form = ContratForm(request.POST, instance=contrat)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_contrats')
+    else:
+        form = ContratForm(instance=contrat)
+    return render(request, 'secretariat/contrats/modifier_contrat.html', {'form': form, 'contrat': contrat})
+
+# Suppression d'un contrat
+def supprimer_contrat(request, pk):
+    contrat = get_object_or_404(Contrat, pk=pk)
+    if request.method == 'POST':
+        contrat.delete()
+        return redirect('lesApprentiStage:liste_contrats')
+    return render(request, 'secretariat/contrats/supprimer_contrat.html', {'contrat': contrat})
 
 
 @login_required

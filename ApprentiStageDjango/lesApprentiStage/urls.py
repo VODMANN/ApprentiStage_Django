@@ -48,5 +48,9 @@ urlpatterns = [
     path('liste_contrats_signes/', views.liste_contrats_signes, name='liste_contrats_signes'),
     path('telecharger_convention_secretaire/<int:document_id>/', views.telecharger_convention_secretaire, name='telecharger_convention_secretaire'),
     path('upload_convention_secretaire/', views.upload_convention_secretaire, name='upload_convention_secretaire'),
+    path('contrats/', views.liste_contrats, name='liste_contrats'),
+    path('contrats/creer/', views.creer_contrat, name='creer_contrat'),
+    path('contrats/modifier/<int:pk>/', views.modifier_contrat, name='modifier_contrat'),
+    path('contrats/supprimer/<int:pk>/', views.supprimer_contrat, name='supprimer_contrat'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
