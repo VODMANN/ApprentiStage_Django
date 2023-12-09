@@ -411,7 +411,6 @@ def upload_convention(request):
 def liste_contrats_signes(request):
     contrats_signes = Contrat.objects.filter(etat='1')
     for contrat in contrats_signes:
-        # Supposons que vous avez une relation de un à un entre Contrat et Document
         contrat.document = Document.objects.filter(contrat=contrat).first()
     return render(request, 'secretariat/liste_contrats_signes.html', {'contrats_signes': contrats_signes})
 
