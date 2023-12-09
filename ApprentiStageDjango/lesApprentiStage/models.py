@@ -208,7 +208,7 @@ class Soutenance(models.Model):
 
 class Document(models.Model):
     titre = models.CharField(max_length=255)
-    fichier = models.FileField(upload_to='documents/')  # Dossier de stockage des fichiers
+    fichier = models.FileField(upload_to='documents/')
     contrat = models.ForeignKey('Contrat', on_delete=models.CASCADE)
 
     def __str__(self):

@@ -56,8 +56,11 @@
                             <button class="btn btn-secondary btn-sm" type="button" data-toggle="modal" data-target="#contratDetail{{ contrat.id }}">
                                 Détails
                             </button>
-                            {% if contrat.estValide %}
+                            {% if contrat.estValide and contrat.etat is None  %}
                                 <a href="{% url 'lesApprentiStage:generer_convention_view' contrat.id %}" class="btn btn-success btn-sm">Générer Convention</a>
+                            {% endif %}
+                            {% if contrat.etat == '0' %}
+                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#uploadModal{{ contrat.id }}">Téléverser Convention Signée</button>
                             {% endif %}
                             <!-- Modal pour les détails du contrat -->
                             <div class="modal fade" id="contratDetail{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="contratDetailLabel" aria-hidden="true">
@@ -102,6 +105,30 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="uploadModal{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="uploadModalLabel">Téléverser votre Convention Signée</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" enctype="multipart/form-data" action="{% url 'lesApprentiStage:upload_convention' %}" id="uploadForm{{ contrat.id }}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="contrat_id" value="{{ contrat.id }}">
+                                                <input type="file" name="fichier">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                            <button type="submit" form="uploadForm{{ contrat.id }}" class="btn btn-primary">Téléverser</button>
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                         {% empty %}
                         <li class="list-group-item">Aucun contrat trouvé.</li>
@@ -112,15 +139,20 @@
                 <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
                     <ul class="list-group list-group-flush">
                         {% for document in documents %}
-                        <li class="list-group-item">
-                            <a href="{{ document.fichier.url }}">{{ document.titre }}</a>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item">Aucun document trouvé.</li>
+                            <li class="list-group-item">
+                                {% if document.contrat.etat == "1" %}
+                                    <p>Convention signée par l'étudiant et l'entreprise: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
+                                {% elif document.contrat.etat == "2" %}
+                                    <p>Convention signée par tous: <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
+                                {% else %}                    
+                                    <p>Convention non signée: <a href="{{ document.fichier.url }}"> {{ document.titre }}</a></p>
+                                {% endif %}
+                            </li>
+                            {% empty %}
+                                <li class="list-group-item">Aucun document trouvé.</li>
                         {% endfor %}
                     </ul>
                 </div>
-                
                 
                 <!-- Onglet Évaluations -->
                 <div class="tab-pane fade" id="evaluations" role="tabpanel" aria-labelledby="evaluations-tab">
@@ -263,4 +295,26 @@
 }
 
 </style>
+<script>
+    $(document).ready(function () {
+        $('[id^=uploadForm]').on('submit', function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'lesApprentiStage:upload_convention' %}",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('.modal').modal('hide');
+                    location.reload(); 
+                },
+                error: function (error) {
+                    console.error("Erreur lors de l'upload: ", error);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

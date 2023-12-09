@@ -44,5 +44,9 @@ urlpatterns = [
     path('contrats_non_valides/', views.contrats_non_valides, name='contrats_non_valides'),
     path('valider_contrat/<int:contrat_id>/', views.valider_contrat, name='valider_contrat'),
     path('refuser_contrat/<int:contrat_id>/', views.refuser_contrat, name='refuser_contrat'),
+    path('upload_convention/', views.upload_convention, name='upload_convention'),
+    path('liste_contrats_signes/', views.liste_contrats_signes, name='liste_contrats_signes'),
+    path('telecharger_convention_secretaire/<int:document_id>/', views.telecharger_convention_secretaire, name='telecharger_convention_secretaire'),
+    path('upload_convention_secretaire/', views.upload_convention_secretaire, name='upload_convention_secretaire'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

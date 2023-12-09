@@ -5,7 +5,7 @@ from .utils import generer_convention
 
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import redirect_to_login
 
@@ -23,6 +23,7 @@ from django.contrib.auth.hashers import make_password
 from datetime import date
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.mail import send_mail
 
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
@@ -376,6 +377,79 @@ def refuser_contrat(request, contrat_id):
     contrat.estValide = False
     contrat.save()
     return redirect('lesApprentiStage:contrats_non_valides')
+
+@login_required
+def upload_convention(request):
+    if request.method == 'POST':
+        contrat_id = request.POST.get('contrat_id')
+        fichier_upload = request.FILES.get('fichier')
+
+        if fichier_upload:
+            contrat = get_object_or_404(Contrat, pk=contrat_id)
+            etudiant_email = contrat.etudiant.mailEtu
+            document, created = Document.objects.update_or_create(
+                contrat=contrat,
+                defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
+            )
+            contrat.etat = 1
+            contrat.save()
+
+            sujet = "Nouvelle Convention Téléversée"
+            message = "Une nouvelle convention a été téléversée et nécessite votre attention."
+            destinataire = ['rochdi53sami@gmail.com']
+
+            send_mail(sujet, message, 'samidevtest53@gmail.com', destinataire)
+            return HttpResponse("Fichier uploadé avec succès !")
+        else:
+            return HttpResponse("Aucun fichier fourni.", status=400)
+
+    return HttpResponse("Requête invalide.", status=400)
+
+
+@login_required
+@user_type_required('secretaire')
+def liste_contrats_signes(request):
+    contrats_signes = Contrat.objects.filter(etat='1')
+    for contrat in contrats_signes:
+        contrat.document = Document.objects.filter(contrat=contrat).first()
+    return render(request, 'secretariat/liste_contrats_signes.html', {'contrats_signes': contrats_signes})
+
+@login_required
+@user_type_required('secretaire')
+def telecharger_convention_secretaire(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    response = HttpResponse(document.fichier.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = f'attachment; filename="{document.titre}"'
+    return response
+
+@login_required
+@user_type_required('secretaire')
+def upload_convention_secretaire(request):
+    if request.method == 'POST':
+        contrat_id = request.POST.get('contrat_id')
+        fichier_upload = request.FILES.get('fichier')
+        
+        if fichier_upload:
+            contrat = get_object_or_404(Contrat, pk=contrat_id)
+            etudiant_email = contrat.etudiant.mailEtu
+            document, created = Document.objects.update_or_create(
+                contrat=contrat,
+                defaults={'fichier': fichier_upload, 'titre': fichier_upload.name}
+            )
+            contrat.etat = "2"
+            contrat.save()
+
+            sujet = "Nouvelle Convention Téléversée"
+            message = "Une nouvelle convention a été téléversée et nécessite votre attention."
+            destinataire = [etudiant_email]
+
+            send_mail(sujet, message, 'samidevtest53@gmail.com', destinataire)
+
+            return JsonResponse({'success': True, 'message': 'Fichier uploadé avec succès !'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Aucun fichier fourni !'})
+            
+    return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
 
 
 @login_required
@@ -774,21 +848,18 @@ def recherche_offres(request):
     if date_max:
         queryset = queryset.filter(datePublication__lte=date_max)
 
-    # Recherche sur plusieurs champs en utilisant Q objects
     if query:
         queryset = queryset.filter(
             Q(titre__icontains=query) |
             Q(description__icontains=query) |
             Q(competences__icontains=query)
         )
-    # Renommez 'results' en 'queryset' pour être cohérent avec le filtrage ci-dessus
     return render(request, 'etudiant/recherche_offres.html', {'results': queryset, 'theme': theme, 'entreprise': entreprise})
 
 
 @login_required
 def edit_etudiant(request):
     if request.user.type_utilisateur != 'etudiant':
-        # Rediriger l'utilisateur ou afficher une erreur car il n'est pas un étudiant
         return redirect('page_d_erreur')
 
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
@@ -797,9 +868,7 @@ def edit_etudiant(request):
         form = EtudiantProfilForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
             form.save()
-            # Ajouter un message de succès
             messages.success(request, "Votre profil a été mis à jour avec succès.")
-            # Rediriger l'utilisateur vers une autre page, comme le tableau de bord
             return redirect('lesApprentiStage:home')
     else:
         form = EtudiantProfilForm(instance=profil_etudiant)
@@ -815,7 +884,6 @@ def profile(request):
     evaluations = Evaluation.objects.filter(contrat__etudiant=etudiant)
     soutenance = Soutenance.objects.filter(idContrat__etudiant=request.user.profiletudiant)
     print(soutenance)
-    # Vous pouvez ajouter d'autres éléments si besoin
 
     context = {
         'etudiant': etudiant,
@@ -839,10 +907,6 @@ def generer_convention_view(request, contrat_id):
         return HttpResponse("Contrat non valide ou inexistant.")
 
 
-from django.contrib.auth.hashers import make_password
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Departement, Utilisateur, ProfilEtudiant, Promo
 
 def upload_csv(request):
     if request.method == "GET":

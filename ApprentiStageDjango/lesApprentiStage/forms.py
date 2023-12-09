@@ -277,3 +277,6 @@ class OffreFormFini(forms.ModelForm):
         fields = ['titre','mailRh','duree','description','competences','entreprise','theme','datePublication']
 
 
+
+class ConventionUploadForm(forms.Form):
+    fichier = forms.FileField(label='Sélectionnez votre fichier')
