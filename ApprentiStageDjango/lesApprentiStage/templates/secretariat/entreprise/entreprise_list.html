@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Liste des Entreprises</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Nom de l'entreprise</th>
+          <th>Adresse</th>
+          <th>Ville</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entreprise in entreprises %}
+          <tr>
+            <td>{{ entreprise.nomEnt }}</td>
+            <td>{{ entreprise.adresseEnt }}</td>
+            <td>{{ entreprise.villeEnt }}</td>
+            <td>
+              <a href="{% url 'lesApprentiStage:detail_entreprise' entreprise.pk %}" class="btn btn-info btn-sm">
+                <i class="fas fa-info-circle"></i> Détails
+              </a>
+              <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Modifier
+              </a>
+              <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
+                <i class="fas fa-trash"></i> Supprimer
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success btn-float">
+      <i class="fas fa-plus"></i> Créer une nouvelle entreprise
+    </a>
+  </div>
+{% endblock %}

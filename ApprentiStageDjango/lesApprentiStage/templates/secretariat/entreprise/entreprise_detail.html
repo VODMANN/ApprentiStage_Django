@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Détails de l'entreprise</h2>
+    <dl class="row">
+      <dt class="col-sm-3">Nom de l'entreprise :</dt>
+      <dd class="col-sm-9">{{ entreprise.nomEnt }}</dd>
+
+      <dt class="col-sm-3">Adresse :</dt>
+      <dd class="col-sm-9">{{ entreprise.adresseEnt }}</dd>
+
+      <dt class="col-sm-3">Code postal :</dt>
+      <dd class="col-sm-9">{{ entreprise.cpEnt }}</dd>
+
+      <dt class="col-sm-3">Ville :</dt>
+      <dd class="col-sm-9">{{ entreprise.villeEnt }}</dd>
+
+      <dt class="col-sm-3">Forme juridique :</dt>
+      <dd class="col-sm-9">{{ entreprise.formeJuridique }}</dd>
+
+      <dt class="col-sm-3">Téléphone :</dt>
+      <dd class="col-sm-9">{{ entreprise.telEnt }}</dd>
+
+      <dt class="col-sm-3">Site Web :</dt>
+      <dd class="col-sm-9">{{ entreprise.siteWeb }}</dd>
+
+      <dt class="col-sm-3">Numéro SIREN :</dt>
+      <dd class="col-sm-9">{{ entreprise.numSiren }}</dd>
+
+      <dt class="col-sm-3">Email :</dt>
+      <dd class="col-sm-9">{{ entreprise.mailEnt }}</dd>
+    </dl>
+    <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-primary">Modifier</a>
+    <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger">Supprimer</a>
+    <a href="{% url 'lesApprentiStage:liste_entreprises' %}" class="btn btn-secondary">Retour à la liste des entreprises</a>
+  </div>
+{% endblock %}

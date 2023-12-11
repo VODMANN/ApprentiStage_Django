@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from .utils import generer_convention
 
@@ -452,6 +454,44 @@ def supprimer_contrat(request, pk):
         contrat.delete()
         return redirect('lesApprentiStage:liste_contrats')
     return render(request, 'secretariat/contrats/supprimer_contrat.html', {'contrat': contrat})
+
+
+
+
+
+
+
+# Vue pour créer une nouvelle entreprise
+class EntrepriseCreateView(CreateView):
+    model = Entreprise
+    form_class = EntrepriseForm
+    template_name = 'secretariat/entreprise/entreprise_create.html'  
+    success_url = reverse_lazy('lesApprentiStage:liste_entreprises')  
+
+class EntrepriseListView(ListView):
+    model = Entreprise
+    template_name = 'secretariat/entreprise/entreprise_list.html' 
+    context_object_name = 'entreprises' 
+
+class EntrepriseDetailView(DetailView):
+    model = Entreprise
+    template_name = 'secretariat/entreprise/entreprise_detail.html' 
+    context_object_name = 'entreprise' 
+
+class EntrepriseUpdateView(UpdateView):
+    model = Entreprise
+    form_class = EntrepriseForm
+    template_name = 'secretariat/entreprise/entreprise_update.html' 
+    context_object_name = 'entreprise' 
+    success_url = reverse_lazy('lesApprentiStage:liste_entreprises')  
+
+class EntrepriseDeleteView(DeleteView):
+    model = Entreprise
+    template_name = 'secretariat/entreprise/entreprise_confirm_delete.html' 
+    context_object_name = 'entreprise' 
+    success_url = reverse_lazy('lesApprentiStage:liste_entreprises') 
+
+
 
 
 @login_required

@@ -52,5 +52,9 @@ urlpatterns = [
     path('contrats/creer/', views.creer_contrat, name='creer_contrat'),
     path('contrats/modifier/<int:pk>/', views.modifier_contrat, name='modifier_contrat'),
     path('contrats/supprimer/<int:pk>/', views.supprimer_contrat, name='supprimer_contrat'),
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('entreprises/', views.EntrepriseListView.as_view(), name='liste_entreprises'),
+    path('entreprise/<int:pk>/', views.EntrepriseDetailView.as_view(), name='detail_entreprise'),
+    path('entreprise/create/', views.EntrepriseCreateView.as_view(), name='creer_entreprise'),
+    path('entreprise/<int:pk>/update/', views.EntrepriseUpdateView.as_view(), name='modifier_entreprise'),
+    path('entreprise/<int:pk>/delete/', views.EntrepriseDeleteView.as_view(), name='supprimer_entreprise'),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
