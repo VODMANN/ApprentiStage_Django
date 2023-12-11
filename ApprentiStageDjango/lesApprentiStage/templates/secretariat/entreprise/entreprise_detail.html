@@ -3,36 +3,81 @@
 {% block content %}
   <div class="container mt-4">
     <h2 class="mb-4">Détails de l'entreprise</h2>
-    <dl class="row">
-      <dt class="col-sm-3">Nom de l'entreprise :</dt>
-      <dd class="col-sm-9">{{ entreprise.nomEnt }}</dd>
+    <div class="entreprise-card">
+      <dl class="row">
+        <dt class="col-sm-3">Nom de l'entreprise :</dt>
+        <dd class="col-sm-9">{{ entreprise.nomEnt }}</dd>
 
-      <dt class="col-sm-3">Adresse :</dt>
-      <dd class="col-sm-9">{{ entreprise.adresseEnt }}</dd>
+        <dt class="col-sm-3">Adresse :</dt>
+        <dd class="col-sm-9">{{ entreprise.adresseEnt }}</dd>
 
-      <dt class="col-sm-3">Code postal :</dt>
-      <dd class="col-sm-9">{{ entreprise.cpEnt }}</dd>
+        <dt class="col-sm-3">Code postal :</dt>
+        <dd class="col-sm-9">{{ entreprise.cpEnt }}</dd>
 
-      <dt class="col-sm-3">Ville :</dt>
-      <dd class="col-sm-9">{{ entreprise.villeEnt }}</dd>
+        <dt class="col-sm-3">Ville :</dt>
+        <dd class="col-sm-9">{{ entreprise.villeEnt }}</dd>
 
-      <dt class="col-sm-3">Forme juridique :</dt>
-      <dd class="col-sm-9">{{ entreprise.formeJuridique }}</dd>
+        <dt class="col-sm-3">Forme juridique :</dt>
+        <dd class="col-sm-9">{{ entreprise.formeJuridique }}</dd>
 
-      <dt class="col-sm-3">Téléphone :</dt>
-      <dd class="col-sm-9">{{ entreprise.telEnt }}</dd>
+        <dt class="col-sm-3">Téléphone :</dt>
+        <dd class="col-sm-9">{{ entreprise.telEnt }}</dd>
 
-      <dt class="col-sm-3">Site Web :</dt>
-      <dd class="col-sm-9">{{ entreprise.siteWeb }}</dd>
+        <dt class="col-sm-3">Site Web :</dt>
+        <dd class="col-sm-9">{{ entreprise.siteWeb }}</dd>
 
-      <dt class="col-sm-3">Numéro SIREN :</dt>
-      <dd class="col-sm-9">{{ entreprise.numSiren }}</dd>
+        <dt class="col-sm-3">Numéro SIREN :</dt>
+        <dd class="col-sm-9">{{ entreprise.numSiren }}</dd>
 
-      <dt class="col-sm-3">Email :</dt>
-      <dd class="col-sm-9">{{ entreprise.mailEnt }}</dd>
-    </dl>
-    <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-primary">Modifier</a>
-    <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger">Supprimer</a>
-    <a href="{% url 'lesApprentiStage:liste_entreprises' %}" class="btn btn-secondary">Retour à la liste des entreprises</a>
+        <dt class="col-sm-3">Email :</dt>
+        <dd class="col-sm-9">{{ entreprise.mailEnt }}</dd>
+      </dl>
+    </div>
+    <div class="action-buttons">
+      <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-primary">
+        <i class="fas fa-edit"></i> Modifier
+      </a>
+      <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
+        <i class="fas fa-trash"></i> Supprimer
+      </a>
+      <a href="{% url 'lesApprentiStage:liste_entreprises' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour à la liste des entreprises
+      </a>
+    </div>
   </div>
+
+  <style>
+    .entreprise-card {
+      background-color: #f9f9f9;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    dl.row dt {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    dl.row dd {
+      margin-bottom: 10px;
+    }
+
+    .action-buttons a {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .action-buttons a i {
+      margin-right: 5px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .action-buttons {
+        text-align: center;
+        margin-top: 20px;
+      }
+    }
+  </style>
 {% endblock %}

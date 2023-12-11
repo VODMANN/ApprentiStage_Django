@@ -1,40 +1,96 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h2 class="mb-4">Liste des Entreprises</h2>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Nom de l'entreprise</th>
-          <th>Adresse</th>
-          <th>Ville</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entreprise in entreprises %}
-          <tr>
-            <td>{{ entreprise.nomEnt }}</td>
-            <td>{{ entreprise.adresseEnt }}</td>
-            <td>{{ entreprise.villeEnt }}</td>
-            <td>
-              <a href="{% url 'lesApprentiStage:detail_entreprise' entreprise.pk %}" class="btn btn-info btn-sm">
-                <i class="fas fa-info-circle"></i> Détails
-              </a>
-              <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-warning btn-sm">
-                <i class="fas fa-edit"></i> Modifier
-              </a>
-              <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
-                <i class="fas fa-trash"></i> Supprimer
-              </a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success btn-float">
-      <i class="fas fa-plus"></i> Créer une nouvelle entreprise
-    </a>
+<div class="container mt-4">
+  <h2>Liste des Entreprises</h2>
+
+  <!-- Barre de Recherche et Filtres -->
+  <!-- ... -->
+
+  <!-- Sections des Entreprises -->
+  <div class="entreprise-list">
+    {% for entreprise in entreprises %}
+      <div class="entreprise-section">
+        <div class="entreprise-info">
+          <h3>{{ entreprise.nomEnt }}</h3>
+          <p>{{ entreprise.adresseEnt }}, {{ entreprise.villeEnt }}</p>
+        </div>
+        <div class="entreprise-actions">
+          <a href="{% url 'lesApprentiStage:detail_entreprise' entreprise.pk %}" class="card-link btn btn-info">
+            Détails
+          </a>
+          <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="card-link btn btn-warning">
+             Modifier
+          </a>
+          <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="card-link btn btn-danger">
+             Supprimer
+          </a>
+        </div>
+      </div>
+    {% endfor %}
   </div>
+
+  <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success btn-add">
+    <i class="fas fa-plus"></i> Créer une nouvelle entreprise
+  </a></div>
+
+<style>
+  .entreprise-list {
+    margin-top: 20px;
+  }
+  
+  .entreprise-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: box-shadow 0.3s;
+  }
+  
+  .entreprise-section:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  .entreprise-info h3 {
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .entreprise-actions button {
+    margin-left: 10px;
+  }
+  
+  .btn-add {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 1.1em;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .btn-add:hover {
+    background-color: #218838;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .entreprise-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .entreprise-actions {
+      margin-top: 10px;
+      width: 100%;
+      text-align: right;
+    }
+  }
+  
+</style>
 {% endblock %}
