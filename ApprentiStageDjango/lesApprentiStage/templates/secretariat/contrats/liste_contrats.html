@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="get">
+                        {{ contrat_filter.form.as_p }}
+                        <button type="submit" class="btn btn-primary">Filtrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2 class="mb-4 mt-4">Liste des Contrats</h2>
+            <div class="card shadow" style="max-height: 600px; overflow-y: auto;">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Titre</th>
+                                    <th>Type</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contrat in contrat_filter.qs %}
+                                <tr>
+                                    <td>{{ contrat.titre }}</td>
+                                    <td>{{ contrat.type }}</td>
+                                    <td>
+                                        <div class="btn-group ml-2" role="group">
+                                            <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-primary btn-sm">Modifier</a>
+                                            <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
+                                                Voir Détails
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <div class="modal fade" id="modalContrat{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="modalContrat{{ contrat.id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalContrat{{ contrat.id }}Label">Détails du Contrat</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Type :</strong> {{ contrat.type }}</p>
+                                                <p><strong>Titre :</strong> {{ contrat.titre }}</p>
+                                                <p><strong>Étudiant :</strong> {{ contrat.etudiant }}</p>
+                                                <p><strong>Entreprise :</strong> {{ contrat.entreprise }}</p>
+                                                <p><strong>Date de Début :</strong> {{ contrat.dateDeb }}</p>
+                                                <p><strong>Date de Fin :</strong> {{ contrat.dateFin }}</p>
+                                                <p><strong>Description :</strong> {{ contrat.description }}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

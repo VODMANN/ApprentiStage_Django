@@ -151,7 +151,7 @@ class Contrat(models.Model):
     titre = models.CharField(max_length=100,null=True)
     description = models.TextField()
     competences = models.TextField(null=True)
-    etat = models.CharField(max_length=50)
+    etat = models.CharField(null=True,max_length=50)
     gratification = models.CharField(max_length=50,null=True)
     dateDeb = models.DateField()
     dateFin = models.DateField()

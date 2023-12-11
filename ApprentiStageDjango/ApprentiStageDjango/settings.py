@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "lesApprentiStage",
     'crispy_bootstrap4',
     'crispy_forms',
+    'django_filters',
+
 ]
 
 MIDDLEWARE = [
