@@ -2,11 +2,13 @@
 {% block content %}
 <div class="row m-3">
   <div class="col-md-auto d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 360px;">
-    <div class="col card p-2 mb-3 col-sm-auto">
-      <h2>Détails de l'étudiant</h2>
-      <p><strong>Nom :</strong> {{ etudiant.nomEtu }}</p>
-      <p><strong>Prénom :</strong> {{ etudiant.prenomEtu }}</p>
-      <p><strong>Numéro étudiant :</strong> {{ etudiant.numEtu }}</p>
+    <div class="card p-2 mb-3 col-sm-auto">
+      <h3>Détails de l'étudiant <button class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></h3>
+      <div class="m-2">
+        <strong>Nom :</strong> {{ etudiant.nomEtu }}<br>
+        <strong>Prénom :</strong> {{ etudiant.prenomEtu }}<br>
+        <strong>Numéro étudiant :</strong> {{ etudiant.numEtu }}
+      </div>
       <!-- Ajoutez d'autres détails de l'étudiant ici si nécessaire -->
     </div>
     <div class="accordion" id="accordionExample">
