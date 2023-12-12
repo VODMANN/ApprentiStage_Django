@@ -2,18 +2,18 @@
 {% load widget_tweaks %}
 {% block content %}
 
-<div style="margin: 0 6%;">
+<div style="margin: 0 4%;">
     <h2 class="mb-4 mt-4">Recherche</h2>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-auto">
             <div class="card shadow">
                 <div class="card-body">
                     <label>Rechercher :</label>
                     <select id="filtre_select" class="form-control mb-2">
                         <option selected value='contrat'>Contrat</option>
-                        <option value='etudiant'>ProfilEtudiant</option>
+                        <option value='etudiant'>Etudiant</option>
                         <option value='entreprise'>Entreprise</option>
-                        <option value='enseignant'>ProfilEnseignant</option>
+                        <option value='enseignant'>Enseignant</option>
                         <option value='promo'>Promo</option>
                         <option value='departements'>Departement</option>
                         <option value='offre'>Offre</option>
@@ -167,6 +167,545 @@
                                 <a href="#" class="btn btn-success">Créer un nouvel étudiant</a>
                             </div>
                         </div>
+                        <!-- Entreprise -->
+                        <div class="table-hidden" id="entreprise_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Numéro SIRET</th>
+                                        <th>Numéro SIREN</th>
+                                        <th>Adresse Email</th>
+                                        <th>Code NAF</th>
+                                        <!-- Ajoute d'autres en-têtes de colonnes en fonction de tes besoins -->
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entreprise in filters.entreprise_filter.qs %}
+                                        <tr>
+                                            <td>{{ entreprise.nomEnt }}</td>
+                                            <td>{{ entreprise.numSiret }}</td>
+                                            <td>{{ entreprise.numSiren }}</td>
+                                            <td>{{ entreprise.mailEnt }}</td>
+                                            <td>{{ entreprise.codeNaf }}</td>
+                                            <!-- Ajoute d'autres colonnes pour afficher les informations nécessaires -->
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <!-- Ajoute les boutons d'action ou de détails pour chaque entreprise -->
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEntreprise{{ entreprise.numSiret }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <!-- Ajoute d'autres boutons pour modifier ou supprimer l'entreprise si nécessaire -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Ajoute la modal pour afficher les détails de l'entreprise -->
+                                        <div class="modal fade" id="modalEntreprise{{ entreprise.numSiret }}" tabindex="-1" role="dialog" aria-labelledby="modalEntreprise{{ entreprise.numSiret }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalEntreprise{{ entreprise.numSiret }}Label">Détails de l'entreprise</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Nom :</strong> {{ entreprise.nomEnt }}</p>
+                                                        <p><strong>Numéro SIRET :</strong> {{ entreprise.numSiret }}</p>
+                                                        <p><strong>Numéro SIREN :</strong> {{ entreprise.numSiren }}</p>
+                                                        <p><strong>Adresse Email :</strong> {{ entreprise.mailEnt }}</p>
+                                                        <p><strong>Code NAF :</strong> {{ entreprise.codeNaf }}</p>
+                                                        <!-- Ajoute d'autres détails spécifiques de l'entreprise -->
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <!-- Ajoute d'autres boutons ou actions pour la modal si nécessaire -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Créer une nouvelle entreprise</a>
+                            </div>                            
+                        </div>
+                        <!-- Enseignant -->
+                        <div class="table-hidden" id="enseignant_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Adresse Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Rôle</th>
+                                        <th>Discipline</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enseignant in filters.enseignant_filter.qs %}
+                                        <tr>
+                                            <td>{{ enseignant.nomEnseignant }}</td>
+                                            <td>{{ enseignant.prenomEnseignant }}</td>
+                                            <td>{{ enseignant.mailEnseignant }}</td>
+                                            <td>{{ enseignant.telEnseignant }}</td>
+                                            <td>{{ enseignant.get_roleEnseignant_display }}</td>
+                                            <td>{{ enseignant.disciplineEnseignant }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEnseignant{{ enseignant.numHarpege }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalEnseignant{{ enseignant.numHarpege }}" tabindex="-1" role="dialog" aria-labelledby="modalEnseignant{{ enseignant.numHarpege }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalEnseignant{{ enseignant.numHarpege }}Label">Détails de l'enseignant</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Nom :</strong> {{ enseignant.nomEnseignant }}</p>
+                                                        <p><strong>Prénom :</strong> {{ enseignant.prenomEnseignant }}</p>
+                                                        <p><strong>Adresse Email :</strong> {{ enseignant.mailEnseignant }}</p>
+                                                        <p><strong>Téléphone :</strong> {{ enseignant.telEnseignant }}</p>
+                                                        <p><strong>Rôle :</strong> {{ enseignant.get_roleEnseignant_display }}</p>
+                                                        <p><strong>Discipline :</strong> {{ enseignant.disciplineEnseignant }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter un nouvel enseignant</a>
+                            </div>
+                        </div>
+                        <!-- Promo -->
+                        <div class="table-hidden" id="promo_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nom de la Promo</th>
+                                        <th>Année</th>
+                                        <th>Département</th>
+                                        <th>Parcours</th>
+                                        <th>Volume Horaire</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for promo in filters.promo_filter.qs %}
+                                        <tr>
+                                            <td>{{ promo.nomPromo }}</td>
+                                            <td>{{ promo.annee }}</td>
+                                            <td>{{ promo.departement }}</td>
+                                            <td>{{ promo.parcours }}</td>
+                                            <td>{{ promo.volumeHoraire }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPromo{{ promo.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalPromo{{ promo.id }}" tabindex="-1" role="dialog" aria-labelledby="modalPromo{{ promo.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalPromo{{ promo.id }}Label">Détails de la promotion</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Nom de la Promo :</strong> {{ promo.nomPromo }}</p>
+                                                        <p><strong>Année :</strong> {{ promo.annee }}</p>
+                                                        <p><strong>Département :</strong> {{ promo.departement }}</p>
+                                                        <p><strong>Parcours :</strong> {{ promo.parcours }}</p>
+                                                        <p><strong>Volume Horaire :</strong> {{ promo.volumeHoraire }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter une nouvelle promotion</a>
+                            </div>
+                        </div>
+                        <!-- Departement -->
+                        <div class="table-hidden" id="departement_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nom du Département</th>
+                                        <th>Adresse</th>
+                                        <th>Chef de Département</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for departement in filters.departement_filter.qs %}
+                                        <tr>
+                                            <td>{{ departement.nomDep }}</td>
+                                            <td>{{ departement.adresseDep }}</td>
+                                            <td>{{ departement.chef }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDepartement{{ departement.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalDepartement{{ departement.id }}" tabindex="-1" role="dialog" aria-labelledby="modalDepartement{{ departement.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalDepartement{{ departement.id }}Label">Détails du département</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Nom du Département :</strong> {{ departement.nomDep }}</p>
+                                                        <p><strong>Adresse :</strong> {{ departement.adresseDep }}</p>
+                                                        <p><strong>Chef de Département :</strong> {{ departement.chef }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter un nouveau département</a>
+                            </div>
+                        </div>
+                        <!-- Offre -->
+                        <div class="table-hidden" id="offre_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Titre</th>
+                                        <th>Description</th>
+                                        <th>Mail RH</th>
+                                        <th>Compétences</th>
+                                        <th>Durée</th>
+                                        <th>Date de Publication</th>
+                                        <th>Entreprise</th>
+                                        <th>Thème</th>
+                                        <th>Est publié</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for offre in filters.offre_filter.qs %}
+                                        <tr>
+                                            <td>{{ offre.titre }}</td>
+                                            <td>{{ offre.description }}</td>
+                                            <td>{{ offre.mailRh }}</td>
+                                            <td>{{ offre.competences }}</td>
+                                            <td>{{ offre.duree }}</td>
+                                            <td>{{ offre.datePublication }}</td>
+                                            <td>{{ offre.entreprise }}</td>
+                                            <td>{{ offre.theme }}</td>
+                                            <td>{% if offre.estPublie %} Oui {% else %} Non {% endif %}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalOffre{{ offre.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalOffre{{ offre.id }}" tabindex="-1" role="dialog" aria-labelledby="modalOffre{{ offre.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalOffre{{ offre.id }}Label">Détails de l'offre</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Titre :</strong> {{ offre.titre }}</p>
+                                                        <p><strong>Description :</strong> {{ offre.description }}</p>
+                                                        <p><strong>Mail RH :</strong> {{ offre.mailRh }}</p>
+                                                        <p><strong>Compétences :</strong> {{ offre.competences }}</p>
+                                                        <p><strong>Durée :</strong> {{ offre.duree }}</p>
+                                                        <p><strong>Date de Publication :</strong> {{ offre.datePublication }}</p>
+                                                        <p><strong>Entreprise :</strong> {{ offre.entreprise }}</p>
+                                                        <p><strong>Thème :</strong> {{ offre.theme }}</p>
+                                                        <p><strong>Est publié :</strong> {% if offre.estPublie %} Oui {% else %} Non {% endif %}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter une nouvelle offre</a>
+                            </div>
+                        </div>
+                        <!-- Salle -->
+                        <div class="table-hidden" id="salle_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Numéro de Salle</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for salle in filters.salle_filter.qs %}
+                                        <tr>
+                                            <td>{{ salle.numero }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSalle{{ salle.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalSalle{{ salle.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSalle{{ salle.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalSalle{{ salle.id }}Label">Détails de la salle</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Numéro de Salle :</strong> {{ salle.numero }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter une nouvelle salle</a>
+                            </div>
+                        </div>
+                        <!-- Soutenance -->
+                        <div class="table-hidden" id="soutenance_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date de Soutenance</th>
+                                        <th>Heure de Soutenance</th>
+                                        <th>Salle</th>
+                                        <th>ID Contrat</th>
+                                        <th>Candidat</th>
+                                        <th>Est Distanciel</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for soutenance in filters.soutenance_filter.qs %}
+                                        <tr>
+                                            <td>{{ soutenance.dateSoutenance }}</td>
+                                            <td>{{ soutenance.heureSoutenance }}</td>
+                                            <td>{{ soutenance.salle }}</td>
+                                            <td>{{ soutenance.idContrat }}</td>
+                                            <td>{{ soutenance.candide }}</td>
+                                            <td>{% if soutenance.estDistanciel %} Oui {% else %} Non {% endif %}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSoutenance{{ soutenance.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalSoutenance{{ soutenance.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSoutenance{{ soutenance.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalSoutenance{{ soutenance.id }}Label">Détails de la soutenance</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Date de Soutenance :</strong> {{ soutenance.dateSoutenance }}</p>
+                                                        <p><strong>Heure de Soutenance :</strong> {{ soutenance.heureSoutenance }}</p>
+                                                        <p><strong>Salle :</strong> {{ soutenance.salle }}</p>
+                                                        <p><strong>ID Contrat :</strong> {{ soutenance.idContrat }}</p>
+                                                        <p><strong>Candidat :</strong> {{ soutenance.candide }}</p>
+                                                        <p><strong>Est Distanciel :</strong> {% if soutenance.estDistanciel %} Oui {% else %} Non {% endif %}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter une nouvelle soutenance</a>
+                            </div>
+                        </div>
+                        <!-- Document -->
+                        <div class="table-hidden" id="document_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Titre</th>
+                                        <th>Fichier</th>
+                                        <th>Contrat</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for document in filters.document_filter.qs %}
+                                        <tr>
+                                            <td>{{ document.titre }}</td>
+                                            <td>{{ document.fichier }}</td>
+                                            <td>{{ document.contrat }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDocument{{ document.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalDocument{{ document.id }}" tabindex="-1" role="dialog" aria-labelledby="modalDocument{{ document.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalDocument{{ document.id }}Label">Détails du document</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Titre :</strong> {{ document.titre }}</p>
+                                                        <p><strong>Fichier :</strong> {{ document.fichier }}</p>
+                                                        <p><strong>Contrat :</strong> {{ document.contrat }}</p>
+                                                        <!-- Ajoutez d'autres détails du document si nécessaire -->
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter un nouveau document</a>
+                            </div>
+                        </div>
+                        <!-- Evaluation -->
+                        <div class="table-hidden" id="evaluation_table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Contrat</th>
+                                        <th>Enseignant</th>
+                                        <th>Note</th>
+                                        <th>Commentaire</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluation in filters.evaluation_filter.qs %}
+                                        <tr>
+                                            <td>{{ evaluation.contrat }}</td>
+                                            <td>{{ evaluation.enseignant }}</td>
+                                            <td>{{ evaluation.note }}</td>
+                                            <td>{{ evaluation.commentaire }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEvaluation{{ evaluation.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="modalEvaluation{{ evaluation.id }}" tabindex="-1" role="dialog" aria-labelledby="modalEvaluation{{ evaluation.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalEvaluation{{ evaluation.id }}Label">Détails de l'évaluation</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Contrat :</strong> {{ evaluation.contrat }}</p>
+                                                        <p><strong>Enseignant :</strong> {{ evaluation.enseignant }}</p>
+                                                        <p><strong>Note :</strong> {{ evaluation.note }}</p>
+                                                        <p><strong>Commentaire :</strong> {{ evaluation.commentaire }}</p>
+                                                        <!-- Ajoutez d'autres détails de l'évaluation si nécessaire -->
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Ajouter une nouvelle évaluation</a>
+                            </div>
+                        </div>
+                        <!-- FIN -->                                                                                                                                                
                     </div>
                 </div>
             </div>

@@ -51,6 +51,11 @@ class PromoFilter(filters.FilterSet):
         fields = ['nomPromo', 'annee', 'departement__nomDep']
 
 class EntrepriseFilter(filters.FilterSet):
+    nomEnt = django_filters.CharFilter(lookup_expr='icontains', label='Nom Entreprise')
+    mailEnt = django_filters.CharFilter(lookup_expr='icontains', label='Mail Entreprise')
+    codeNaf = django_filters.CharFilter(lookup_expr='icontains', label='Code NAF')
+    villeEnt = django_filters.CharFilter(lookup_expr='icontains', label='Ville Entreprise')
+    
     class Meta:
         model = Entreprise
         fields = ['nomEnt', 'mailEnt', 'codeNaf', 'villeEnt']
