@@ -410,14 +410,33 @@ def upload_convention(request):
 
 
 
+def liste_recherche(request):
+    filters = {
+        'contrat_filter': ContratFilter(request.GET, queryset=Contrat.objects.all()),
+        'etudiant_filter': ProfilEtudiantFilter(request.GET, queryset=ProfilEtudiant.objects.all()),
+        'entreprise_filter': EntrepriseFilter(request.GET, queryset=Entreprise.objects.all()),
+        'enseignant_filter': ProfilEnseignantFilter(request.GET, queryset=ProfilEnseignant.objects.all()),
+        'promo_filter': PromoFilter(request.GET, queryset=Promo.objects.all()),
+        'departements_filter': DepartementFilter(request.GET, queryset=Departement.objects.all()),
+        'offre_filter': OffreFilter(request.GET, queryset=Offre.objects.all()),
+        'salle_filter': SalleFilter(request.GET, queryset=Salle.objects.all()),
+        'soutenance_filter': SoutenanceFilter(request.GET, queryset=Soutenance.objects.all()),
+        'document_filter': DocumentFilter(request.GET, queryset=Document.objects.all()),
+        'evaluation_filter': EvaluationFilter(request.GET, queryset=Evaluation.objects.all()),
+    }
 
+    # Ajout des filtres au contexte
+    context = {
+        'filters': filters,
+    }
+
+    return render(request, 'secretariat/crud_master.html', context)
 
 
 def liste_contrats(request):
     contrats = Contrat.objects.all()
     contrat_filter = ContratFilter(request.GET, queryset=contrats)
     context = {
-        'contrats': contrat_filter.qs,
         'contrat_filter': contrat_filter,
     }
     return render(request, 'secretariat/contrats/liste_contrats.html', context)
@@ -502,7 +521,6 @@ def upload_convention_secretaire(request):
 
 @login_required
 def soutenance(request):
-    print(request.user.type_utilisateur)
     user_type_to_view_func = {
         'secretaire': soutenance_sec,
         'etudiant': soutenance_etu,

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div style="margin: 0 6%;">
+    <h2 class="mb-4 mt-4">Recherche</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <label>Rechercher :</label>
+                    <select id="filtre_select" class="form-control mb-2">
+                        <option selected value='contrat'>Contrat</option>
+                        <option value='etudiant'>ProfilEtudiant</option>
+                        <option value='entreprise'>Entreprise</option>
+                        <option value='enseignant'>ProfilEnseignant</option>
+                        <option value='promo'>Promo</option>
+                        <option value='departements'>Departement</option>
+                        <option value='offre'>Offre</option>
+                        <option value='salle'>Salle</option>
+                        <option value='soutenance'>Soutenance</option>
+                        <option value='document'>Document</option>
+                        <option value='evaluation'>Evaluation</option>
+                    </select>
+                    {% for filter_name, filter_instance in filters.items %}
+                        <div class="filtres-hidden" id="{{ filter_name }}">
+                            <form method="get">
+                                {% for field in filter_instance.form %}
+                                    {{ field.label_tag }}
+                                    {{ field|add_class:"form-control mb-2" }}
+                                {% endfor %}
+                                <button type="submit" class="btn btn-primary">Filtrer</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card shadow" style="overflow-y: auto;">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <!-- Contrat -->
+                        <div class="table-hidden" id="contrat_table">
+                            <table class="table table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th>Titre</th>
+                                        <th>Type</th>
+                                        <th>Etudiant</th>
+                                        <th>Entreprise</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contrat in filters.contrat_filter.qs %}
+                                    <tr>
+                                        <td>{{ contrat.titre }}</td>
+                                        <td>{{ contrat.type }}</td>
+                                        <td>{{ contrat.etudiant.prenomEtu }} {{ contrat.etudiant.nomEtu }}</td>
+                                        <td>{{ contrat.entreprise }}</td>
+                                        <td class="text-right">
+                                            <div class="btn-group ml-2" role="group">
+                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
+                                                    Voir Détails
+                                                </button>
+                                                <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <div class="modal fade" id="modalContrat{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="modalContrat{{ contrat.id }}Label" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalContrat{{ contrat.id }}Label">Détails du Contrat</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><strong>Type :</strong> {{ contrat.type }}</p>
+                                                    <p><strong>Titre :</strong> {{ contrat.titre }}</p>
+                                                    <p><strong>Étudiant :</strong> {{ contrat.etudiant }}</p>
+                                                    <p><strong>Entreprise :</strong> {{ contrat.entreprise }}</p>
+                                                    <p><strong>Date de Début :</strong> {{ contrat.dateDeb }}</p>
+                                                    <p><strong>Date de Fin :</strong> {{ contrat.dateFin }}</p>
+                                                    <p><strong>Description :</strong> {{ contrat.description }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
+                            </div>
+                        </div>
+                        <!-- Etudiants -->
+                        <div class="table-hidden" id="etudiant_table">
+                            <table class="table table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Adresse Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Date de Naissance</th>
+                                        <!-- Ajoute d'autres en-têtes de colonnes en fonction de tes besoins -->
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for etudiant in filters.etudiant_filter.qs %}
+                                        <tr>
+                                            <td>{{ etudiant.nomEtu }}</td>
+                                            <td>{{ etudiant.prenomEtu }}</td>
+                                            <td>{{ etudiant.mailEtu }}</td>
+                                            <td>{{ etudiant.telEtu }}</td>
+                                            <td>{{ etudiant.dateNEtu }}</td>
+                                            <!-- Ajoute d'autres colonnes pour afficher les informations nécessaires -->
+                                            <td class="text-right">
+                                                <div class="btn-group ml-2" role="group">
+                                                    <!-- Ajoute les boutons d'action ou de détails pour chaque étudiant -->
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEtudiant{{ etudiant.id }}">
+                                                        Voir Détails
+                                                    </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Ajoute la modal pour afficher les détails de l'étudiant -->
+                                        <div class="modal fade" id="modalEtudiant{{ etudiant.id }}" tabindex="-1" role="dialog" aria-labelledby="modalEtudiant{{ etudiant.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalEtudiant{{ etudiant.id }}Label">Détails de l'étudiant</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Nom :</strong> {{ etudiant.nomEtu }}</p>
+                                                        <p><strong>Prénom :</strong> {{ etudiant.prenomEtu }}</p>
+                                                        <p><strong>Adresse Email :</strong> {{ etudiant.mailEtu }}</p>
+                                                        <p><strong>Téléphone :</strong> {{ etudiant.telEtu }}</p>
+                                                        <p><strong>Date de Naissance :</strong> {{ etudiant.dateNEtu }}</p>
+                                                        <!-- Ajoute d'autres détails de l'étudiant que tu souhaites afficher -->
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                                        <!-- Ajoute d'autres boutons ou actions pour la modal si nécessaire -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-success">Créer un nouvel étudiant</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.filtres-hidden').hide();
+        $('.table-hidden').hide();
+
+        $('#' + $("#filtre_select").val() + "_filter").show("");
+        $('#' + $("#filtre_select").val() + "_table").show("");
+
+
+        $('#filtre_select').change(function() {
+            $('.filtres-hidden').hide("slow");
+            $(".table-hidden").hide("slow");
+
+            $('#' + $(this).val() + "_filter").show("slow");
+            $('#' + $(this).val() + "_table").show("slow");
+        });
+    });
+</script>
+
+{% endblock %}

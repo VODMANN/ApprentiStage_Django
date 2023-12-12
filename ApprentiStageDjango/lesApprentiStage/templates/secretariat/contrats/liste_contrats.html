@@ -1,21 +1,25 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
-<div class="container">
+  
+<div style="margin: 0 10%;">
+    <h2 class="mb-4 mt-4">Liste des Contrats</h2>
     <div class="row">
         <div class="col-md-3">
             <div class="card shadow">
                 <div class="card-body">
                     <form method="get">
-                        {{ contrat_filter.form.as_p }}
+                        {% for field in contrat_filter.form %}
+                            {{ field.label_tag }}
+                            {{ field|add_class:"form-control mb-2" }}
+                        {% endfor%}
                         <button type="submit" class="btn btn-primary">Filtrer</button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
-            <h2 class="mb-4 mt-4">Liste des Contrats</h2>
-            <div class="card shadow" style="max-height: 600px; overflow-y: auto;">
+            <div class="card shadow" style="max-height: 45%; overflow-y: auto;">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -23,7 +27,9 @@
                                 <tr>
                                     <th>Titre</th>
                                     <th>Type</th>
-                                    <th>Actions</th>
+                                    <th>Etudiant</th>
+                                    <th>Entreprise</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,13 +37,15 @@
                                 <tr>
                                     <td>{{ contrat.titre }}</td>
                                     <td>{{ contrat.type }}</td>
-                                    <td>
+                                    <td>{{ contrat.etudiant.prenomEtu }} {{ contrat.etudiant.nomEtu }}</td>
+                                    <td>{{ contrat.entreprise }}</td>
+                                    <td class="text-right">
                                         <div class="btn-group ml-2" role="group">
-                                            <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-primary btn-sm">Modifier</a>
-                                            <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
                                                 Voir Détails
                                             </button>
+                                            <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                            <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
                                         </div>
                                     </td>
                                 </tr>

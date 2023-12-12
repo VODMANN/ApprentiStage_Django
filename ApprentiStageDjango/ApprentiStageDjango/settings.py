@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     'crispy_forms',
     'django_filters',
+    'widget_tweaks',
 
 ]
 
