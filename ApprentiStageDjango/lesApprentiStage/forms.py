@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contrat, Departement, Entreprise, Promo, Responsable, Theme, Tuteur, Utilisateur, ProfilEtudiant, ProfilEnseignant, ProfilSecretaire,Soutenance, Contrat, Salle, Offre
+from .models import *
 from .NAF import *
 
 class EtudiantForm(forms.ModelForm):
@@ -62,6 +62,49 @@ class EnseignantForm(forms.ModelForm):
         # Si l'instance est mise à jour, initialiser le champ 'promos'
         if self.instance and self.instance.pk:
             self.fields['promos'].initial = self.instance.promos.all()
+
+
+
+class Enseignant_secForm(forms.ModelForm):
+    promos = forms.ModelMultipleChoiceField(
+        queryset=Promo.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'selectpicker col', 'data-live-search': 'true'}),
+        required=False
+    )
+    departements = forms.ModelChoiceField(
+        queryset=Departement.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'selectpicker col', 'data-live-search': 'true'})
+    )
+    telEnseignant = forms.CharField(max_length=25, required=False)
+    disciplineEnseignant = forms.CharField(max_length=150, required=False)
+
+
+
+    class Meta:
+        model = ProfilEnseignant
+        numHarpege = forms.CharField(max_length=20, required=False)
+        roleEnseignant = forms.ChoiceField(choices=ProfilEnseignant.ROLE_CHOICES, required=False)
+        nomEnseignant = forms.CharField(max_length=50, required=False)
+        prenomEnseignant = forms.CharField(max_length=50, required=False)
+        mailEnseignant = forms.EmailField(max_length=100, required=False)
+        fields = ['numHarpege', 'roleEnseignant', 'nomEnseignant', 'prenomEnseignant',
+                  'mailEnseignant', 'telEnseignant', 'disciplineEnseignant',
+                  'promos', 'departements']
+
+        labels = {
+            'promos': 'Promos :',
+            'departements': 'Département :'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(Enseignant_secForm, self).__init__(*args, **kwargs)  # Correction ici
+        if self.instance and self.instance.pk:
+            self.fields['promos'].initial = [ep.promo for ep in EnseignantPromo.objects.filter(enseignant=self.instance)]
+
+
+
+
 
 
 class SecretaireForm(forms.ModelForm):

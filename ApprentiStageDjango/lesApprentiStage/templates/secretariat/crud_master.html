@@ -129,8 +129,9 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEtudiant{{ etudiant.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -164,7 +165,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Créer un nouvel étudiant</a>
+                                <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Créer un nouvel étudiant</a>
                             </div>
                         </div>
                         <!-- Entreprise -->
@@ -196,8 +197,9 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEntreprise{{ entreprise.numSiret }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+
                                                     <!-- Ajoute d'autres boutons pour modifier ou supprimer l'entreprise si nécessaire -->
                                                 </div>
                                             </td>
@@ -231,7 +233,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Créer une nouvelle entreprise</a>
+                                <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Créer une nouvelle entreprise</a>
                             </div>                            
                         </div>
                         <!-- Enseignant -->
@@ -262,8 +264,9 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEnseignant{{ enseignant.numHarpege }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -294,7 +297,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter un nouvel enseignant</a>
+                                <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Ajouter un nouvel enseignant</a>
                             </div>
                         </div>
                         <!-- Promo -->

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-
+from django.urls import reverse_lazy
+from django.views.generic import *
 from .utils import generer_convention
 
 from .forms import *
@@ -471,6 +472,105 @@ def supprimer_contrat(request, pk):
         contrat.delete()
         return redirect('lesApprentiStage:liste_contrats')
     return render(request, 'secretariat/contrats/supprimer_contrat.html', {'contrat': contrat})
+
+# ///////////////////////crud etudiant ////////////////////////////
+
+def creer_etudiant(request):
+    if request.method == 'POST':
+        form = EtudiantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = EtudiantForm()
+    return render(request, 'secretariat/etudiant/creer_etudiant.html', {'form': form})
+
+def modifier_etudiant(request, num_etu):
+    etudiant = get_object_or_404(ProfilEtudiant, numEtu=num_etu)
+    if request.method == 'POST':
+        form = EtudiantForm(request.POST, instance=etudiant)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = EtudiantForm(instance=etudiant)
+    return render(request, 'secretariat/etudiant/modifier_etudiant.html', {'form': form, 'etudiant': etudiant})
+
+def delete_etudiant(request, num_etu):
+    etudiant = get_object_or_404(ProfilEtudiant, numEtu=num_etu)
+    if request.method == 'POST':
+        etudiant.delete()
+        return redirect('lesApprentiStage:liste_recherche')
+    return render(request, 'secretariat/etudiant/delete_etudiant.html', {'etudiant': etudiant})
+
+
+
+# ///////////////////////crud entreprise ////////////////////////////
+def creer_entreprise(request):
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = EntrepriseForm()
+    return render(request, 'secretariat/entreprise/creer_entreprise.html', {'form': form})
+
+def modifier_entreprise(request,pk):
+    entreprise = get_object_or_404(Entreprise, pk=pk)
+    if request.method == 'POST':
+        form = EntrepriseForm(request.POST, instance=entreprise)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = EntrepriseForm(instance=entreprise)
+    return render(request, 'secretariat/entreprise/modifier_entreprise.html', {'form': form, 'entreprise': entreprise})
+
+def delete_entreprise(request,pk):
+    entreprise = get_object_or_404(Entreprise, pk=pk)
+    if request.method == 'POST':
+        entreprise.delete()
+        return redirect('lesApprentiStage:liste_recherche')
+    return render(request, 'secretariat/entreprise/delete_entreprise.html', {'entreprise': entreprise})
+
+
+# ///////////////////////crud enseignant ////////////////////////////
+
+def creer_enseignant(request):
+    if request.method == 'POST':
+        form = EnseignantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = EnseignantForm()
+    return render(request, 'secretariat/enseignant/creer_enseignant.html', {'form': form})
+
+def modifier_enseignant(request, num_harpege):
+    enseignant = get_object_or_404(ProfilEnseignant, numHarpege=num_harpege)
+    if request.method == 'POST':
+        form = Enseignant_secForm(request.POST, instance=enseignant)
+        if form.is_valid():
+            enseignant = form.save()
+            # Gérer la mise à jour des promos
+            EnseignantPromo.objects.filter(enseignant=enseignant).delete()
+            for promo in form.cleaned_data['promos']:
+                EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
+            return redirect('lesApprentiStage:liste_recherche')
+    else:
+        form = Enseignant_secForm(instance=enseignant)
+    return render(request, 'secretariat/enseignant/modifier_enseignant.html', {'form': form, 'enseignant': enseignant})
+
+
+def delete_enseignant(request, num_harpege):
+    enseignant = get_object_or_404(ProfilEnseignant, numHarpege=num_harpege)
+    if request.method == 'POST':
+        enseignant.delete()
+        return redirect('lesApprentiStage:liste_recherche')
+    return render(request, 'secretariat/enseignant/delete_enseignant.html', {'enseignant': enseignant})
+
+
 
 
 @login_required
