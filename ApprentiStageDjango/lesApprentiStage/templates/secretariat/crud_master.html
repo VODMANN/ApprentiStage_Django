@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-9">
             <div class="card shadow" style="overflow-y: auto;">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -196,6 +196,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEntreprise{{ entreprise.numSiret }}">
                                                         Voir Détails
                                                     </button>
+                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
                                                     <!-- Ajoute d'autres boutons pour modifier ou supprimer l'entreprise si nécessaire -->
                                                 </div>
                                             </td>
@@ -356,7 +358,7 @@
                             </div>
                         </div>
                         <!-- Departement -->
-                        <div class="table-hidden" id="departement_table">
+                        <div class="table-hidden" id="departements_table">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -367,7 +369,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for departement in filters.departement_filter.qs %}
+                                    {% for departement in filters.departements_filter.qs %}
                                         <tr>
                                             <td>{{ departement.nomDep }}</td>
                                             <td>{{ departement.adresseDep }}</td>
@@ -416,13 +418,9 @@
                                     <tr>
                                         <th>Titre</th>
                                         <th>Description</th>
-                                        <th>Mail RH</th>
-                                        <th>Compétences</th>
                                         <th>Durée</th>
                                         <th>Date de Publication</th>
                                         <th>Entreprise</th>
-                                        <th>Thème</th>
-                                        <th>Est publié</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -431,13 +429,9 @@
                                         <tr>
                                             <td>{{ offre.titre }}</td>
                                             <td>{{ offre.description }}</td>
-                                            <td>{{ offre.mailRh }}</td>
-                                            <td>{{ offre.competences }}</td>
                                             <td>{{ offre.duree }}</td>
                                             <td>{{ offre.datePublication }}</td>
                                             <td>{{ offre.entreprise }}</td>
-                                            <td>{{ offre.theme }}</td>
-                                            <td>{% if offre.estPublie %} Oui {% else %} Non {% endif %}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalOffre{{ offre.id }}">
