@@ -101,8 +101,10 @@
                             {% endif %}
                             {% if user.is_authenticated %}
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:logout' %}">Déconnexion</a>
+                                <form id="logoutForm" method="post" action="{% url 'lesApprentiStage:logout' %}">
+                                    {% csrf_token %}
+                                    <a id="logout" class="nav-link" href="#">Déconnexion</a>
+                                </form>                                
                             </li>
                             {% else %}
                             <li class="nav-item">
@@ -135,6 +137,12 @@
                 } else if (window.devicePixelRatio >= 1.25) {
                     zoom();
                 }
+
+
+                $('#logout').on('click', function(e) {
+                    e.preventDefault();
+                    $('#logoutForm').submit();
+                });
             </script>
 
             <style>
