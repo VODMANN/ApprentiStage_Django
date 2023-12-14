@@ -135,7 +135,7 @@
             
             $.ajax({
                 type: 'POST',
-                url: "http://127.0.0.1:8000/ajouter_entreprise/",
+                url: "{% url 'lesApprentiStage:ajouter_entreprise' %}",
                 data: $(this).serialize(),
                 success: function(response) {
                     if (response.success) {

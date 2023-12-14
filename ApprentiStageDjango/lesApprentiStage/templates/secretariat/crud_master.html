@@ -24,12 +24,12 @@
                     </select>
                     {% for filter_name, filter_instance in filters.items %}
                         <div class="filtres-hidden" id="{{ filter_name }}">
-                            <form method="get">
+                            <form method="get" class="form-filtre">
                                 {% for field in filter_instance.form %}
                                     {{ field.label_tag }}
-                                    {{ field|add_class:"form-control mb-2" }}
+                                    {{ field|add_class:"form-control mb-2 input-filtrer" }}
                                 {% endfor %}
-                                <button type="submit" class="btn btn-primary">Filtrer</button>
+                                <button type="button" class="btn btn-primary reset_button">Reset</button>
                             </form>
                         </div>
                     {% endfor %}
@@ -724,6 +724,10 @@
 
             $('#' + $(this).val() + "_filter").show("slow");
             $('#' + $(this).val() + "_table").show("slow");
+        });
+
+        $(".input-filtrer").on("input",function() {
+            $('#' + $('#filtre_select').val() + "_table" ).load("{% url 'lesApprentiStage:liste_recherche' %} #"+$('#filtre_select').val()+"_table table", $(this).closest('form').serialize());
         });
     });
 </script>
