@@ -2,6 +2,9 @@
 {% load static %}
 {% block content %}
 
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
@@ -11,7 +14,7 @@
         </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-4 pb-3">
         <div class="col-md-4">
             <div class="card text-center">
                 <div class="card-body">
@@ -47,6 +50,63 @@
         </div>
         {% endif %}
     </div>
+
+    <div class="col-md-12 p-3 card">
+        <div id='calendar' style="max-height: 500px; overflow-y: auto;"></div>
+    </div>
+    
 </div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales/fr.js'></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      locale: 'fr',  // Définir la locale sur français
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek,timeGridDay'
+      },
+      initialView: 'timeGridWeek',
+      events: '/api/calendar_events/',
+      buttonText: {
+        today: 'Aujourd\'hui',
+      },
+      views: {
+        timeGridWeek: {
+          buttonText: 'Semaine'
+        },
+        timeGridDay: {
+          buttonText: 'Jour'
+        }
+      },
+      customButtons: {
+        prevButton: {
+          text: '',
+          click: function() {
+            calendar.prev();
+          },
+          icon: 'bi bi-caret-left-fill'
+        },
+        nextButton: {
+          text: '', 
+          click: function() {
+            calendar.next();
+          },
+          icon: 'bi bi-caret-right-fill'
+        }
+      },
+    });
+    
+
+    calendar.render();
+  });
+</script>
+
+
 
 {% endblock %}
