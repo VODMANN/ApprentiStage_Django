@@ -675,62 +675,63 @@ class SalleDeleteView(DeleteView):
 
 # ///////////////////////crud soutenance ////////////////////////////
 
-# class SoutenanceCreateView(CreateView):
-#     model = Soutenance
-#     template_name = 'secretariat/soutenance/creer_soutenance.html'
-#     fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class SoutenanceCreateView(CreateView):
+    model = Soutenance
+    template_name = 'secretariat/soutenance/creer_soutenance.html'
+    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class SoutenanceUpdateView(UpdateView):
-#     model = Soutenance
-#     template_name = 'secretariat/soutenance/modifier_soutenance.html'
-#     fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class SoutenanceUpdateView(UpdateView):
+    model = Soutenance
+    template_name = 'secretariat/soutenance/modifier_soutenance.html'
+    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class SoutenanceDeleteView(DeleteView):
-#     model = Soutenance
-#     template_name = 'secretariat/soutenance/supprimer_soutenance.html'
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class SoutenanceDeleteView(DeleteView):
+    model = Soutenance
+    template_name = 'secretariat/soutenance/delete_soutenance.html'
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
 
 # ///////////////////////crud documents ////////////////////////////
 
-# class DocumentCreateView(CreateView):
-#     model = Document
-#     template_name = 'secretariat/document/creer_document.html'
-#     fields = ['titre', 'fichier', 'contrat']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class DocumentCreateView(CreateView):
+    model = Document
+    template_name = 'secretariat/document/creer_document.html'
+    fields = ['titre', 'fichier', 'contrat']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class DocumentUpdateView(UpdateView):
-#     model = Document
-#     template_name = 'secretariat/document/modifier_document.html'
-#     fields = ['titre', 'fichier', 'contrat']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class DocumentUpdateView(UpdateView):
+    model = Document
+    template_name = 'secretariat/document/modifier_document.html'
+    fields = ['titre', 'fichier', 'contrat']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class DocumentDeleteView(DeleteView):
-#     model = Document
-#     template_name = 'secretariat/document/supprimer_document.html'
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class DocumentDeleteView(DeleteView):
+    model = Document
+    template_name = 'secretariat/document/delete_document.html'
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
 
 # ///////////////////////crud evaluation ////////////////////////////
 
-# class EvaluationCreateView(CreateView):
-#     model = Evaluation
-#     template_name = 'secretariat/evaluation/creer_evaluation.html'
-#     fields = ['contrat', 'enseignant', 'note', 'commentaire']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class EvaluationCreateView(CreateView):
+    model = Evaluation
+    template_name = 'secretariat/evaluation/creer_evaluation.html'
+    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class EvaluationUpdateView(UpdateView):
-#     model = Evaluation
-#     template_name = 'secretariat/evaluation/modifier_evaluation.html'
-#     fields = ['contrat', 'enseignant', 'note', 'commentaire']
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class EvaluationUpdateView(UpdateView):
+    model = Evaluation
+    template_name = 'secretariat/evaluation/modifier_evaluation.html'
+    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-# class EvaluationDeleteView(DeleteView):
-#     model = Evaluation
-#     template_name = 'secretariat/evaluation/supprimer_evaluation.html'
-#     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class EvaluationDeleteView(DeleteView):
+    model = Evaluation
+    template_name = 'secretariat/evaluation/delete_evaluation.html'
+    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
 
 
 @login_required

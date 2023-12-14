@@ -554,8 +554,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSoutenance{{ soutenance.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -586,7 +586,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter une nouvelle soutenance</a>
+                                <a href="{% url 'lesApprentiStage:creer_soutenance' %}" class="btn btn-success">Ajouter une nouvelle soutenance</a>
                             </div>
                         </div>
                         <!-- Document -->
@@ -611,8 +611,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDocument{{ document.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -641,7 +641,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter un nouveau document</a>
+                                <a href="{% url 'lesApprentiStage:creer_document' %}" class="btn btn-success">Ajouter un nouveau document</a>
                             </div>
                         </div>
                         <!-- Evaluation -->
@@ -668,8 +668,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEvaluation{{ evaluation.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_evaluation' evaluation.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_evaluation' evaluation.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -699,7 +699,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter une nouvelle évaluation</a>
+                                <a href="{% url 'lesApprentiStage:creer_evaluation' %}"  class="btn btn-success">Ajouter une nouvelle évaluation</a>
                             </div>
                         </div>
                         <!-- FIN -->                                                                                                                                                

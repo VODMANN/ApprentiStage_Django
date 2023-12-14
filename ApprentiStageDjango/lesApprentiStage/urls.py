@@ -75,19 +75,19 @@ urlpatterns = [
     path('secretariat/modifier/salle/<int:pk>/', views.SalleUpdateView.as_view(), name='modifier_salle'),
     path('secretariat/supprimer/salle/<int:pk>/', views.SalleDeleteView.as_view(), name='supprimer_salle'),
 
-    # # URL pour les vues CRUD de Soutenance
-    # path('secretariat/creer/soutenance/', views.SoutenanceCreateView.as_view(), name='creer_soutenance'),
-    # path('secretariat/modifier/soutenance/<int:pk>/', views.SoutenanceUpdateView.as_view(), name='modifier_soutenance'),
-    # path('secretariat/supprimer/soutenance/<int:pk>/', views.SoutenanceDeleteView.as_view(), name='supprimer_soutenance'),
+    # URL pour les vues CRUD de Soutenance
+    path('secretariat/creer/soutenance/', views.SoutenanceCreateView.as_view(), name='creer_soutenance'),
+    path('secretariat/modifier/soutenance/<int:pk>/', views.SoutenanceUpdateView.as_view(), name='modifier_soutenance'),
+    path('secretariat/supprimer/soutenance/<int:pk>/', views.SoutenanceDeleteView.as_view(), name='supprimer_soutenance'),
 
     # # URL pour les vues CRUD de Document
-    # path('secretariat/creer/document/', views.DocumentCreateView.as_view(), name='creer_document'),
-    # path('secretariat/modifier/document/<int:pk>/', views.DocumentUpdateView.as_view(), name='modifier_document'),
-    # path('secretariat/supprimer/document/<int:pk>/', views.DocumentDeleteView.as_view(), name='supprimer_document'),
+    path('secretariat/creer/document/', views.DocumentCreateView.as_view(), name='creer_document'),
+    path('secretariat/modifier/document/<int:pk>/', views.DocumentUpdateView.as_view(), name='modifier_document'),
+    path('secretariat/supprimer/document/<int:pk>/', views.DocumentDeleteView.as_view(), name='supprimer_document'),
 
-    # # URL pour les vues CRUD d'Evaluation
-    # path('secretariat/creer/evaluation/', views.EvaluationCreateView.as_view(), name='creer_evaluation'),
-    # path('secretariat/modifier/evaluation/<int:pk>/', views.EvaluationUpdateView.as_view(), name='modifier_evaluation'),
-    # path('secretariat/supprimer/evaluation/<int:pk>/', views.EvaluationDeleteView.as_view(), name='supprimer_evaluation'),
+    # URL pour les vues CRUD d'Evaluation
+    path('secretariat/creer/evaluation/', views.EvaluationCreateView.as_view(), name='creer_evaluation'),
+    path('secretariat/modifier/evaluation/<int:pk>/', views.EvaluationUpdateView.as_view(), name='modifier_evaluation'),
+    path('secretariat/supprimer/evaluation/<int:pk>/', views.EvaluationDeleteView.as_view(), name='supprimer_evaluation'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
