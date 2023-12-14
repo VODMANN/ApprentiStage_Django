@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Supprimer l'offre</h2>
+    <p>Êtes-vous sûr de vouloir supprimer la salle "{{ salle.numero }}" ?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Supprimer</button>
+      <a href="{% url 'lesApprentiStage:liste_recherche' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+  </div>
+{% endblock %}

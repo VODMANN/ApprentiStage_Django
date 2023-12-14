@@ -61,4 +61,33 @@ urlpatterns = [
     path('secretariat/etudiant/supprimer/<str:num_etu>/', views.delete_etudiant, name='supprimer_etudiant'),
     path('secretariat/enseignant/modifier/<str:num_harpege>/', views.modifier_enseignant, name='modifier_enseignant'),
     path('secretariat/enseignant/supprimer/<str:num_harpege>/', views.delete_enseignant, name='supprimer_enseignant'),
+    path('secretariat/creer/promo/', views.PromoCreateView.as_view(), name='creer_promo'),
+    path('secretariat/modifier/promo/<int:pk>/', views.PromoUpdateView.as_view(), name='modifier_promo'),
+    path('secretariat/supprimer/promo/<int:pk>/', views.PromoDeleteView.as_view(), name='supprimer_promo'),
+    path('secretariat/creer/departement/', views.DepartementCreateView.as_view(), name='creer_departement'),
+    path('secretariat/modifier/departement/<int:pk>/', views.DepartementUpdateView.as_view(), name='modifier_departement'),
+    path('secretariat/supprimer/departement/<int:pk>/', views.DepartementDeleteView.as_view(), name='supprimer_departement'),
+    path('secretariat/creer/offre/', views.creer_offre, name='creer_offre'),
+    path('secretariat/modifier/offre/<int:pk>/', views.OffreUpdateView.as_view(), name='modifier_offre'),
+    path('secretariat/supprimer/offre/<int:pk>/', views.OffreDeleteView.as_view(), name='supprimer_offre'),
+        # URL pour les vues CRUD de Salle
+    path('secretariat/creer/salle/', views.SalleCreateView.as_view(), name='creer_salle'),
+    path('secretariat/modifier/salle/<int:pk>/', views.SalleUpdateView.as_view(), name='modifier_salle'),
+    path('secretariat/supprimer/salle/<int:pk>/', views.SalleDeleteView.as_view(), name='supprimer_salle'),
+
+    # # URL pour les vues CRUD de Soutenance
+    # path('secretariat/creer/soutenance/', views.SoutenanceCreateView.as_view(), name='creer_soutenance'),
+    # path('secretariat/modifier/soutenance/<int:pk>/', views.SoutenanceUpdateView.as_view(), name='modifier_soutenance'),
+    # path('secretariat/supprimer/soutenance/<int:pk>/', views.SoutenanceDeleteView.as_view(), name='supprimer_soutenance'),
+
+    # # URL pour les vues CRUD de Document
+    # path('secretariat/creer/document/', views.DocumentCreateView.as_view(), name='creer_document'),
+    # path('secretariat/modifier/document/<int:pk>/', views.DocumentUpdateView.as_view(), name='modifier_document'),
+    # path('secretariat/supprimer/document/<int:pk>/', views.DocumentDeleteView.as_view(), name='supprimer_document'),
+
+    # # URL pour les vues CRUD d'Evaluation
+    # path('secretariat/creer/evaluation/', views.EvaluationCreateView.as_view(), name='creer_evaluation'),
+    # path('secretariat/modifier/evaluation/<int:pk>/', views.EvaluationUpdateView.as_view(), name='modifier_evaluation'),
+    # path('secretariat/supprimer/evaluation/<int:pk>/', views.EvaluationDeleteView.as_view(), name='supprimer_evaluation'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -326,8 +326,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPromo{{ promo.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -357,7 +357,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter une nouvelle promotion</a>
+                                <a href="{% url 'lesApprentiStage:creer_promo' %}" class="btn btn-success">Ajouter une nouvelle promotion</a>
                             </div>
                         </div>
                         <!-- Departement -->
@@ -382,8 +382,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDepartement{{ departement.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -411,7 +411,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter un nouveau département</a>
+                                <a href="{% url 'lesApprentiStage:creer_departement' %}"  class="btn btn-success">Ajouter un nouveau département</a>
                             </div>
                         </div>
                         <!-- Offre -->
@@ -440,8 +440,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalOffre{{ offre.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -475,7 +475,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter une nouvelle offre</a>
+                                <a href="{% url 'lesApprentiStage:creer_offre' %}" class="btn btn-success">Ajouter une nouvelle offre</a>
                             </div>
                         </div>
                         <!-- Salle -->
@@ -496,8 +496,8 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSalle{{ salle.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    <a href="#" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -523,7 +523,7 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                <a href="#" class="btn btn-success">Ajouter une nouvelle salle</a>
+                                <a href="{% url 'lesApprentiStage:creer_salle' %}" class="btn btn-success">Ajouter une nouvelle salle</a>
                             </div>
                         </div>
                         <!-- Soutenance -->
