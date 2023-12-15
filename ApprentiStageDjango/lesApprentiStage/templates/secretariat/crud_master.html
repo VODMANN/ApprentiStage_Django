@@ -110,7 +110,6 @@
                                         <th>Adresse Email</th>
                                         <th>Téléphone</th>
                                         <th>Date de Naissance</th>
-                                        <!-- Ajoute d'autres en-têtes de colonnes en fonction de tes besoins -->
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -178,7 +177,6 @@
                                         <th>Numéro SIREN</th>
                                         <th>Adresse Email</th>
                                         <th>Code NAF</th>
-                                        <!-- Ajoute d'autres en-têtes de colonnes en fonction de tes besoins -->
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -420,7 +418,6 @@
                                 <thead>
                                     <tr>
                                         <th>Titre</th>
-                                        <th>Description</th>
                                         <th>Durée</th>
                                         <th>Date de Publication</th>
                                         <th>Entreprise</th>
@@ -431,7 +428,6 @@
                                     {% for offre in filters.offre_filter.qs %}
                                         <tr>
                                             <td>{{ offre.titre }}</td>
-                                            <td>{{ offre.description }}</td>
                                             <td>{{ offre.duree }}</td>
                                             <td>{{ offre.datePublication }}</td>
                                             <td>{{ offre.entreprise }}</td>

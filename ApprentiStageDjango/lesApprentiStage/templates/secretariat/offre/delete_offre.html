@@ -7,7 +7,7 @@
     <form method="post">
       {% csrf_token %}
       <button type="submit" class="btn btn-danger">Supprimer</button>
-      <a href="{% url 'lesApprentiStage:liste_recherche' %}" class="btn btn-secondary">Annuler</a>
+      <a href="{% url 'lesApprentiStage:liste_recherche' %}#offre" class="btn btn-secondary">Annuler</a>
     </form>
   </div>
 {% endblock %}

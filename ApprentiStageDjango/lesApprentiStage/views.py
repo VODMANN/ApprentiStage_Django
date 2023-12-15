@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .utils import generer_convention
 
@@ -627,11 +627,16 @@ def creer_offre(request):
                 'competences': cleaned_form.get('competences'),
                 'entreprise': cleaned_form.get('entreprise'),
                 'theme': cleaned_form.get('theme'),
-                'datePublication': date.today()
+                'datePublication': date.today(),
             }
             form = OffreFormFini(tmp_form) 
+            
             Offre = form.save()
-            return redirect('lesApprentiStage:liste_recherche')  # Redirige vers la liste des offres
+            Offre.estPublie = True
+            Offre.save()
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = OffreForm()
 
@@ -643,12 +648,26 @@ class OffreUpdateView(UpdateView):
     model = Offre
     template_name = 'secretariat/offre/modifier_offre.html'  
     fields = ['titre', 'description', 'mailRh', 'competences', 'duree', 'datePublication', 'entreprise', 'theme', 'estPublie'] 
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#offre"  # Remplacez "offre" par votre fragment souhaité
+            return url_with_fragment
+        
 class OffreDeleteView(DeleteView):
     model = Offre
-    template_name = 'secretariat/offre/delete_offre.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    template_name = 'secretariat/offre/delete_offre.html' 
+     
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#offre"  # Remplacez "offre" par votre fragment souhaité
+            return url_with_fragment    
 
 
 
