@@ -714,6 +714,14 @@
         $('.filtres-hidden').hide();
         $('.table-hidden').hide();
 
+        var fragment = window.location.hash;
+
+        // Vérifier s'il y a un fragment dans l'URL
+        if(fragment) {
+            $("#filtre_select").val(fragment.substring(1));
+        }
+
+
         $('#' + $("#filtre_select").val() + "_filter").show("");
         $('#' + $("#filtre_select").val() + "_table").show("");
 
