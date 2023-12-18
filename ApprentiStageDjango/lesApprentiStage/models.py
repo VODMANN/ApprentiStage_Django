@@ -13,6 +13,9 @@ class Utilisateur(AbstractUser):
     )
     type_utilisateur = models.CharField(max_length=10, choices=TYPE_CHOICES, default='etudiant')
 
+    def get_user_type(self):
+        return self.type_utilisateur
+
 class ProfilEtudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     nomEtu = models.CharField(max_length=50,null=True)

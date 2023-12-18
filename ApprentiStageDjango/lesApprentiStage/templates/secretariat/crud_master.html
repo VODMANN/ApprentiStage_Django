@@ -64,7 +64,7 @@
                                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
                                                     Voir Détails
                                                 </button>
-                                                {% if user.is_authenticated == "secretaire" %}
+                                                {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                 {% endif %}
@@ -98,9 +98,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Etudiants -->
                         <div class="table-hidden" id="etudiant_table">
@@ -131,7 +133,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEtudiant{{ etudiant.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -168,9 +170,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Créer un nouvel étudiant</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Entreprise -->
                         <div class="table-hidden" id="entreprise_table">
@@ -201,7 +205,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEntreprise{{ entreprise.numSiret }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -238,9 +242,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Créer une nouvelle entreprise</a>
                             </div>                            
+                            {% endif %}
                         </div>
                         <!-- Enseignant -->
                         <div class="table-hidden" id="enseignant_table">
@@ -270,7 +276,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEnseignant{{ enseignant.numHarpege }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -304,9 +310,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Ajouter un nouvel enseignant</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Promo -->
                         <div class="table-hidden" id="promo_table">
@@ -334,7 +342,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPromo{{ promo.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -366,9 +374,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_promo' %}" class="btn btn-success">Ajouter une nouvelle promotion</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Departement -->
                         <div class="table-hidden" id="departements_table">
@@ -392,7 +402,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDepartement{{ departement.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -422,9 +432,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_departement' %}"  class="btn btn-success">Ajouter un nouveau département</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Offre -->
                         <div class="table-hidden" id="offre_table">
@@ -452,7 +464,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalOffre{{ offre.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -488,9 +500,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_offre' %}" class="btn btn-success">Ajouter une nouvelle offre</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Salle -->
                         <div class="table-hidden" id="salle_table">
@@ -510,7 +524,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSalle{{ salle.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -538,9 +552,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_salle' %}" class="btn btn-success">Ajouter une nouvelle salle</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Soutenance -->
                         <div class="table-hidden" id="soutenance_table">
@@ -570,9 +586,18 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSoutenance{{ soutenance.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
-                                                    <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    <!-- Soutenance Léo -->
+                                                    {% if user.get_user_type == "secretaire" %}
+                                                        <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                        <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% elif user.get_user_type == "enseignant" %}
+                                                        {% if soutenance.candide == user.profilenseignant %}
+                                                            <!-- L'enseignant est candidat à la soutenance -->
+                                                            <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
+                                                        {% else %}
+                                                            <!-- L'enseignant n'est pas candidat à la soutenance -->
+                                                            <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                             </td>
@@ -603,9 +628,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_soutenance' %}" class="btn btn-success">Ajouter une nouvelle soutenance</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Document -->
                         <div class="table-hidden" id="document_table">
@@ -629,7 +656,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDocument{{ document.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -660,9 +687,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_document' %}" class="btn btn-success">Ajouter un nouveau document</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- Evaluation -->
                         <div class="table-hidden" id="evaluation_table">
@@ -688,7 +717,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEvaluation{{ evaluation.id }}">
                                                         Voir Détails
                                                     </button>
-                                                    {% if user.is_authenticated == "secretaire" %}
+                                                    {% if user.get_user_type == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_evaluation' evaluation.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_evaluation' evaluation.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -720,9 +749,11 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% if user.get_user_type == "secretaire" %}
                             <div class="text-center mt-4">
                                 <a href="{% url 'lesApprentiStage:creer_evaluation' %}"  class="btn btn-success">Ajouter une nouvelle évaluation</a>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- FIN -->                                                                                                                                                
                     </div>

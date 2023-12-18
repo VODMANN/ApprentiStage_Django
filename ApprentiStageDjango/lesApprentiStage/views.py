@@ -779,6 +779,32 @@ def upload_convention_secretaire(request):
             
     return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
 
+# /////////////////////// Soutenances Léo ////////////////////////////
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Soutenance
+
+def inscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+    
+    if user.get_user_type() == "enseignant" and soutenance.candide != user.profilenseignant:
+        soutenance.candide = user.profilenseignant
+        soutenance.save()
+
+    return redirect('lesApprentiStage:liste_recherche')
+
+def desinscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+
+    if user.get_user_type() == "enseignant" and soutenance.candide == user.profilenseignant:
+        soutenance.candide = None
+        soutenance.save()
+
+    return redirect('lesApprentiStage:liste_recherche')
+
+
 
 @login_required
 def soutenance(request):
