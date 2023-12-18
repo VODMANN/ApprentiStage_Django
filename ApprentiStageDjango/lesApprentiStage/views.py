@@ -458,6 +458,7 @@ def creer_contrat(request):
 # Modification d'un contrat existant
 def modifier_contrat(request, pk):
     contrat = get_object_or_404(Contrat, pk=pk)
+
     if request.method == 'POST':
         form = ContratForm(request.POST, instance=contrat)
         if form.is_valid():
@@ -465,9 +466,12 @@ def modifier_contrat(request, pk):
             url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
             nouvelle_url = f"{url_sans_fragment}#contrat"  
             return redirect(nouvelle_url)
-        else:
-            form = ContratForm(instance=contrat)
+    else:
+        # Définir form ici pour s'assurer qu'il est toujours défini
+        form = ContratForm(instance=contrat)
+
     return render(request, 'secretariat/contrats/modifier_contrat.html', {'form': form, 'contrat': contrat})
+
 
 # Suppression d'un contrat
 def supprimer_contrat(request, pk):
