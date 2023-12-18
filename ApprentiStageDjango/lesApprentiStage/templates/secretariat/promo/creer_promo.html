@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Créer une nouvelle promo</h2>
+    <form method="post" class="form-entreprise">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field|add_class:'form-control' }}
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Créer</button>
+        <a href="{% url 'lesApprentiStage:liste_recherche' %}" class="btn btn-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .form-entreprise .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-entreprise label {
+      font-weight: bold;
+    }
+
+    .form-entreprise .form-control {
+      border-radius: 4px;
+      border: 1px solid #ced4da;
+    }
+
+    .form-entreprise .form-control:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+    .form-entreprise .form-text {
+      margin-top: 5px;
+    }
+
+    .form-entreprise .alert-danger {
+      margin-top: 5px;
+      font-size: 0.875em;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+      text-align: right;
+    }
+
+    .form-actions .btn {
+      padding: 8px 16px;
+      font-size: 1rem;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+  </style>
+{% endblock %}
