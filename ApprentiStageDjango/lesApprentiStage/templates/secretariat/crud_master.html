@@ -64,8 +64,10 @@
                                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContrat{{ contrat.id }}">
                                                     Voir Détails
                                                 </button>
-                                                <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
-                                                <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                {% if user.is_authenticated == "secretaire" %}
+                                                    <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
@@ -129,9 +131,11 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEtudiant{{ etudiant.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
-
+                                                    {% endif %}
+                                                    
                                                 </div>
                                             </td>
                                         </tr>
@@ -197,9 +201,11 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEntreprise{{ entreprise.numSiret }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
-
+                                                    {% endif %}
+                                                    
                                                     <!-- Ajoute d'autres boutons pour modifier ou supprimer l'entreprise si nécessaire -->
                                                 </div>
                                             </td>
@@ -264,9 +270,11 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEnseignant{{ enseignant.numHarpege }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
-
+                                                    {% endif %}
+                                                    
                                                 </div>
                                             </td>
                                         </tr>
@@ -326,8 +334,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPromo{{ promo.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -382,8 +392,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDepartement{{ departement.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -440,8 +452,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalOffre{{ offre.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -496,8 +510,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSalle{{ salle.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -554,8 +570,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalSoutenance{{ soutenance.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -611,8 +629,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDocument{{ document.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
@@ -668,8 +688,10 @@
                                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalEvaluation{{ evaluation.id }}">
                                                         Voir Détails
                                                     </button>
+                                                    {% if user.is_authenticated == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_evaluation' evaluation.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_evaluation' evaluation.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
