@@ -448,7 +448,9 @@ def creer_contrat(request):
         form = ContratForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_contrats')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#contrat"  
+            return redirect(nouvelle_url)
     else:
         form = ContratForm()
     return render(request, 'secretariat/contrats/creer_contrat.html', {'form': form})
@@ -460,9 +462,11 @@ def modifier_contrat(request, pk):
         form = ContratForm(request.POST, instance=contrat)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_contrats')
-    else:
-        form = ContratForm(instance=contrat)
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#contrat"  
+            return redirect(nouvelle_url)
+        else:
+            form = ContratForm(instance=contrat)
     return render(request, 'secretariat/contrats/modifier_contrat.html', {'form': form, 'contrat': contrat})
 
 # Suppression d'un contrat
@@ -470,7 +474,9 @@ def supprimer_contrat(request, pk):
     contrat = get_object_or_404(Contrat, pk=pk)
     if request.method == 'POST':
         contrat.delete()
-        return redirect('lesApprentiStage:liste_contrats')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#contrat"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/contrats/supprimer_contrat.html', {'contrat': contrat})
 
 # ///////////////////////crud etudiant ////////////////////////////
@@ -480,9 +486,11 @@ def creer_etudiant(request):
         form = EtudiantForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
-    else:
-        form = EtudiantForm()
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#etudiant"  
+            return redirect(nouvelle_url)
+        else:
+            form = EtudiantForm()
     return render(request, 'secretariat/etudiant/creer_etudiant.html', {'form': form})
 
 def modifier_etudiant(request, num_etu):
@@ -491,16 +499,20 @@ def modifier_etudiant(request, num_etu):
         form = EtudiantForm(request.POST, instance=etudiant)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
-    else:
-        form = EtudiantForm(instance=etudiant)
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
+        else:
+            form = EtudiantForm(instance=etudiant)
     return render(request, 'secretariat/etudiant/modifier_etudiant.html', {'form': form, 'etudiant': etudiant})
 
 def delete_etudiant(request, num_etu):
     etudiant = get_object_or_404(ProfilEtudiant, numEtu=num_etu)
     if request.method == 'POST':
         etudiant.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/etudiant/delete_etudiant.html', {'etudiant': etudiant})
 
 
@@ -511,7 +523,9 @@ def creer_entreprise(request):
         form = EntrepriseForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
     else:
         form = EntrepriseForm()
     return render(request, 'secretariat/entreprise/creer_entreprise.html', {'form': form})
@@ -522,7 +536,9 @@ def modifier_entreprise(request,pk):
         form = EntrepriseForm(request.POST, instance=entreprise)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
     else:
         form = EntrepriseForm(instance=entreprise)
     return render(request, 'secretariat/entreprise/modifier_entreprise.html', {'form': form, 'entreprise': entreprise})
@@ -531,7 +547,9 @@ def delete_entreprise(request,pk):
     entreprise = get_object_or_404(Entreprise, pk=pk)
     if request.method == 'POST':
         entreprise.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/entreprise/delete_entreprise.html', {'entreprise': entreprise})
 
 
@@ -542,7 +560,9 @@ def creer_enseignant(request):
         form = EnseignantForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = EnseignantForm()
     return render(request, 'secretariat/enseignant/creer_enseignant.html', {'form': form})
@@ -557,7 +577,9 @@ def modifier_enseignant(request, num_harpege):
             EnseignantPromo.objects.filter(enseignant=enseignant).delete()
             for promo in form.cleaned_data['promos']:
                 EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = Enseignant_secForm(instance=enseignant)
     return render(request, 'secretariat/enseignant/modifier_enseignant.html', {'form': form, 'enseignant': enseignant})
@@ -567,7 +589,9 @@ def delete_enseignant(request, num_harpege):
     enseignant = get_object_or_404(ProfilEnseignant, numHarpege=num_harpege)
     if request.method == 'POST':
         enseignant.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#enseignant"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/enseignant/delete_enseignant.html', {'enseignant': enseignant})
 
 
@@ -579,18 +603,39 @@ class PromoCreateView(CreateView):
     model = Promo
     template_name = 'secretariat/promo/creer_promo.html'  
     fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+
 
 class PromoDeleteView(DeleteView):
     model = Promo
     template_name = 'secretariat/promo/delete_promo.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+    
 class PromoUpdateView(UpdateView):
     model = Promo
     template_name = 'secretariat/promo/modifier_promo.html'  
     fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire'] 
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
 
 # ///////////////////////crud departement ////////////////////////////
 
@@ -598,19 +643,40 @@ class DepartementCreateView(CreateView):
     model = Departement
     template_name = 'secretariat/departement/creer_departement.html'  
     fields = ['nomDep', 'adresseDep', 'chef']  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
 class DepartementUpdateView(UpdateView):
     model = Departement
     template_name = 'secretariat/departement/modifier_departement.html'  
     fields = ['nomDep', 'adresseDep', 'chef']  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
 class DepartementDeleteView(DeleteView):
     model = Departement
     template_name = 'secretariat/departement/delete_departement.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
 # ///////////////////////crud departement ////////////////////////////
 
 
@@ -678,18 +744,39 @@ class SalleCreateView(CreateView):
     model = Salle
     template_name = 'secretariat/salle/creer_salle.html'
     fields = ['numero']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 class SalleUpdateView(UpdateView):
     model = Salle
     template_name = 'secretariat/salle/modifier_salle.html'
     fields = ['numero']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 class SalleDeleteView(DeleteView):
     model = Salle
     template_name = 'secretariat/salle/delete_salle.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+    # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 
 # ///////////////////////crud soutenance ////////////////////////////
@@ -698,18 +785,39 @@ class SoutenanceCreateView(CreateView):
     model = Soutenance
     template_name = 'secretariat/soutenance/creer_soutenance.html'
     fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
 
 class SoutenanceUpdateView(UpdateView):
     model = Soutenance
     template_name = 'secretariat/soutenance/modifier_soutenance.html'
     fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
 
 class SoutenanceDeleteView(DeleteView):
     model = Soutenance
     template_name = 'secretariat/soutenance/delete_soutenance.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
 
 
 # ///////////////////////crud documents ////////////////////////////
@@ -720,17 +828,39 @@ class DocumentCreateView(CreateView):
     fields = ['titre', 'fichier', 'contrat']
     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
+
 class DocumentUpdateView(UpdateView):
     model = Document
     template_name = 'secretariat/document/modifier_document.html'
     fields = ['titre', 'fichier', 'contrat']
     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
+
 class DocumentDeleteView(DeleteView):
     model = Document
     template_name = 'secretariat/document/delete_document.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
 
 # ///////////////////////crud evaluation ////////////////////////////
 
@@ -738,19 +868,39 @@ class EvaluationCreateView(CreateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/creer_evaluation.html'
     fields = ['contrat', 'enseignant', 'note', 'commentaire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
+            return url_with_fragment
+    
 class EvaluationUpdateView(UpdateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/modifier_evaluation.html'
     fields = ['contrat', 'enseignant', 'note', 'commentaire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
+            return url_with_fragment
+    
 class EvaluationDeleteView(DeleteView):
     model = Evaluation
     template_name = 'secretariat/evaluation/delete_evaluation.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
+            return url_with_fragment
 
 
 @login_required
