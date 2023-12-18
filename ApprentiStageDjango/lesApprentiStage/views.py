@@ -869,25 +869,34 @@ class EvaluationCreateView(CreateView):
 
     def get_form_class(self):
         if self.request.user.type_utilisateur == 'enseignant':
-            # (sans le champ 'enseignant')
             class EnseignantEvaluationForm(forms.ModelForm):
                 class Meta:
                     model = Evaluation
                     fields = ['contrat', 'note', 'commentaire']
             return EnseignantEvaluationForm
         else:
-            # (avec le champ 'enseignant')
             class DefaultEvaluationForm(forms.ModelForm):
                 class Meta:
                     model = Evaluation
                     fields = ['contrat', 'enseignant', 'note', 'commentaire']
             return DefaultEvaluationForm
 
+    def get_form(self, form_class=None):
+        form = super(EvaluationCreateView, self).get_form(form_class)
+
+        if self.request.user.type_utilisateur == 'enseignant':
+            enseignant = self.request.user.profilenseignant
+            
+            # Filtrer les choix de contrat pour les contrats liés à l'enseignant connecté
+            if 'contrat' in form.fields:
+                form.fields['contrat'].queryset = Contrat.objects.filter(enseignant=enseignant)
+
+        return form
+
     def form_valid(self, form):
         if self.request.user.type_utilisateur == 'enseignant':
+            # Attribuer automatiquement l'enseignant connecté à l'évaluation
             form.instance.enseignant = self.request.user.profilenseignant
-
-        # Continuer avec le traitement normal du formulaire
         return super(EvaluationCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -916,20 +925,24 @@ class EvaluationUpdateView(UpdateView):
 
     def get_form(self, form_class=None):
         form = super(EvaluationUpdateView, self).get_form(form_class)
-        if self.request.user.type_utilisateur == 'enseignant':
-            # Vérifier si le champ 'enseignant' existe dans le formulaire avant de le modifier
-            if 'enseignant' in form.fields:
-                # Rendre le champ 'enseignant' caché et définir sa valeur
-                enseignant_id = self.request.user.profilenseignant.numHarpege
-                form.fields['enseignant'].initial = enseignant_id
-                form.fields['enseignant'].widget = forms.HiddenInput()
-        return form
 
+        if self.request.user.type_utilisateur == 'enseignant':
+            enseignant = self.request.user.profilenseignant
+            
+            # Filtrer les choix de contrat pour les contrats liés à l'enseignant connecté
+            if 'contrat' in form.fields:
+                form.fields['contrat'].queryset = Contrat.objects.filter(enseignant=enseignant)
+
+            # Rendre le champ 'enseignant' caché et définir sa valeur
+            if 'enseignant' in form.fields:
+                form.fields['enseignant'].initial = enseignant.numHarpege
+                form.fields['enseignant'].widget = forms.HiddenInput()
+
+        return form
 
     def get_success_url(self):
         # Redirection après la mise à jour de l'évaluation
         return reverse_lazy('lesApprentiStage:liste_recherche') + "#evaluation"
-
     
 class EvaluationDeleteView(DeleteView):
     model = Evaluation

@@ -1,197 +1,205 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class='card container mt-5 p-3' style="width: 30rem;">
-  <div class="row p-3">
+<div class='card mt-5 p-3' style="margin: 0 10%">
+  <div style="margin: 0 2%">
     <h4>Inscription</h4>
-  </div>
-  <form method="POST" action="{% url 'lesApprentiStage:signup' %}">
-    {% csrf_token %}
+    <form method="POST" action="{% url 'lesApprentiStage:signup' %}">
+      {% csrf_token %}
+      <div >
 
-    <div class="row p-2">
-      <label class="col" for="{{ user_form.username.id_for_label }}">Nom d'utilisateur
-        :</label>
-      <input class="col form-control" id="{{ user_form.username.id_for_label }}"
-        type="text" name="{{ user_form.username.name }}" required>
+        <div class="row mb-2">
+          <label class="col-md-3" for="{{ user_form.type_utilisateur.id_for_label }}">Type
+            d'utilisateur :</label>
+          <select class="col-md-3 form-control"
+            id="{{ user_form.type_utilisateur.id_for_label }}"
+            name="{{ user_form.type_utilisateur.name }}" required>
+            {% for choice in user_form.type_utilisateur.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="row col">
+            <label class="col-md-6" for="{{ user_form.username.id_for_label }}">Nom d'utilisateur
+              :</label>
+            <input class="col-md-6 form-control" id="{{ user_form.username.id_for_label }}"
+              type="text" name="{{ user_form.username.name }}" required>
+          </div>
+
+          <div class="row col">
+            <label class="col-md-6" for="{{ user_form.password.id_for_label }}">Mot de
+              passe :</label>
+            <input class="col-md-6 form-control" id="{{ user_form.password.id_for_label }}"
+              type="password" name="{{ user_form.password.name }}" required>
+          </div>
+        </div>
+
+
+      </div>
     </div>
-
-    <div class="row p-2">
-      <label class="col" for="{{ user_form.password.id_for_label }}">Mot de
-        passe :</label>
-      <input class="col form-control" id="{{ user_form.password.id_for_label }}"
-        type="password" name="{{ user_form.password.name }}" required>
-    </div>
-
-    <div class="row p-2">
-      <label class="col" for="{{ user_form.type_utilisateur.id_for_label }}">Type
-        d'utilisateur :</label>
-      <select class="col form-control"
-        id="{{ user_form.type_utilisateur.id_for_label }}"
-        name="{{ user_form.type_utilisateur.name }}" required>
-        {% for choice in user_form.type_utilisateur.field.choices %}
-        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
     <hr>
 
-    <div id="etudiant_fields" style="display:none;">
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.nomEtu.id_for_label }}">Nom :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.nomEtu.id_for_label }}" type="text"
-          name="{{ etudiant_form.nomEtu.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.prenomEtu.id_for_label }}">Prénom
-          :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.prenomEtu.id_for_label }}" type="text"
-          name="{{ etudiant_form.prenomEtu.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.numEtu.id_for_label }}">Numéro
-          étudiant :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.numEtu.id_for_label }}" type="text"
-          name="{{ etudiant_form.numEtu.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.civiliteEtu.id_for_label }}">Civilité
-          étudiant :</label>
-        <select class="col form-control"
-          id="{{ etudiant_form.civiliteEtu.id_for_label }}"
-          name="{{ etudiant_form.civiliteEtu.name }}" required>
-          <option value="M.">M.</option>
-          <option value="Mme.">Mme.</option>
-        </select>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.adresseEtu.id_for_label }}">Adresse
-          étudiant :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.adresseEtu.id_for_label }}" type="text"
-          name="{{ etudiant_form.adresseEtu.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.cpEtu.id_for_label }}">Code
-          Postal :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.cpEtu.id_for_label }}"
-          type="text" name="{{ etudiant_form.cpEtu.name }}"
-          pattern="[0-9]{5}" title="Le code postal doit comporter 5 chiffres"
-          required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.villeEtu.id_for_label }}">Ville
-          :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.villeEtu.id_for_label }}" type="text"
-          name="{{ etudiant_form.villeEtu.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.telEtu.id_for_label }}">Numéro
-          de téléphone :</label>
-        <input class="col form-control"
-          id="{{ etudiant_form.telEtu.id_for_label }}"
-          type="text" name="{{ etudiant_form.telEtu.name }}"
-          pattern="^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$"
-          title="Le numéro de téléphone doit être au format français"
-          required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
-        <select class="col form-control"
-          id="{{ etudiant_form.promo.id_for_label }}"
-          name="{{ etudiant_form.promo.name }}" required>
-          {% for promo in etudiant_form.promo.field.queryset %}
-          <option value="{{ promo.pk }}">{{ promo.nomPromo }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.idDepartement.id_for_label }}">Département
-          :</label>
-        <select class="col form-control"
-          id="{{ etudiant_form.idDepartement.id_for_label }}"
-          name="{{ etudiant_form.idDepartement.name }}" required>
-          {% for departement in etudiant_form.idDepartement.field.queryset %}
-          <option value="{{ departement.pk }}">{{ departement.nomDep }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.prenom2Etu.id_for_label }}">Deuxième Prénom :</label>
-        <input class="col form-control" id="{{ etudiant_form.prenom2Etu.id_for_label }}" type="text" name="{{ etudiant_form.prenom2Etu.name }}">
-      </div>
+    <div id="etudiant_fields" style="display:none;margin: 0 3%">
+      <!-- Début div étudiant -->
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label for="{{ etudiant_form.civiliteEtu.id_for_label }}">Civilité étudiant :</label>
+              <select class="form-control" id="{{ etudiant_form.civiliteEtu.id_for_label }}" name="{{ etudiant_form.civiliteEtu.name }}" required>
+                <option value="M.">M.</option>
+                <option value="Mme.">Mme.</option>
+              </select>
+            </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.dateNEtu.id_for_label }}">Date de Naissance :</label>
-        <input class="col form-control" id="{{ etudiant_form.dateNEtu.id_for_label }}" type="date" name="{{ etudiant_form.dateNEtu.name }}">
-      </div>
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.nomEtu.id_for_label }}">Nom :</label>
+              <input class="form-control" id="{{ etudiant_form.nomEtu.id_for_label }}" type="text" name="{{ etudiant_form.nomEtu.name }}" required>
+            </div>
+            
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.prenomEtu.id_for_label }}">Prénom :</label>
+              <input class="form-control" id="{{ etudiant_form.prenomEtu.id_for_label }}" type="text" name="{{ etudiant_form.prenomEtu.name }}" required>
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.prenom2Etu.id_for_label }}">Deuxième Prénom :</label>
+              <input class="form-control" id="{{ etudiant_form.prenom2Etu.id_for_label }}" type="text" name="{{ etudiant_form.prenom2Etu.name }}">
+            </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.lieuNEtu.id_for_label }}">Lieu de Naissance :</label>
-        <input class="col form-control" id="{{ etudiant_form.lieuNEtu.id_for_label }}" type="text" name="{{ etudiant_form.lieuNEtu.name }}">
-      </div>
+          </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.departementNEtu.id_for_label }}">Département de Naissance :</label>
-        <input class="col form-control" id="{{ etudiant_form.departementNEtu.id_for_label }}" type="text" name="{{ etudiant_form.departementNEtu.name }}">
-      </div>
+          <div class="row mb-3">
+
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.nationaliteEtu.id_for_label }}">Nationalité :</label>
-        <input class="col form-control" id="{{ etudiant_form.nationaliteEtu.id_for_label }}" type="text" name="{{ etudiant_form.nationaliteEtu.name }}">
-      </div>
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.adresseParent.id_for_label }}">Adresse des Parents :</label>
-        <input class="col form-control" id="{{ etudiant_form.adresseParent.id_for_label }}" type="text" name="{{ etudiant_form.adresseParent.name }}">
-      </div>
+            <div class="col-md-6 mb-2 ms-1">
+              <label for="{{ etudiant_form.adresseEtu.id_for_label }}">Adresse étudiant :</label>
+              <input class="form-control" id="{{ etudiant_form.adresseEtu.id_for_label }}" type="text" name="{{ etudiant_form.adresseEtu.name }}" required>
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.cpEtu.id_for_label }}">Code Postal :</label>
+              <input class="form-control" id="{{ etudiant_form.cpEtu.id_for_label }}" type="text" name="{{ etudiant_form.cpEtu.name }}" pattern="[0-9]{5}" title="Le code postal doit comporter 5 chiffres" required>
+            </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.cpParent.id_for_label }}">Code Postal des Parents :</label>
-        <input class="col form-control" id="{{ etudiant_form.cpParent.id_for_label }}" type="text" name="{{ etudiant_form.cpParent.name }}">
-      </div>
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.villeEtu.id_for_label }}">Ville :</label>
+              <input class="form-control" id="{{ etudiant_form.villeEtu.id_for_label }}" type="text" name="{{ etudiant_form.villeEtu.name }}" required>
+            </div>
+            
+          </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.villeParent.id_for_label }}">Ville des Parents :</label>
-        <input class="col form-control" id="{{ etudiant_form.villeParent.id_for_label }}" type="text" name="{{ etudiant_form.villeParent.name }}">
-      </div>
+          <div class="row mb-3">
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.numEtu.id_for_label }}">Numéro étudiant :</label>
+              <input class="form-control" id="{{ etudiant_form.numEtu.id_for_label }}" type="text" name="{{ etudiant_form.numEtu.name }}" required>
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.ineEtu.id_for_label }}">Numéro INE :</label>
+              <input class="form-control" id="{{ etudiant_form.ineEtu.id_for_label }}" type="number" name="{{ etudiant_form.ineEtu.name }}">
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.numDossier.id_for_label }}">Numéro de Dossier :</label>
+              <input class="form-control" id="{{ etudiant_form.numDossier.id_for_label }}" type="number" name="{{ etudiant_form.numDossier.name }}">
+            </div>
+
+
+            <div class="col-md-auto mb-2 ms-1">
+              <label for="{{ etudiant_form.idDepartement.id_for_label }}">Département :</label>
+              <select class="form-control" id="{{ etudiant_form.idDepartement.id_for_label }}" name="{{ etudiant_form.idDepartement.name }}" required>
+                {% for departement in etudiant_form.idDepartement.field.queryset %}
+                <option value="{{ departement.pk }}">{{ departement.nomDep }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-auto mb-2 ms-1">
+              <label for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
+              <select class="form-control" id="{{ etudiant_form.promo.id_for_label }}" name="{{ etudiant_form.promo.name }}" required>
+                {% for promo in etudiant_form.promo.field.queryset %}
+                <option value="{{ promo.pk }}">{{ promo.nomPromo }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+          </div>
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.telParent.id_for_label }}">Téléphone des Parents :</label>
-        <input class="col form-control" id="{{ etudiant_form.telParent.id_for_label }}" type="text" name="{{ etudiant_form.telParent.name }}">
-      </div>
+
       
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.mailParent.id_for_label }}">E-mail des Parents :</label>
-        <input class="col form-control" id="{{ etudiant_form.mailParent.id_for_label }}" type="email" name="{{ etudiant_form.mailParent.name }}">
-      </div>
-      <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.mailEtu.id_for_label }}">E-mail etudiant :</label>
-        <input class="col form-control" id="{{ etudiant_form.mailEtu.id_for_label }}" type="email" name="{{ etudiant_form.mailEtu.name }}">
-    </div>
-    
-    <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.numDossier.id_for_label }}">Numéro de Dossier :</label>
-        <input class="col form-control" id="{{ etudiant_form.numDossier.id_for_label }}" type="number" name="{{ etudiant_form.numDossier.name }}">
-    </div>
-    
-    <div class="row p-2">
-        <label class="col" for="{{ etudiant_form.ineEtu.id_for_label }}">Numéro INE :</label>
-        <input class="col form-control" id="{{ etudiant_form.ineEtu.id_for_label }}" type="number" name="{{ etudiant_form.ineEtu.name }}">
-    </div>
+          <div class="row mb-3">
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.dateNEtu.id_for_label }}">Date de Naissance :</label>
+              <input class="form-control" id="{{ etudiant_form.dateNEtu.id_for_label }}" type="date" name="{{ etudiant_form.dateNEtu.name }}">
+            </div>
+      
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.nationaliteEtu.id_for_label }}">Nationalité :</label>
+              <input class="form-control" id="{{ etudiant_form.nationaliteEtu.id_for_label }}" type="text" name="{{ etudiant_form.nationaliteEtu.name }}">
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.lieuNEtu.id_for_label }}">Lieu de Naissance :</label>
+              <input class="form-control" id="{{ etudiant_form.lieuNEtu.id_for_label }}" type="text" name="{{ etudiant_form.lieuNEtu.name }}">
+            </div>
+      
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.departementNEtu.id_for_label }}">Département de Naissance :</label>
+              <input class="form-control" id="{{ etudiant_form.departementNEtu.id_for_label }}" type="text" name="{{ etudiant_form.departementNEtu.name }}">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.mailEtu.id_for_label }}">E-mail étudiant :</label>
+              <input class="form-control" id="{{ etudiant_form.mailEtu.id_for_label }}" type="email" name="{{ etudiant_form.mailEtu.name }}">
+            </div>
+      
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.telEtu.id_for_label }}">Numéro de téléphone :</label>
+              <input class="form-control" id="{{ etudiant_form.telEtu.id_for_label }}" type="text" name="{{ etudiant_form.telEtu.name }}" pattern="^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$" title="Le numéro de téléphone doit être au format français" required>
+            </div>
+
+          </div>
+
+          <hr style="padding: 0">
+      
+          <div class="row mb-3">
+
+      
+            <div class="col-md-6 mb-2 ms-1">
+              <label for="{{ etudiant_form.adresseParent.id_for_label }}">Adresse des Parents :</label>
+              <input class="form-control" id="{{ etudiant_form.adresseParent.id_for_label }}" type="text" name="{{ etudiant_form.adresseParent.name }}">
+            </div>
+      
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.cpParent.id_for_label }}">Code Postal des Parents :</label>
+              <input class="form-control" id="{{ etudiant_form.cpParent.id_for_label }}" type="text" name="{{ etudiant_form.cpParent.name }}">
+            </div>
+
+            <div class="col-md-3 mb-2 ms-1">
+              <label for="{{ etudiant_form.villeParent.id_for_label }}">Ville des Parents :</label>
+              <input class="form-control" id="{{ etudiant_form.villeParent.id_for_label }}" type="text" name="{{ etudiant_form.villeParent.name }}">
+            </div>
+          </div>
+      
+          <div class="row mb-3">
+
+      
+            <div class="col-4 mb-2 ms-1">
+              <label for="{{ etudiant_form.telParent.id_for_label }}">Téléphone des Parents :</label>
+              <input class="form-control" id="{{ etudiant_form.telParent.id_for_label }}" type="text" name="{{ etudiant_form.telParent.name }}">
+            </div>
+      
+            <div class="col-4 mb-2 ms-1">
+              <label for="{{ etudiant_form.mailParent.id_for_label }}">E-mail des Parents :</label>
+              <input class="form-control" id="{{ etudiant_form.mailParent.id_for_label }}" type="email" name="{{ etudiant_form.mailParent.name }}">
+            </div>
+          </div>
+     
       {% if etudiant_form.errors %}
   <div class="alert alert-danger" role="alert">
     <strong>Erreur lors de la soumission du formulaire :</strong>
@@ -200,76 +208,71 @@
 {% endif %}
     </div>
 
-    <div id="enseignant_fields" style="display:none;">
+    <div id="enseignant_fields" style="display:none;margin: 0 3%">
 
-      <div class="row p-2">
-        <label class="col" for="{{ enseignant_form.numHarpege.id_for_label }}">Numéro
-          Harpège :</label>
-        <input class="col form-control"
-          id="{{ enseignant_form.numHarpege.id_for_label }}" type="text"
-          name="{{ enseignant_form.numHarpege.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col"
-          for="{{ enseignant_form.nomEnseignant.id_for_label }}">Nom :</label>
-        <input class="col form-control"
-          id="{{ enseignant_form.nomEnseignant.id_for_label }}" type="text"
-          name="{{ enseignant_form.nomEnseignant.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col"
-          for="{{ enseignant_form.prenomEnseignant.id_for_label }}">Prénom :</label>
-        <input class="col form-control"
-          id="{{ enseignant_form.prenomEnseignant.id_for_label }}" type="text"
-          name="{{ enseignant_form.prenomEnseignant.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col"
-          for="{{ enseignant_form.mailEnseignant.id_for_label }}">Email de l'enseignant
-          :</label>
-        <input class="col form-control"
-          id="{{ enseignant_form.mailEnseignant.id_for_label }}" type="text"
-          name="{{ enseignant_form.mailEnseignant.name }}" required>
-      </div>
-
-      <div class="row p-2">
-        <label class="col"
-          for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle :</label>
-        <select class="col form-control"
-          id="{{ enseignant_form.roleEnseignant.id_for_label }}"
-          name="{{ enseignant_form.roleEnseignant.name }}" required>
-          {% for role in enseignant_form.roleEnseignant.field.choices %}
-          <option value="{{ role.0 }}">{{ role.1 }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="row p-2" id="enseignant_promo_select" style="display:none;">
-        <label class="col col-form-label"
-          for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
-        <div class="col">
-          {{ enseignant_form.promos }}
+      <div class="row mb-3">
+        <div class="col-md-3 mb-2 ms-1">
+          <label for="{{ enseignant_form.numHarpege.id_for_label }}">Numéro Harpège :</label>
+          <input class="form-control" id="{{ enseignant_form.numHarpege.id_for_label }}" type="text" name="{{ enseignant_form.numHarpege.name }}" required>
         </div>
+
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.nomEnseignant.id_for_label }}">Nom :</label>
+          <input class="form-control" id="{{ enseignant_form.nomEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.nomEnseignant.name }}" required>
+        </div>
+    
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.prenomEnseignant.id_for_label }}">Prénom :</label>
+          <input class="form-control" id="{{ enseignant_form.prenomEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.prenomEnseignant.name }}" required>
+        </div>
+    
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.mailEnseignant.id_for_label }}">Email de l'enseignant :</label>
+          <input class="form-control" id="{{ enseignant_form.mailEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.mailEnseignant.name }}" required>
+        </div>
+
       </div>
 
-      <div class="row p-2" id="enseignant_departement_select" style="display:none;">
-        <label class="col col-form-label" for="{{ enseignant_form.departements.id_for_label }}">{{ enseignant_form.departements.label }}</label>
-        <div class="col">
+
+      <div class="row mb-3">
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle :</label>
+          <select class="form-control" id="{{ enseignant_form.roleEnseignant.id_for_label }}" name="{{ enseignant_form.roleEnseignant.name }}" required>
+            {% for role in enseignant_form.roleEnseignant.field.choices %}
+            <option value="{{ role.0 }}">{{ role.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+    
+        <div class="col-md-3 mb-2 ms-1" id="enseignant_promo_select" style="display:none;">
+          <label class="col col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
+          <div >
+            {{ enseignant_form.promos }}
+          </div>
+        </div>
+    
+        <div class="col-md-3 mb-2 ms-1" id="enseignant_departement_select" style="display:none;">
+          <label class="col col-form-label" for="{{ enseignant_form.departements.id_for_label }}">{{ enseignant_form.departements.label }}</label>
+          <div >
             {{ enseignant_form.departements }}
+          </div>
         </div>
-    </div>
-    <div class="row p-2">
-      <label class="col" for="{{ enseignant_form.telEnseignant.id_for_label }}">Numéro de Téléphone :</label>
-      <input class="col form-control" id="{{ enseignant_form.telEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.telEnseignant.name }}">
-  </div>
+    
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.telEnseignant.id_for_label }}">Numéro de Téléphone :</label>
+          <input class="form-control" id="{{ enseignant_form.telEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.telEnseignant.name }}">
+        </div>
+    
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ enseignant_form.disciplineEnseignant.id_for_label }}">Discipline :</label>
+          <input class="form-control" id="{{ enseignant_form.disciplineEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.disciplineEnseignant.name }}">
+        </div>
 
-  <div class="row p-2">
-      <label class="col" for="{{ enseignant_form.disciplineEnseignant.id_for_label }}">Discipline :</label>
-      <input class="col form-control" id="{{ enseignant_form.disciplineEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.disciplineEnseignant.name }}">
-  </div>
+      </div>
+
+      
+  
+      
   {% if etudiant_form.errors %}
   <div class="alert alert-danger" role="alert">
     <strong>Erreur lors de la soumission du formulaire :</strong>
@@ -280,40 +283,44 @@
 
     </div>
 
-    <div id="secretaire_fields" style="display:none;">
-      <div class="row p-2">
-        <label class="col" for="{{ secretaire_form.numSec.id_for_label }}">Numéro
-          Secrétaire :</label>
-        <input class="col form-control"
-          id="{{ secretaire_form.numSec.id_for_label }}" type="text"
-          name="{{ secretaire_form.numSec.name }}" required>
+    <div id="secretaire_fields" style="display:none;margin: 0 3%">
+      <div class="row mb-3">
+
+        <div class="col-md-3 mb-2 ms-1">
+          <label  for="{{ secretaire_form.numSec.id_for_label }}">Numéro
+            Secrétaire :</label>
+          <input class="col form-control"
+            id="{{ secretaire_form.numSec.id_for_label }}" type="text"
+            name="{{ secretaire_form.numSec.name }}" required>
+        </div>
+
       </div>
     </div>
 
-    <div class="row p-2">
+    <div class="row" style="margin: 0 3%">
       <button class="col btn btn-primary" type="submit">Inscrire</button>
     </div>
   </form>
 </div>
 
-<div class='card container mt-5 p-3' style="width: 30rem;">
-  <div class="row">
+<div class='card mt-5 p-3' style="margin: 0 10%">
+  <div style="margin: 0 2%">
     <h4>Upload CSV des étudiants</h4>
+    <form method="POST" action="{% url 'lesApprentiStage:upload_csv' %}"
+      enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="row p-2">
+        <label class="col" for="csv_file">Fichier CSV :</label>
+        <input class="col form-control" id="csv_file" type="file" name="file"
+          accept=".csv" required>
+      </div>
+
+      <div class="row p-2">
+        <button class="col btn btn-primary" type="submit">Uploader</button>
+      </div>
+    </form>
   </div>
-  <form method="POST" action="{% url 'lesApprentiStage:upload_csv' %}"
-    enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <div class="row p-2">
-      <label class="col" for="csv_file">Fichier CSV :</label>
-      <input class="col form-control" id="csv_file" type="file" name="file"
-        accept=".csv" required>
-    </div>
-
-    <div class="row p-2">
-      <button class="col btn btn-primary" type="submit">Uploader</button>
-    </div>
-  </form>
 </div>
 
 <script>
