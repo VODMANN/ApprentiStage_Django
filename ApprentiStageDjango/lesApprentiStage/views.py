@@ -467,7 +467,6 @@ def modifier_contrat(request, pk):
             nouvelle_url = f"{url_sans_fragment}#contrat"  
             return redirect(nouvelle_url)
     else:
-        # Définir form ici pour s'assurer qu'il est toujours défini
         form = ContratForm(instance=contrat)
 
     return render(request, 'secretariat/contrats/modifier_contrat.html', {'form': form, 'contrat': contrat})
