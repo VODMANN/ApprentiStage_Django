@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import *
-from .utils import generer_convention
+from .utils import *
 
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
@@ -27,6 +27,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django_filters import FilterSet, CharFilter
 from .filters import *
+
 
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
@@ -1226,9 +1227,15 @@ def generer_convention_view(request, contrat_id):
     try:
         contrat = Contrat.objects.get(id=contrat_id, estValide=True, etudiant=request.user.profiletudiant)
         document_path = generer_convention(contrat)
+        # pdf_path = '/mnt/c/ECOLE/ApprentiStage_Django/ApprentiStageDjango/documents/documents/Convention_'+contrat.etudiant.nomEtu+'.pdf'
+        # document = Document()
+        # # Load a Word DOCX file
+        # document.LoadFromFile(document_path)
+        # document.SaveToFile(pdf_path, FileFormat.PDF)
+        # document.Close()
         with open(document_path, 'rb') as doc:
             response = HttpResponse(doc.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.docx"'
+            response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.pdf"'
             return response
     except Contrat.DoesNotExist:
         return HttpResponse("Contrat non valide ou inexistant.")
