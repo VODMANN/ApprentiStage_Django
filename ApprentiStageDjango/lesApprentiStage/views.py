@@ -307,6 +307,20 @@ def signup(request):
                 selected_promos = enseignant_form.cleaned_data.get('promos')
                 for promo in selected_promos:
                     EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
+                subject = "Bienvenue sur Notre Site"
+                template = f'mail/register_valid.html'
+                context = {
+                    'date': datetime.today().date(),
+                    'username': user.username,
+                    'email': enseignant.mailEnseignant
+                }
+                receivers = [etudiant.mailEnseignant]
+                send_email_with_html_body(
+                subjet=subject,
+                receivers=receivers,
+                template=template,
+                context=context
+            )
                 return redirect('lesApprentiStage:home')
             
             elif user_type == 'secretaire' and secretaire_form.is_valid():
