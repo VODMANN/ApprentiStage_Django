@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
-from .utils import generer_convention
+from .utils import generer_convention, send_email_with_html_body
 
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
@@ -277,6 +277,20 @@ def signup(request):
                 etudiant = etudiant_form.save(commit=False)
                 etudiant.utilisateur = user
                 etudiant.save()
+                subject = "Bienvenue sur Notre Site"
+                template = f'mail/register_valid.html'
+                context = {
+                    'date': datetime.today().date(),
+                    'username': user.username,
+                    'email': etudiant.mailEtu
+                }
+                receivers = [etudiant.mailEtu]
+                send_email_with_html_body(
+                subjet=subject,
+                receivers=receivers,
+                template=template,
+                context=context
+            )
                 return redirect('lesApprentiStage:home')
             elif user_type == 'enseignant' and enseignant_form.is_valid():
                 user.save()

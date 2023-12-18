@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur Notre Site</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <div style="max-width: 600px; margin: auto; padding: 20px; text-align: center;">
+        <h1 style="color: #4CAF50;">Bienvenue sur Notre Site, {{ username }} !</h1>
+        <p style="font-size: 16px;">Nous sommes ravis de vous compter parmi nous. Votre inscription a bien été prise en compte le {{ date }}.</p>
+        <p style="font-size: 16px;">Vous pouvez dès maintenant profiter de tous nos services en vous connectant avec votre adresse e-mail : {{ email }}.</p>
+        <div style="margin-top: 20px;">
+            <a href="{% url 'lesApprentiStage:login' %}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Se Connecter</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 16px;">Si vous avez des questions ou besoin d'aide, n'hésitez pas à contacter notre support.</p>
+        <p style="margin-top: 40px; color: #777; font-size: 14px;">L'équipe de Vodman</p>
+    </div>
+</body>
+</html>
