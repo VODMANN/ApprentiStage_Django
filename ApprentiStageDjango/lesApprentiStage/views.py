@@ -863,32 +863,73 @@ class DocumentDeleteView(DeleteView):
         return url_with_fragment
 
 # ///////////////////////crud evaluation ////////////////////////////
-
 class EvaluationCreateView(CreateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/creer_evaluation.html'
-    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+
+    def get_form_class(self):
+        if self.request.user.type_utilisateur == 'enseignant':
+            # (sans le champ 'enseignant')
+            class EnseignantEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'note', 'commentaire']
+            return EnseignantEvaluationForm
+        else:
+            # (avec le champ 'enseignant')
+            class DefaultEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+            return DefaultEvaluationForm
+
+    def form_valid(self, form):
+        if self.request.user.type_utilisateur == 'enseignant':
+            form.instance.enseignant = self.request.user.profilenseignant
+
+        # Continuer avec le traitement normal du formulaire
+        return super(EvaluationCreateView, self).form_valid(form)
 
     def get_success_url(self):
-            # Récupérer l'URL de base à partir du nom de l'URL
-            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        return reverse_lazy('lesApprentiStage:liste_recherche') + "#evaluation"
 
-            # Ajouter le fragment à l'URL
-            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
-            return url_with_fragment
-    
 class EvaluationUpdateView(UpdateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/modifier_evaluation.html'
-    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+
+    def get_form_class(self):
+        # Choisir la classe de formulaire en fonction du type d'utilisateur
+        if self.request.user.type_utilisateur == 'enseignant':
+            # Classe de formulaire pour les enseignants (sans le champ 'enseignant')
+            class EnseignantEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'note', 'commentaire']
+            return EnseignantEvaluationForm
+        else:
+            # Classe de formulaire par défaut (avec le champ 'enseignant')
+            class DefaultEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+            return DefaultEvaluationForm
+
+    def get_form(self, form_class=None):
+        form = super(EvaluationUpdateView, self).get_form(form_class)
+        if self.request.user.type_utilisateur == 'enseignant':
+            # Vérifier si le champ 'enseignant' existe dans le formulaire avant de le modifier
+            if 'enseignant' in form.fields:
+                # Rendre le champ 'enseignant' caché et définir sa valeur
+                enseignant_id = self.request.user.profilenseignant.numHarpege
+                form.fields['enseignant'].initial = enseignant_id
+                form.fields['enseignant'].widget = forms.HiddenInput()
+        return form
+
 
     def get_success_url(self):
-            # Récupérer l'URL de base à partir du nom de l'URL
-            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        # Redirection après la mise à jour de l'évaluation
+        return reverse_lazy('lesApprentiStage:liste_recherche') + "#evaluation"
 
-            # Ajouter le fragment à l'URL
-            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
-            return url_with_fragment
     
 class EvaluationDeleteView(DeleteView):
     model = Evaluation
