@@ -1094,20 +1094,31 @@ class NombreSoutenanceView(View):
     template_name = 'secretariat/soutenance/nombre_soutenances.html'
 
     def get(self, request, num_harpege=None):
-        # Si un identifiant d'enseignant est fourni, essayez de le récupérer
         enseignant = get_object_or_404(ProfilEnseignant, pk=num_harpege) if num_harpege else None
-
-        # Initialiser le formulaire avec l'enseignant spécifique s'il existe
         form = NombreSoutenanceForm(initial={'enseignant': enseignant})
-
         return render(request, self.template_name, {'form': form, 'enseignant': enseignant})
 
     def post(self, request, num_harpege=None):
         form = NombreSoutenanceForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Soutenance enregistrée avec succès.')
+            promo = form.cleaned_data['promo']
+            nombre_soutenances = form.cleaned_data['nombreSoutenances']
+
+            # Vérifier si une instance existe déjà pour le prof et la promo
+            try:
+                enseignant = ProfilEnseignant.objects.get(pk=num_harpege)
+                instance = NombreSoutenances.objects.get(enseignant=enseignant, promo=promo)
+                instance.nombreSoutenances = nombre_soutenances
+                instance.save()
+            except NombreSoutenances.DoesNotExist:
+                # Si aucune instance n'existe pas, créez-en une nouvelle
+                instance = form.save(commit=False)
+                instance.promo = promo
+                instance.enseignant = enseignant
+                instance.save()
+
+            messages.success(request, 'Nombre de soutenances attribué avec succès.')
             return redirect('lesApprentiStage:home')
         else:
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
