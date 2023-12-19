@@ -2,18 +2,29 @@
 {% load widget_tweaks %}
 {% block content %}
   <div class="container mt-4">
-    <h2 class="mb-4">Créer une nouvelle evaluation</h2>
+    <h2 class="mb-4">Créer une nouvelle évaluation</h2>
     <form method="post" class="form-entreprise">
       {% csrf_token %}
       {% for field in form %}
         <div class="form-group">
-          {{ field.label_tag }}
-          {{ field|add_class:'form-control' }}
-          {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% if request.user.type_utilisateur == 'enseignant' and field.name == 'enseignant' %}
+            {{ field.label_tag }}
+            <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ request.user.profilenseignant.nomEnseignant }}" class="form-control" readonly>
+          {% else %}
+            {{ field.label_tag }}
+            {{ field|add_class:'form-control' }}
+            {% if field.help_text %}
+              <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            {{ field.errors }}
           {% endif %}
-          {{ field.errors }}
         </div>
+        {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endfor %}
+
       {% endfor %}
       <div class="form-actions">
         <button type="submit" class="btn btn-success">Créer</button>
@@ -21,7 +32,6 @@
       </div>
     </form>
   </div>
-
   <style>
     .form-entreprise .form-group {
       margin-bottom: 15px;

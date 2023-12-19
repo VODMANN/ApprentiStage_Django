@@ -341,3 +341,16 @@ class NombreSoutenanceForm(forms.ModelForm):
     class Meta:
         model = NombreSoutenances
         fields = ['promo', 'nombreSoutenances']
+
+
+
+class ProfilEnseignantForm(forms.ModelForm):
+    class Meta:
+        model = ProfilEnseignant
+        fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'roleEnseignant', 'disciplineEnseignant']
+        # Ajoutez d'autres champs si nécessaire
+        labels = {
+            'nomEnseignant': 'Nom',
+            'prenomEnseignant': 'Prénom',
+            # Ajoutez d'autres étiquettes pour les champs ici
+        }

@@ -34,10 +34,10 @@
             </a>
             <div class="col-1 d-flex align-items-center">
               {% if not offre.estPublie %}
-                <button pk="{{ offre.pk }}"  class="valid-button btn btn-success text-white"><i class="bi bi-check"></i></button>
-                <button pk="{{ offre.pk }}"  class="delete-button btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                <button pk="{{ offre.pk }}" url="{% url 'lesApprentiStage:valid_offre' offre.pk %}" class="valid-button btn btn-success text-white"><i class="bi bi-check"></i></button>
+                <button pk="{{ offre.pk }}" url="{% url 'lesApprentiStage:delete_offre' offre.pk %}"  class="delete-button btn btn-danger"><i class="bi bi-trash-fill"></i></button>
               {% else %}
-                <button pk="{{ offre.pk }}"  class="delete-button btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                <button pk="{{ offre.pk }}"  url="{% url 'lesApprentiStage:delete_offre' offre.pk %}" class="delete-button btn btn-danger"><i class="bi bi-trash-fill"></i></button>
               {% endif %}
             </div> 
           </div>
@@ -56,7 +56,7 @@
 <script>
 $(".delete-button").on('click', function(){
   $.ajax({
-      url: "secretariat/delete_offre/"+$(this).attr('pk'),
+      url: $(this).attr('url'),
       success: function(response) {
           afficherNotification("Suppresion réussie !", false);
       },
@@ -69,7 +69,7 @@ $(".delete-button").on('click', function(){
 
 $(".valid-button").on('click', function(){
   $.ajax({
-      url: "secretariat/valid_offre/"+$(this).attr('pk'), 
+      url: $(this).attr('url'), 
       success: function(response) {
           afficherNotification("Offre validée !", true);
       },
