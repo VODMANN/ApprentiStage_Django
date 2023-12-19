@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from .NAF import *
+import django_filters
 
 class EtudiantForm(forms.ModelForm):
     mailEtu = forms.EmailField(required=False)
@@ -328,3 +329,15 @@ class ContratForm(forms.ModelForm):
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']
+
+class NombreSoutenanceForm(forms.ModelForm):
+
+    promo = django_filters.ModelChoiceFilter(
+        queryset=Promo.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Promo'
+    )
+
+    class Meta:
+        model = NombreSoutenances
+        fields = ['promo', 'nombreSoutenances']

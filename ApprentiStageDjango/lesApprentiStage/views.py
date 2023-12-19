@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .utils import generer_convention
 
@@ -230,28 +230,38 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-def home(request):
+from .models import NombreSoutenances
 
+def home(request):
     offre_list = Offre.objects.all()   
     user = request.user
-
 
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
         print(user_type)
+
         if user_type == 'etudiant':
-          offre_list = Offre.objects.filter(estPublie=1)
-          return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.filter(estPublie=1)
+            return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
 
         if user_type == 'secretaire':
-          offre_list = Offre.objects.all().order_by('-pk')
-          return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.all().order_by('-pk')
+            return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-            return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
+
+            # Ajoutez le code pour obtenir le nombre de soutenances par promo pour cet enseignant.
+            soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
+
+            return render(request, 'enseignant/accueil_ens.html', {
+                'user': user,
+                'is_responsible': is_responsible,
+                'soutenances_par_promo': soutenances_par_promo
+            })
 
     return render(request, 'pages/accueil.html')
+
 
 def validation_offre(request):
     offre_list = Offre.objects.all().order_by('-pk')
@@ -426,12 +436,16 @@ def liste_recherche(request):
         'evaluation_filter': EvaluationFilter(request.GET, queryset=Evaluation.objects.all()),
     }
 
+    selected_filter = request.GET.get('selected_filter')
+
     # Ajout des filtres au contexte
     context = {
         'filters': filters,
+        'selected_filter': selected_filter,
     }
 
     return render(request, 'secretariat/crud_master.html', context)
+
 
 
 def liste_contrats(request):
@@ -781,9 +795,6 @@ def upload_convention_secretaire(request):
 
 # /////////////////////// Soutenances Léo ////////////////////////////
 
-from django.shortcuts import get_object_or_404, redirect, render
-from .models import Soutenance
-
 def inscrire_soutenance(request, soutenance_id):
     soutenance = get_object_or_404(Soutenance, id=soutenance_id)
     user = request.user
@@ -792,7 +803,7 @@ def inscrire_soutenance(request, soutenance_id):
         soutenance.candide = user.profilenseignant
         soutenance.save()
 
-    return redirect('lesApprentiStage:liste_recherche')
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
 
 def desinscrire_soutenance(request, soutenance_id):
     soutenance = get_object_or_404(Soutenance, id=soutenance_id)
@@ -802,7 +813,44 @@ def desinscrire_soutenance(request, soutenance_id):
         soutenance.candide = None
         soutenance.save()
 
-    return redirect('lesApprentiStage:liste_recherche')
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+
+
+class NombreSoutenanceView(View):
+    template_name = 'secretariat/soutenance/nombre_soutenances.html'
+
+    def get(self, request, num_harpege=None):
+        enseignant = get_object_or_404(ProfilEnseignant, pk=num_harpege) if num_harpege else None
+        form = NombreSoutenanceForm(initial={'enseignant': enseignant})
+        return render(request, self.template_name, {'form': form, 'enseignant': enseignant})
+
+    def post(self, request, num_harpege=None):
+        form = NombreSoutenanceForm(request.POST)
+
+        if form.is_valid():
+            promo = form.cleaned_data['promo']
+            nombre_soutenances = form.cleaned_data['nombreSoutenances']
+
+            # Vérifier si une instance existe déjà pour le prof et la promo
+            try:
+                enseignant = ProfilEnseignant.objects.get(pk=num_harpege)
+                instance = NombreSoutenances.objects.get(enseignant=enseignant, promo=promo)
+                instance.nombreSoutenances = nombre_soutenances
+                instance.save()
+            except NombreSoutenances.DoesNotExist:
+                # Si aucune instance n'existe pas, créez-en une nouvelle
+                instance = form.save(commit=False)
+                instance.promo = promo
+                instance.enseignant = enseignant
+                instance.save()
+
+            messages.success(request, 'Nombre de soutenances attribué avec succès.')
+            return redirect('lesApprentiStage:home')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+            return render(request, self.template_name, {'form': form})
+
+
 
 
 

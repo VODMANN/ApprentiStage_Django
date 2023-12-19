@@ -18,7 +18,7 @@
                         <option value='departements'>Departement</option>
                         <option value='offre'>Offre</option>
                         <option value='salle'>Salle</option>
-                        <option value='soutenance'>Soutenance</option>
+                        <option {% if selected_filter == 'soutenance' %}selected{% endif %} value='soutenance'>Soutenance</option>
                         <option value='document'>Document</option>
                         <option value='evaluation'>Evaluation</option>
                     </select>
@@ -277,8 +277,9 @@
                                                         Voir Détails
                                                     </button>
                                                     {% if user.get_user_type == "secretaire" %}
-                                                    <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
-                                                    <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                        <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-secondary btn-sm">Attribuer Soutenances</a>
+                                                        <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
                                                     
                                                 </div>
@@ -591,14 +592,18 @@
                                                         <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% elif user.get_user_type == "enseignant" %}
-                                                        {% if soutenance.candide == user.profilenseignant %}
-                                                            <!-- L'enseignant est candidat à la soutenance -->
-                                                            <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
+                                                        {% if soutenance.candide %}
+                                                            <!-- Un candidat est déjà inscrit -->
+                                                            {% if soutenance.candide == user.profilenseignant %}
+                                                                <!-- L'enseignant est candidat à la soutenance -->
+                                                                <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
+                                                            {% endif %}
                                                         {% else %}
-                                                            <!-- L'enseignant n'est pas candidat à la soutenance -->
+                                                            <!-- Aucun candidat n'est déjà inscrit -->
                                                             <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
                                                         {% endif %}
                                                     {% endif %}
+
                                                 </div>
                                             </td>
                                         </tr>

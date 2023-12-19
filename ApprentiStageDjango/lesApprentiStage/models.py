@@ -67,12 +67,14 @@ class ProfilEnseignant(models.Model):
     numHarpege = models.CharField(max_length=20, primary_key=True)
     nomEnseignant = models.CharField(max_length=50, null=True)
     prenomEnseignant = models.CharField(max_length=50, null=True)
-    telEnseignant = models.CharField(max_length=25,null=True)
+    telEnseignant = models.CharField(max_length=25, null=True)
     mailEnseignant = models.EmailField(max_length=100, null=True)
     roleEnseignant = models.CharField(max_length=50, choices=ROLE_CHOICES, null=True)
     disciplineEnseignant = models.CharField(max_length=150, null=True)
+
     def __str__(self):
         return self.utilisateur.username
+
 
 class Promo(models.Model):
     nomPromo = models.CharField(max_length=100)
@@ -242,6 +244,19 @@ class Etablissement(models.Model):
 
     def __str__(self):
         return self.nomEtablissement
+    
+class NombreSoutenances(models.Model):
+    enseignant = models.ForeignKey('ProfilEnseignant', on_delete=models.CASCADE)
+    promo = models.ForeignKey('Promo', on_delete=models.CASCADE)
+    nombreSoutenances = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('enseignant', 'promo')
+
+    def __str__(self):
+        return f"{self.enseignant} - {self.promo} : {self.nombreSoutenances} soutenances"
+
+
 
 # INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
 # VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');

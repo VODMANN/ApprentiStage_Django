@@ -14,4 +14,4 @@ admin.site.register(Contrat)
 admin.site.register(Offre)
 admin.site.register(Promo)
 admin.site.register(Soutenance)
-
+admin.site.register(NombreSoutenances)
