@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Modifier votre profil</h2>
+                    <form method="post" class="profile-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="form-group {% if field.name == 'adresseEnseignant' %}col-md-6{% elif field.name == 'cpEnseignant' %}col-md-2{% else %}col-md-4{% endif %}">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    <div class="input-group">
+                                        {% if field.name == 'numHarpege' %}
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" readonly value="{{ field.value }}">
+                                        {% else %}
+                                            {{ field|add_class:"form-control" }}
+                                        {% endif %}
+                                    </div>
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ field.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="form-group col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary">Sauvegarder les changements</button>
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-link mt-3" data-toggle="modal" data-target="#changePasswordModal">Changer le mot de passe</button>
+
+                </div>
+                
+            </div>
+                </div>
+                    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="changePasswordModalLabel">Changer le mot de passe</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" action="{% url 'lesApprentiStage:change_password' %}" class="form-horizontal" id="changePasswordForm">
+                                        {% csrf_token %}
+                                        {% for field in change_password_form %}
+                                            <div class="form-group">
+                                                <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+                                                {{ field|add_class:"form-control" }}
+                                                {% if field.help_text %}
+                                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                {% endif %}
+                                                {% if field.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ field.errors|join:", " }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<script>
+    $(document).ready(function() {
+        $('#changePasswordForm').on('submit', function(e) {
+            e.preventDefault();  // Empêche la soumission standard du formulaire
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'lesApprentiStage:change_password' %}",
+                data: $(this).serialize(),  // Sérialise les données du formulaire
+                success: function(response) {
+                    // Gérer la réponse ici
+                    alert("Mot de passe changé avec succès");
+                    $('#changePasswordModal').modal('hide');
+                },
+                error: function(response) {
+                    // Gérer les erreurs
+                    alert("Erreur lors du changement du mot de passe");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

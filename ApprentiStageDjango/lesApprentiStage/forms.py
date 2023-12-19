@@ -328,3 +328,16 @@ class ContratForm(forms.ModelForm):
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']
+
+
+
+class ProfilEnseignantForm(forms.ModelForm):
+    class Meta:
+        model = ProfilEnseignant
+        fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'roleEnseignant', 'disciplineEnseignant']
+        # Ajoutez d'autres champs si nécessaire
+        labels = {
+            'nomEnseignant': 'Nom',
+            'prenomEnseignant': 'Prénom',
+            # Ajoutez d'autres étiquettes pour les champs ici
+        }

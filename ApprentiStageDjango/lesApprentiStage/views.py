@@ -27,6 +27,8 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django_filters import FilterSet, CharFilter
 from .filters import *
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
@@ -346,6 +348,24 @@ def signup(request):
         'secretaire_form': secretaire_form,
         'promos': promos,
     })
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important pour garder l'utilisateur connecté
+            return JsonResponse({'status': 'success'}, status=200)
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'registration/change_password.html', {'form': form})
+
+def change_password_success(request):
+    return render(request, 'registration/change_password_success.html')
+
 
 @login_required
 @user_type_required('secretaire')
@@ -1314,6 +1334,27 @@ def ajouter_offre(request):
 
     return render(request, 'pages/ajouter_offre.html', {'OffreForm': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
 
+
+
+@login_required
+def edit_enseignant(request):
+    if request.user.type_utilisateur != 'enseignant':
+        return redirect('page_d_erreur')
+
+    profil_enseignant, created = ProfilEnseignant.objects.get_or_create(utilisateur=request.user)
+    change_password_form = PasswordChangeForm(request.user)
+
+    if request.method == 'POST':
+        form = ProfilEnseignantForm(request.POST, instance=profil_enseignant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+            return redirect('/')
+    else:
+        form = ProfilEnseignantForm(instance=profil_enseignant)
+
+    return render(request, 'enseignant/edit_enseignant.html', {'form': form, 'change_password_form': change_password_form})
+
 @login_required
 def delete_offre(request, pk):
     instance = get_object_or_404(Offre, pk=pk)
@@ -1444,7 +1485,10 @@ def edit_etudiant(request):
         return redirect('page_d_erreur')
 
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
-
+    change_password_form = PasswordChangeForm(request.user)
+    context = {
+        'change_password_form': change_password_form,
+    }
     if request.method == 'POST':
         form = EtudiantProfilForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
@@ -1454,7 +1498,7 @@ def edit_etudiant(request):
     else:
         form = EtudiantProfilForm(instance=profil_etudiant)
 
-    return render(request, 'etudiant/edit_etudiant.html', {'form': form})
+    return render(request, 'etudiant/edit_etudiant.html', {'form': form, 'change_password_form': change_password_form})
 
 
 @login_required
