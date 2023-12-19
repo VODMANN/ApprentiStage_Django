@@ -38,35 +38,34 @@
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
           <h5 class="card-title">Ressources Utiles</h5>
-          <p class="card-text">Explorez les ressources pour optimiser votre
-            recherche et préparation aux stages.</p>
+          <p class="card-text">Optimiser votre recherche et préparation aux stages.</p>
           <a href="#" class="btn btn-sm btn-outline-secondary">Découvrir</a>
         </div>
       </div>
     </div>
   </div>
 
+  {% if offre_list %}
   <div class="row mb-4">
-    <div class="col-12">
-      <h2 class="display-5">Dernières Offres</h2>
-      <div class="list-group">
-        <!-- Offres de stage dynamiques ici -->
-        {% for offre in offre_list %}
-        <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}"
-          class="list-group-item list-group-item-action flex-column align-items-start">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ offre.titre }}</h5>
-            <small>{{ offre.datePublication|date:"d F Y" }}</small>
+      <div class="col-12">
+          <h2 class="display-5">Dernières Offres</h2>
+          <div class="list-group">
+              <!-- Offres de stage dynamiques ici -->
+              {% for offre in offre_list %}
+                  <a href="{% url 'lesApprentiStage:offre_detail' offre.id %}"
+                      class="list-group-item list-group-item-action flex-column align-items-start">
+                      <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ offre.titre }}</h5>
+                          <small>{{ offre.datePublication|date:"d F Y" }}</small>
+                      </div>
+                      <p class="mb-1">{{ offre.description }}</p>
+                      <small>{{ offre.entreprise }}</small>
+                  </a>
+              {% endfor %}
           </div>
-          <p class="mb-1">{{ offre.description }}</p>
-          <small>{{ offre.entreprise }}</small>
-        </a>
-        
-        {% endfor %}
       </div>
-    </div>
   </div>
-</div>
+{% endif %}
 {% if messages %}
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
