@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Ajouter une soutenance</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+  </form>
+
+  {# Afficher les messages de succès ou d'erreur #}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="{% if message.tags %}alert alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

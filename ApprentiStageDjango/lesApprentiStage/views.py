@@ -232,28 +232,38 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-def home(request):
+from .models import NombreSoutenances
 
+def home(request):
     offre_list = Offre.objects.all()   
     user = request.user
-
 
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
         print(user_type)
+
         if user_type == 'etudiant':
-          offre_list = Offre.objects.filter(estPublie=1)
-          return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.filter(estPublie=1)
+            return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
 
         if user_type == 'secretaire':
-          offre_list = Offre.objects.all().order_by('-pk')
-          return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.all().order_by('-pk')
+            return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-            return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
+
+            # Ajoutez le code pour obtenir le nombre de soutenances par promo pour cet enseignant.
+            soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
+
+            return render(request, 'enseignant/accueil_ens.html', {
+                'user': user,
+                'is_responsible': is_responsible,
+                'soutenances_par_promo': soutenances_par_promo
+            })
 
     return render(request, 'pages/accueil.html')
+
 
 def validation_offre(request):
     offre_list = Offre.objects.all().order_by('-pk')
@@ -474,12 +484,16 @@ def liste_recherche(request):
         'evaluation_filter': EvaluationFilter(request.GET, queryset=Evaluation.objects.all()),
     }
 
+    selected_filter = request.GET.get('selected_filter')
+
     # Ajout des filtres au contexte
     context = {
         'filters': filters,
+        'selected_filter': selected_filter,
     }
 
     return render(request, 'secretariat/crud_master.html', context)
+
 
 
 def liste_contrats(request):
@@ -1052,6 +1066,53 @@ def upload_convention_secretaire(request):
             return JsonResponse({'success': False, 'message': 'Aucun fichier fourni !'})
             
     return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
+
+# /////////////////////// Soutenances Léo ////////////////////////////
+
+def inscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+    
+    if user.get_user_type() == "enseignant" and soutenance.candide != user.profilenseignant:
+        soutenance.candide = user.profilenseignant
+        soutenance.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+
+def desinscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+
+    if user.get_user_type() == "enseignant" and soutenance.candide == user.profilenseignant:
+        soutenance.candide = None
+        soutenance.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+
+
+class NombreSoutenanceView(View):
+    template_name = 'secretariat/soutenance/nombre_soutenances.html'
+
+    def get(self, request, num_harpege=None):
+        # Si un identifiant d'enseignant est fourni, essayez de le récupérer
+        enseignant = get_object_or_404(ProfilEnseignant, pk=num_harpege) if num_harpege else None
+
+        # Initialiser le formulaire avec l'enseignant spécifique s'il existe
+        form = NombreSoutenanceForm(initial={'enseignant': enseignant})
+
+        return render(request, self.template_name, {'form': form, 'enseignant': enseignant})
+
+    def post(self, request, num_harpege=None):
+        form = NombreSoutenanceForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Soutenance enregistrée avec succès.')
+            return redirect('lesApprentiStage:home')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+            return render(request, self.template_name, {'form': form})
+
 
 
 @login_required
