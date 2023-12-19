@@ -61,6 +61,7 @@
                                         <td>{{ contrat.entreprise }}</td>
                                         <td class="text-right">
                                             <div class="btn-group ml-2" role="group">
+
                                                 {% if user.type_utilisateur == "secretaire" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -127,6 +128,7 @@
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
                                                     <!-- Ajoute les boutons d'action ou de détails pour chaque étudiant -->
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -195,6 +197,7 @@
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
                                                     <!-- Ajoute les boutons d'action ou de détails pour chaque entreprise -->
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -262,7 +265,7 @@
                                             <td>{{ enseignant.disciplineEnseignant }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -299,6 +302,7 @@
                             <div class="text-center mt-4">
                                 {% if user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Ajouter un nouvel enseignant</a>
+
                                 {% endif %}
                                 </div>
                         </div>
@@ -325,7 +329,7 @@
                                             <td>{{ promo.volumeHoraire }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -383,7 +387,7 @@
                                             <td>{{ departement.chef }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                   
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -443,7 +447,7 @@
                                             <td>{{ offre.entreprise }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -501,7 +505,7 @@
                                             <td>{{ salle.numero }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -564,7 +568,7 @@
 
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -625,7 +629,7 @@
                                             <td>{{ document.contrat }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    
+
                                                     {% if user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -727,6 +731,7 @@
                             </table>
                             <div class="text-center mt-4">
                                     <a href="{% url 'lesApprentiStage:creer_evaluation' %}"  class="btn btn-success">Ajouter une nouvelle évaluation</a>
+
                                 </div>
                         </div>
                         <!-- FIN -->                                                                                                                                                
