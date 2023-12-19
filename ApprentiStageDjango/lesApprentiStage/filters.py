@@ -2,6 +2,7 @@ from django import forms
 from django_filters import rest_framework as filters
 import django_filters
 from .models import *
+from django.forms.widgets import DateInput, TimeInput
 
 TYPE_CHOICES_CONTRAT = [
     ('Stage', 'Stage'),
@@ -128,8 +129,14 @@ class OffreFilter(filters.FilterSet):
         fields = ['titre', 'competences', 'datePublication', 'entreprise__nomEnt', 'theme__nomTheme']
 
 class SoutenanceFilter(filters.FilterSet):
-    dateSoutenance = django_filters.CharFilter(lookup_expr='icontains', label='Date de soutenance')
-    heureSoutenance = django_filters.CharFilter(lookup_expr='icontains', label='Heure de soutenance')
+    dateSoutenance = django_filters.DateFilter(
+        widget=DateInput(attrs={'type': 'date'}),
+        label='Date de soutenance'
+    )
+    heureSoutenance = django_filters.TimeFilter(
+        widget=TimeInput(attrs={'type': 'time'}),
+        label='Heure de soutenance'
+    )
     salle__numero = django_filters.CharFilter(lookup_expr='icontains', label='Numéro de salle')
     idContrat__etudiant__nomEtu = django_filters.CharFilter(lookup_expr='icontains', label='Nom de l\'étudiant')
     idContrat__etudiant__prenomEtu = django_filters.CharFilter(lookup_expr='icontains', label='Prénom de l\'étudiant')
@@ -138,6 +145,8 @@ class SoutenanceFilter(filters.FilterSet):
     class Meta:
         model = Soutenance
         fields = ['dateSoutenance', 'heureSoutenance', 'salle__numero', 'idContrat__etudiant__nomEtu', 'idContrat__etudiant__prenomEtu', 'estDistanciel']
+
+
 
 class DocumentFilter(filters.FilterSet):
     titre = django_filters.CharFilter(lookup_expr='icontains', label='Titre du document')

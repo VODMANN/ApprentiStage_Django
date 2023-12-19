@@ -742,7 +742,7 @@ class DepartementDeleteView(DeleteView):
         url_with_fragment = f"{base_url}#departements"  
         return url_with_fragment
     
-# ///////////////////////crud departement ////////////////////////////
+# ///////////////////////crud offre ////////////////////////////
 
 
 def creer_offre(request):
@@ -846,29 +846,54 @@ class SalleDeleteView(DeleteView):
 
 # ///////////////////////crud soutenance ////////////////////////////
 
-class SoutenanceCreateView(CreateView):
-    model = Soutenance
-    template_name = 'secretariat/soutenance/creer_soutenance.html'
-    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-    
-    def get_success_url(self):
-        # Récupérer l'URL de base à partir du nom de l'URL
-        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+class BaseSoutenanceForm(forms.ModelForm):
+    class Meta:
+        model = Soutenance
+        fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
 
-        # Ajouter le fragment à l'URL
+    def __init__(self, *args, **kwargs):
+        super(BaseSoutenanceForm, self).__init__(*args, **kwargs)
+        # Définir le champ candide comme optionnel
+        self.fields['candide'].required = False
+
+class SoutenanceCreateForm(BaseSoutenanceForm):
+    class Meta(BaseSoutenanceForm.Meta):
+        widgets = {
+            'dateSoutenance': forms.DateInput(attrs={'type': 'date'}),
+            'heureSoutenance': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
+class SoutenanceCreateView(CreateView):
+    form_class = SoutenanceCreateForm
+    template_name = 'secretariat/soutenance/creer_soutenance.html'
+
+    def get_success_url(self):
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
         url_with_fragment = f"{base_url}#soutenance"
         return url_with_fragment
 
+class TimePickerWidget(forms.TimeInput):
+    input_type = 'time'
+
+    def format_value(self, value):
+        if isinstance(value, str):
+            return value
+        return value.strftime('%H:%M') if value else ''
+
+class SoutenanceUpdateForm(BaseSoutenanceForm):
+    class Meta(BaseSoutenanceForm.Meta):
+        widgets = {
+            'dateSoutenance': forms.DateInput(attrs={'type': 'date'}),
+            'heureSoutenance': TimePickerWidget(attrs={'type': 'time'}),
+        }
+
 class SoutenanceUpdateView(UpdateView):
     model = Soutenance
+    form_class = SoutenanceUpdateForm
     template_name = 'secretariat/soutenance/modifier_soutenance.html'
-    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
 
     def get_success_url(self):
-        # Récupérer l'URL de base à partir du nom de l'URL
         base_url = reverse_lazy('lesApprentiStage:liste_recherche')
-
-        # Ajouter le fragment à l'URL
         url_with_fragment = f"{base_url}#soutenance"
         return url_with_fragment
 
