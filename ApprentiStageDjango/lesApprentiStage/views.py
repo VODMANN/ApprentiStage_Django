@@ -28,7 +28,6 @@ from django.core.mail import send_mail
 from django_filters import FilterSet, CharFilter
 from .filters import *
 
-
 def insertion(request):
     # Création des instances Utilisateur (Utilisateur personnalisé)
     etudiant = Utilisateur.objects.create_user(
@@ -1227,13 +1226,9 @@ def generer_convention_view(request, contrat_id):
     try:
         contrat = Contrat.objects.get(id=contrat_id, estValide=True, etudiant=request.user.profiletudiant)
         document_path = generer_convention(contrat)
-        # pdf_path = '/mnt/c/ECOLE/ApprentiStage_Django/ApprentiStageDjango/documents/documents/Convention_'+contrat.etudiant.nomEtu+'.pdf'
-        # document = Document()
-        # # Load a Word DOCX file
-        # document.LoadFromFile(document_path)
-        # document.SaveToFile(pdf_path, FileFormat.PDF)
-        # document.Close()
-        with open(document_path, 'rb') as doc:
+        pdf_path = os.path.join(settings.BASE_DIR, 'documents/documents/Convention_'+contrat.etudiant.nomEtu+'.pdf')
+        convert_docx_to_pdf(document_path, pdf_path)
+        with open(pdf_path, 'rb') as doc:
             response = HttpResponse(doc.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
             response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.pdf"'
             return response

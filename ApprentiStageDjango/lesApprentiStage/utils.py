@@ -8,7 +8,14 @@ from django.conf import settings
 
 import os
 from django.conf import settings
+import subprocess
 
+def convert_docx_to_pdf(input_docx, output_pdf):
+    try:
+        subprocess.run(["unoconv", "-f", "pdf", "-o", output_pdf, input_docx], check=True)
+        print(f"Conversion successful: {input_docx} -> {output_pdf}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during conversion: {e}")
  
 def remplacer_texte(doc, recherche, remplacement):
     for p in doc.paragraphs:
@@ -27,7 +34,9 @@ def remplacer_texte(doc, recherche, remplacement):
 def generer_convention(contrat):
     # Charger le modèle de document Word
     doc = DocxDocument(os.path.join(settings.BASE_DIR, 'lesApprentiStage/static/MODELE_CONVENTION_STAGE.docx'))
-    
+    # template_path = os.path.join(settings.BASE_DIR, 'lesApprentiStage/static/MODELE_CONVENTION_STAGE.odt')
+    # doc = load(template_path)
+
     # Récupérer le responsable de l'entreprise liée au contrat
     responsable = Responsable.objects.filter(entreprise=contrat.entreprise).first()
 
