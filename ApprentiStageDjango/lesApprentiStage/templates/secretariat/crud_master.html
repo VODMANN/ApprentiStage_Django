@@ -309,7 +309,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nom de la Promo</th>
-                                        <th>Année</th>
+                                        <th>Année Scolaire</th>
                                         <th>Département</th>
                                         <th>Parcours</th>
                                         <th>Volume Horaire</th>
@@ -320,7 +320,7 @@
                                     {% for promo in filters.promo_filter.qs %}
                                     <tr class="clickable-row" data-target="#modalPromo{{ promo.id }}">
                                             <td>{{ promo.nomPromo }}</td>
-                                            <td>{{ promo.annee }}</td>
+                                            <td>{{ promo.anneeScolaire }}</td>
                                             <td>{{ promo.departement }}</td>
                                             <td>{{ promo.parcours }}</td>
                                             <td>{{ promo.volumeHoraire }}</td>

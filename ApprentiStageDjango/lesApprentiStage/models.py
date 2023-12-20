@@ -78,10 +78,10 @@ class ProfilEnseignant(models.Model):
 
 class Promo(models.Model):
     nomPromo = models.CharField(max_length=100)
-    annee = models.IntegerField()
+    anneeScolaire = models.CharField(max_length=100)
     departement = models.ForeignKey('Departement', on_delete=models.SET_NULL, null=True)
     parcours = models.CharField(max_length=100, null=True)
-    volumeHoraire = models.IntegerField(null=True)
+    volumeHoraire = models.FloatField(null=True)
     def __str__(self):
         return self.nomPromo
 
