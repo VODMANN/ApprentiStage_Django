@@ -248,13 +248,11 @@ class Etablissement(models.Model):
 class NombreSoutenances(models.Model):
     enseignant = models.ForeignKey('ProfilEnseignant', on_delete=models.CASCADE)
     promo = models.ForeignKey('Promo', on_delete=models.CASCADE)
-    nombreSoutenances = models.PositiveIntegerField(default=0)
+    nombreSoutenancesApprentissage = models.PositiveIntegerField(default=0)
+    nombreSoutenancesStagiaire = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('enseignant', 'promo')
-
-    def __str__(self):
-        return f"{self.enseignant} - {self.promo} : {self.nombreSoutenances} soutenances"
 
 
 

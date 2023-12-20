@@ -340,7 +340,7 @@ class NombreSoutenanceForm(forms.ModelForm):
 
     class Meta:
         model = NombreSoutenances
-        fields = ['promo', 'nombreSoutenances']
+        fields = ['enseignant', 'promo', 'nombreSoutenancesApprentissage', 'nombreSoutenancesStagiaire']
 
 
 

@@ -69,23 +69,23 @@
                                     href="{% url 'lesApprentiStage:home' %}">Accueil</a>
                             </li>
                             {% if user.is_authenticated %}
-                                {% if user.type_utilisateur == "secretaire" %}
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                        href="{% url 'lesApprentiStage:liste_recherche' %}">Recherche</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                        href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
-                                </li>
+                                {% if user.type_utilisateur == "secretaire" or user.type_utilisateur == "enseignant" %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'lesApprentiStage:liste_recherche' %}">Recherche</a>
+                                    </li>
                                 {% endif %}
-
+                                {% if user.type_utilisateur == "secretaire" %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
+                                    </li>
+                                {% endif %}
                             {% else %}
                                 <li class="nav-item">
-                                    <a class="nav-link"
-                                        href="{% url 'lesApprentiStage:login' %}">Connexion</a>
+                                    <a class="nav-link" href="{% url 'lesApprentiStage:login' %}">Connexion</a>
                                 </li>
                             {% endif %}
+
+
                         </ul>
                         <ul class="navbar-nav ml-auto">
                             {% if user.is_authenticated %}
@@ -95,20 +95,12 @@
                                         <a id="logout" class="nav-link" href="#">Déconnexion</a>
                                     </form>                                
                                 </li>
-                                {% if user.type_utilisateur == "enseignant" %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'lesApprentiStage:edit_enseignant' %}">
-                                            <i class="bi bi-person-circle"></i>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% if user.type_utilisateur == "etudiant" %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'lesApprentiStage:edit_etudiant' %}">
-                                            <i class="bi bi-person-circle"></i>
-                                        </a>
-                                    </li>
-                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% if user.type_utilisateur == 'enseignant' %}{% url 'lesApprentiStage:edit_enseignant' %}
+                                    {% elif user.type_utilisateur == 'etudiant' %}{% url 'lesApprentiStage:edit_etudiant' %}{% endif %}">
+                                        <i class="bi bi-person-circle"></i>
+                                    </a>
+                                </li>                                
                             {% endif %}
                         </ul>
                     </div>
