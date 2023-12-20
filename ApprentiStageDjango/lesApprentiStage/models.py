@@ -36,7 +36,6 @@ class ProfilEtudiant(models.Model):
     villeEtu = models.CharField(max_length=100,null=True)
     promo = models.ForeignKey('Promo', on_delete=models.SET_NULL, null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
-    
     adresseParent = models.CharField(max_length=255,null=True)
     cpParent = models.IntegerField(null=True)
     villeParent = models.CharField(max_length=100,null=True)
@@ -248,18 +247,11 @@ class Etablissement(models.Model):
 class NombreSoutenances(models.Model):
     enseignant = models.ForeignKey('ProfilEnseignant', on_delete=models.CASCADE)
     promo = models.ForeignKey('Promo', on_delete=models.CASCADE)
-    nombreSoutenances = models.PositiveIntegerField(default=0)
+    nombreSoutenancesStage = models.PositiveIntegerField(default=0)
+    nombreSoutenancesApprentissage = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('enseignant', 'promo')
 
     def __str__(self):
-        return f"{self.enseignant} - {self.promo} : {self.nombreSoutenances} soutenances"
-
-
-
-# INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
-# VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');
-
-# INSERT INTO lesApprentiStage_promo (nomPromo, annee, departement_id)
-# VALUES ('1B', 2023, 1);
+        return f"{self.enseignant} - {self.promo} : {self.nombreSoutenancesStage} soutenances en stage, {self.nombreSoutenancesApprentissage} soutenances en apprentissage"

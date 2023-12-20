@@ -78,7 +78,7 @@ def insertion(request):
     # Création des instances Promo
     promo_info = Promo.objects.create(
         nomPromo='1B',
-        annee=2023,
+        anneeScolaire='2023-2024',
         departement=departement_info
     )
     
@@ -326,7 +326,7 @@ def signup(request):
                     'username': user.username,
                     'email': enseignant.mailEnseignant
                 }
-                receivers = [etudiant.mailEnseignant]
+                receivers = [enseignant.mailEnseignant]
                 send_email_with_html_body(
                 subjet=subject,
                 receivers=receivers,
@@ -1128,13 +1128,15 @@ class NombreSoutenanceView(View):
 
         if form.is_valid():
             promo = form.cleaned_data['promo']
-            nombre_soutenances = form.cleaned_data['nombreSoutenances']
+            nombre_soutenances_stage = form.cleaned_data['nombreSoutenancesStage']
+            nombre_soutenances_apprentissage = form.cleaned_data['nombreSoutenancesApprentissage']
 
             # Vérifier si une instance existe déjà pour le prof et la promo
             try:
                 enseignant = ProfilEnseignant.objects.get(pk=num_harpege)
                 instance = NombreSoutenances.objects.get(enseignant=enseignant, promo=promo)
-                instance.nombreSoutenances = nombre_soutenances
+                instance.nombreSoutenancesStage = nombre_soutenances_stage
+                instance.nombreSoutenancesApprentissage = nombre_soutenances_apprentissage
                 instance.save()
             except NombreSoutenances.DoesNotExist:
                 # Si aucune instance n'existe pas, créez-en une nouvelle
@@ -1148,6 +1150,7 @@ class NombreSoutenanceView(View):
         else:
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
             return render(request, self.template_name, {'form': form})
+
 
 
 
