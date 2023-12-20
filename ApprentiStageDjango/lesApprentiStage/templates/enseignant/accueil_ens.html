@@ -16,7 +16,7 @@
     <div class="row mt-4 pb-3">
       <div class="col-md-4">
         <div class="card text-center">
-            <div class="card-body">
+            <div class="card-body" style="max-height: 11em; overflow-y: auto;">
                 <h5 class="card-title">Nombre de soutenance</h5>
                 {% for soutenance in soutenances_par_promo %}
                     <p>Pour la promo {{ soutenance.promo.nomPromo }}, il y a {{ soutenance.nombreSoutenances }} soutenances.</p>
@@ -27,7 +27,7 @@
     
         <div class="col-md-4">
             <div class="card text-center">
-                <div class="card-body">
+                <div class="card-body" style="max-height: 11em;">
                     <h5 class="card-title">Recherche / Candidater</h5>
                     <p class="card-text">Effectuez une recherche et candidatez aux soutenances.</p>
                     <a href="{% url 'lesApprentiStage:liste_recherche' %}?selected_filter=soutenance" class="btn btn-success">Recherche</a>
@@ -36,7 +36,7 @@
         </div>
         <div class="col-md-4">
             <div class="card text-center">
-                <div class="card-body">
+                <div class="card-body" style="max-height: 11em;">
                     <h5 class="card-title">Offres</h5>
                     <p class="card-text">Partagez une offre de stage ou d'apprentissage.</p>
                         <a href="{% url 'lesApprentiStage:ajouter_offre' %}"
