@@ -54,12 +54,12 @@ class ProfilEnseignantFilter(filters.FilterSet):
 
 class PromoFilter(filters.FilterSet):
     nomPromo = django_filters.CharFilter(lookup_expr='icontains', label='Nom de la promotion')
-    annee = django_filters.CharFilter(lookup_expr='icontains', label='Année')
+    anneeScolaire = django_filters.CharFilter(lookup_expr='icontains', label='Année Scolaire')
     departement__nomDep = django_filters.CharFilter(lookup_expr='icontains', label='Nom du département')
 
     class Meta:
         model = Promo
-        fields = ['nomPromo', 'annee', 'departement__nomDep']
+        fields = ['nomPromo', 'anneeScolaire', 'departement__nomDep']
 
 
 

@@ -667,7 +667,7 @@ def delete_enseignant(request, num_harpege):
 class PromoCreateView(CreateView):
     model = Promo
     template_name = 'secretariat/promo/creer_promo.html'  
-    fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire']
+    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
 
     def get_success_url(self):
         # Récupérer l'URL de base à partir du nom de l'URL
@@ -692,7 +692,7 @@ class PromoDeleteView(DeleteView):
 class PromoUpdateView(UpdateView):
     model = Promo
     template_name = 'secretariat/promo/modifier_promo.html'  
-    fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire'] 
+    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
 
     def get_success_url(self):
         # Récupérer l'URL de base à partir du nom de l'URL
@@ -1747,5 +1747,3 @@ def suivi_etudiants(request):
         'departements': departements,
         'themes': themes
     })
-
-
