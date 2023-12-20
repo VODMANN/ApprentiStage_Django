@@ -1,21 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Ajouter une soutenance</h2>
+  <div class="container d-flex align-items-center" style="min-height: 50vh;">
+    <div class="card mx-auto">
+      <div class="card-body">
+        <h2 class="card-title text-center">Ajouter une soutenance</h2>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+        <form method="post" class="form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
 
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-  </form>
+          <div class="form-group">
+            {{ form.promo.label_tag }}
+            {{ form.promo }}
+          </div>
 
-  {# Afficher les messages de succès ou d'erreur #}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="{% if message.tags %}alert alert-{{ message.tags }}{% endif %}">
-        {{ message }}
+          <div class="form-group">
+            {{ form.nombreSoutenancesStage.label_tag }}
+            {{ form.nombreSoutenancesStage }}
+          </div>
+
+          <div class="form-group">
+            {{ form.nombreSoutenancesApprentissage.label_tag }}
+            {{ form.nombreSoutenancesApprentissage }}
+          </div>
+
+          <button type="submit" class="btn btn-primary d-block mx-auto">Enregistrer</button>
+        </form>
+
+        {# Afficher les messages de succès ou d'erreur #}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="{% if message.tags %}alert alert-{{ message.tags }}{% endif %} mt-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
       </div>
-    {% endfor %}
-  {% endif %}
+    </div>
+  </div>
 {% endblock %}

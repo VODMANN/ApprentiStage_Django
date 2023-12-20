@@ -467,8 +467,6 @@ def upload_convention(request):
     return HttpResponse("Requête invalide.", status=400)
 
 
-
-
 def liste_recherche(request):
     filters = {
         'contrat_filter': ContratFilter(request.GET, queryset=Contrat.objects.all()),
@@ -1150,7 +1148,6 @@ class NombreSoutenanceView(View):
         else:
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
             return render(request, self.template_name, {'form': form})
-
 
 
 
