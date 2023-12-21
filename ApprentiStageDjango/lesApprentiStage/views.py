@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
-from .utils import generer_convention, send_email_with_html_body
+from .utils import *
 
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
@@ -31,201 +31,31 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 def insertion(request):
-    # Création des instances Utilisateur (Utilisateur personnalisé)
-    etudiant = Utilisateur.objects.create_user(
-        username='etudiant123',
-        email='etudiant@example.com',
-        password='etudiantpassword',
-        first_name='John',
-        last_name='Doe',
-        type_utilisateur='etudiant'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-
-    enseignant = Utilisateur.objects.create_user(
-        username='enseignant456',
-        email='enseignant@example.com',
-        password='enseignantpassword',
-        first_name='Alice',
-        last_name='Smith',
-        type_utilisateur='enseignant'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-
-    secretaire = Utilisateur.objects.create_user(
-        username='secretaire789',
-        email='secretaire@example.com',
-        password='secretairepassword',
-        first_name='Bob',
-        last_name='Johnson',
-        type_utilisateur='secretaire'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-    
-    profil_enseignant = ProfilEnseignant.objects.create(
-        utilisateur=enseignant,
-        numHarpege='123ABC',
-        nomEnseignant='Smith',
-        prenomEnseignant='Alice',
-        mailEnseignant='enseignant@example.com',
-        roleEnseignant='chef_departement'
-    )
-    
-    # Création des instances Departement, Entreprise, Theme
-    departement_info = Departement.objects.create(
-        nomDep='Département Informatique',
-        adresseDep='123 Rue des Développeurs',
-        chef=profil_enseignant  # Vous pouvez attribuer un enseignant existant comme chef de département
-    )
-    
-    # Création des instances Promo
-    promo_info = Promo.objects.create(
-        nomPromo='1B',
-        annee=2023,
-        departement=departement_info
-    )
-    
-    # Création des instances ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
-    profil_etudiant = ProfilEtudiant.objects.create(
-        utilisateur=etudiant,
-        nomEtu='Doe',
-        prenomEtu='John',
-        numEtu='E12345',
-        civiliteEtu='M.',
-        adresseEtu='789 Avenue des Étudiants',
-        cpEtu=54321,
-        villeEtu='Ville Étudiant',
-        telEtu='0123456789',
-        promo=promo_info,
-        idDepartement=departement_info
-    )
+    return insert(request)
 
 
 
-    profil_secretaire = ProfilSecretaire.objects.create(
-        utilisateur=secretaire,
-        numSec='S123'
-    )
-
-
-
-
-    entreprise_info = Entreprise.objects.create(
-        numSiret='123456789',
-        nomEnt='Entreprise XYZ',
-        adresseEnt='456 Rue des Entreprises',
-        cpEnt=12345,
-        villeEnt='Ville Entreprise'
-    )
-
-    theme_info = Theme.objects.create(
-        nomTheme='Développement Web'
-    )
-
-
-
-    
-    
-        # Création des instances EnseignantPromo
-    enseignant_promo = EnseignantPromo.objects.create(
-        enseignant=profil_enseignant,
-        promo=promo_info
-    )
-
-    # Création des instances Responsable, Tuteur, Contrat
-    responsable_entreprise = Responsable.objects.create(
-        nomResp='Nom Responsable',
-        prenomResp='Prénom Responsable',
-        emailResp='responsable@entreprise.com',
-        entreprise=entreprise_info
-    )
-
-    tuteur_entreprise = Tuteur.objects.create(
-        nomTuteur='Nom Tuteur',
-        prenomTuteur='Prénom Tuteur',
-        metierTuteur='Métier Tuteur',
-        telTuteur='9876543210',
-        emailTuteur='tuteur@entreprise.com',
-        entreprise=entreprise_info
-    )
-
-    contrat_info = Contrat.objects.create(
-        type='Type Contrat',
-        description='Description Contrat',
-        etat='État Contrat',
-        gratification='Gratification Contrat',
-        dateDeb=timezone.now(),
-        dateFin=timezone.now() + timezone.timedelta(days=90),  # Exemple : Contrat pour 90 jours
-        estValide=True,
-        etudiant=profil_etudiant,
-        enseignant=profil_enseignant,
-        tuteur=tuteur_entreprise,
-        theme=theme_info,
-        entreprise=entreprise_info,
-        enFrance=True
-    )
-
-
-    
-    # Création des instances Offre, Salle, Soutenance, Document, Evaluation
-    offre_info = Offre.objects.create(
-        titre='Titre Offre',
-        description='Description Offre',
-        mailRh='rh@entreprise.com',
-        competences='Compétences requises',
-        duree='3 mois',
-        datePublication=timezone.now(),
-        entreprise=entreprise_info,
-        theme=theme_info,
-        estPublie=False
-    )
-
-    salle_info = Salle.objects.create(
-        numero='Salle A'
-    )
-
-    soutenance_info = Soutenance.objects.create(
-        dateSoutenance=timezone.now(),
-        heureSoutenance=timezone.now().time(),
-        salle=salle_info,
-        idContrat=contrat_info,
-        candide=profil_enseignant,
-        estDistanciel=False
-    )
-
-    document_info = Document.objects.create(
-        titre='Titre Document',
-        fichier='chemin/vers/fichier.pdf',
-        contrat=contrat_info
-    )
-
-    evaluation_info = Evaluation.objects.create(
-        contrat=contrat_info,
-        enseignant=profil_enseignant,
-        note=4.5,
-        commentaire='Commentaire évaluation'
-    )
-    
-    return HttpResponse("Données insérées avec succès !")  # Modifiez la réponse en fonction de votre utilisation de la fonction
-
-
-
-
-
-def user_type_required(user_type):
+def user_type_and_role_required(allowed_user_types,role=[]):
     def decorator(view_func):
         @login_required
         def _wrapped_view(request, *args, **kwargs):
             user = request.user
-            if user.is_authenticated:
-                try:
-                    # Accéder au profil associé au type d'utilisateur
-                    profile = getattr(user, f'profil{user_type.lower()}')
-                except AttributeError:
-                    return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
-            else:
+            if not user.is_authenticated:
                 return redirect_to_login(request.get_full_path())
+
+            user_type = user.get_user_type()
+            if user_type not in allowed_user_types:
+                return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
+
+            if user_type == 'enseignant':
+                enseignant_profile = user.profilenseignant
+                if enseignant_profile.roleEnseignant not in role:
+                    return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
 
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
+
 
 
 class UserLoginView(LoginView):
@@ -270,8 +100,7 @@ def validation_offre(request):
     return render(request, 'secretariat/validation_offre.html', {'offre_list': offre_list})
 
 
-""" @login_required
-@user_type_required('secretaire') """
+@user_type_and_role_required(['enseignant','secretaire'], [ProfilEnseignant.CHEF_DEPARTEMENT])
 def signup(request):
     promos = Promo.objects.all()  
     if request.method == 'POST':
@@ -283,7 +112,6 @@ def signup(request):
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
             user_type = user_form.cleaned_data['type_utilisateur']  
-            # print('////////////////////////',user_type)
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
                 etudiant = etudiant_form.save(commit=False)
@@ -378,13 +206,13 @@ def change_password_success(request):
 
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def pageRecherche(request):
     return render(request, 'pages/recherche.html')
 
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
@@ -416,14 +244,14 @@ def search(request):
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type, "promotions": promotions})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def contrats_non_valides(request):
     contrats_non_valides = Contrat.objects.filter(estValide__isnull=True)
 
     return render(request, 'secretariat/contrats_non_valides.html', {'contrats_non_valides': contrats_non_valides})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def valider_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     contrat.estValide = True
@@ -432,7 +260,7 @@ def valider_contrat(request, contrat_id):
     return redirect('lesApprentiStage:contrats_non_valides')
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def refuser_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     contrat.estValide = False
@@ -567,8 +395,8 @@ def modifier_etudiant(request, num_etu):
             url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
             nouvelle_url = f"{url_sans_fragment}#entreprise"  
             return redirect(nouvelle_url)
-        else:
-            form = EtudiantForm(instance=etudiant)
+    else:
+        form = EtudiantForm(instance=etudiant)
     return render(request, 'secretariat/etudiant/modifier_etudiant.html', {'form': form, 'etudiant': etudiant})
 
 def delete_etudiant(request, num_etu):
@@ -1048,7 +876,7 @@ class EvaluationDeleteView(DeleteView):
 
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def liste_contrats_signes(request):
     contrats_signes = Contrat.objects.filter(etat='1')
     for contrat in contrats_signes:
@@ -1056,7 +884,7 @@ def liste_contrats_signes(request):
     return render(request, 'secretariat/liste_contrats_signes.html', {'contrats_signes': contrats_signes})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def telecharger_convention_secretaire(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     response = HttpResponse(document.fichier.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
@@ -1064,7 +892,7 @@ def telecharger_convention_secretaire(request, document_id):
     return response
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def upload_convention_secretaire(request):
     if request.method == 'POST':
         contrat_id = request.POST.get('contrat_id')
@@ -1226,9 +1054,8 @@ def soutenance_ens(request, user_type):
 
 
 
-
 @login_required
-@user_type_required('etudiant')
+@user_type_and_role_required(['etudiant'])
 def ajouter_contrat(request):
     if request.method == 'POST':
         form = ContratEtudiantForm(request.POST)
@@ -1499,7 +1326,7 @@ def ajouter_responsable(request, contrat_id):
     return render(request, 'pages/ajouter_responsable.html', context)
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def details_etudiant(request, etudiant_id):
     etudiant = get_object_or_404(ProfilEtudiant, numEtu=etudiant_id)
     contrats_stage = Contrat.objects.filter(etudiant=etudiant, type='stage')
@@ -1513,7 +1340,7 @@ def details_etudiant(request, etudiant_id):
     return render(request, 'admin/detailsEtu.html', context)
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def details_entreprise(request, entreprise_id):
     entreprise = get_object_or_404(Entreprise, numSiret=entreprise_id)
 
