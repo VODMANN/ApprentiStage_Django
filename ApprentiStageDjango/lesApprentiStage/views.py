@@ -34,7 +34,6 @@ def insertion(request):
     return insert(request)
 
 
-
 def user_type_and_role_required(allowed_user_types,role=[]):
     def decorator(view_func):
         @login_required
@@ -154,7 +153,7 @@ def signup(request):
                     'username': user.username,
                     'email': enseignant.mailEnseignant
                 }
-                receivers = [etudiant.mailEnseignant]
+                receivers = [enseignant.mailEnseignant]
                 send_email_with_html_body(
                 subjet=subject,
                 receivers=receivers,
@@ -293,8 +292,6 @@ def upload_convention(request):
             return HttpResponse("Aucun fichier fourni.", status=400)
 
     return HttpResponse("Requête invalide.", status=400)
-
-
 
 
 def liste_recherche(request):
@@ -956,13 +953,15 @@ class NombreSoutenanceView(View):
 
         if form.is_valid():
             promo = form.cleaned_data['promo']
-            nombre_soutenances = form.cleaned_data['nombreSoutenances']
+            nombre_soutenances_stage = form.cleaned_data['nombreSoutenancesStage']
+            nombre_soutenances_apprentissage = form.cleaned_data['nombreSoutenancesApprentissage']
 
             # Vérifier si une instance existe déjà pour le prof et la promo
             try:
                 enseignant = ProfilEnseignant.objects.get(pk=num_harpege)
                 instance = NombreSoutenances.objects.get(enseignant=enseignant, promo=promo)
-                instance.nombreSoutenances = nombre_soutenances
+                instance.nombreSoutenancesStage = nombre_soutenances_stage
+                instance.nombreSoutenancesApprentissage = nombre_soutenances_apprentissage
                 instance.save()
             except NombreSoutenances.DoesNotExist:
                 # Si aucune instance n'existe pas, créez-en une nouvelle

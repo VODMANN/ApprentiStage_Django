@@ -76,8 +76,7 @@ urlpatterns = [
         # URL Soutenance Léo
     path('inscrire_soutenance/<int:soutenance_id>/', views.inscrire_soutenance, name='inscrire_soutenance'),
     path('desinscrire_soutenance/<int:soutenance_id>/', views.desinscrire_soutenance, name='desinscrire_soutenance'),
-    path('nombre_soutenances/<str:num_harpege>/', views.NombreSoutenanceView.as_view(), name='nombre_soutenances'),
-        # URL pour les vues CRUD de Salle
+    path('nombre_soutenances/<str:num_harpege>/', views.NombreSoutenanceView.as_view(), name='nombre_soutenances'),        # URL pour les vues CRUD de Salle
     path('secretariat/creer/salle/', views.SalleCreateView.as_view(), name='creer_salle'),
     path('secretariat/modifier/salle/<int:pk>/', views.SalleUpdateView.as_view(), name='modifier_salle'),
     path('secretariat/supprimer/salle/<int:pk>/', views.SalleDeleteView.as_view(), name='supprimer_salle'),
