@@ -685,18 +685,17 @@
                                                         <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
                                                     {% if user.type_utilisateur == "enseignant" %}
-                                                    
                                                         <!-- Vérifier si un candidat est déjà inscrit -->
                                                         {% if soutenance.candide %}
                                                             <!-- L'utilisateur actuel est le candidat -->
                                                             {% if soutenance.candide == user.profilenseignant %}
                                                                 <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
-                                                            {% else %}
-                                                                <!-- Aucun candidat n'est inscrit, afficher le bouton d'inscription -->
-                                                                <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <!-- Aucun candidat n'est inscrit, afficher le bouton d'inscription -->
+                                                            <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
                                                         {% endif %}
                                                     {% endif %}
-                                                {% endif %}
                                             </div>
                                             </td>
                                         </tr>
