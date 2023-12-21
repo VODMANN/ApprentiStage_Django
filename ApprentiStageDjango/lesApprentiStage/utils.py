@@ -139,9 +139,9 @@ def insert(request):
     )
     
     # Création des instances Promo
-    promo_info = Promo.objects.create(
+   promo_info = Promo.objects.create(
         nomPromo='1B',
-        annee=2023,
+        anneeScolaire='2023-2024',
         departement=departement_info
     )
     
