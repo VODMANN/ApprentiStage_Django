@@ -61,11 +61,20 @@
                                         <td>{{ contrat.entreprise }}</td>
                                         <td class="text-right">
                                             <div class="btn-group ml-2" role="group">
-                                                {% if user.type_utilisateur == "secretaire" %}
+
+                                                {% if user.type_utilisateur == "enseignant" %}
+                                                {% with enseignant_profile=user.profilenseignant %}
+                                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
                                                     <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                     <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-                                                {% endif %}
-                                                </div>
+                                                        <!-- Contenu spécifique pour l'enseignant de promo -->
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% elif user.type_utilisateur == "secretaire" %}
+                                                <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                            {% endif %}
+                                            </div>
                                         </td>
                                     </tr>
                                     <div class="modal fade" id="modalContrat{{ contrat.id }}" tabindex="-1" role="dialog" aria-labelledby="modalContrat{{ contrat.id }}Label" aria-hidden="true">
@@ -96,9 +105,16 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
-                                    <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
-                                {% endif %}
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
+                                    {% endif %}
+                                {% endwith %}
+                            {% elif user.type_utilisateur == "secretaire" %}
+                                <a href="{% url 'lesApprentiStage:creer_contrat' %}" class="btn btn-success">Créer un nouveau contrat</a>
+                            {% endif %}
+
                                 </div>
                         </div>
                         <!-- Etudiants -->
@@ -127,7 +143,14 @@
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
                                                     <!-- Ajoute les boutons d'action ou de détails pour chaque étudiant -->
-                                                    {% if user.type_utilisateur == "secretaire" %}
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_etudiant' etudiant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_etudiant' etudiant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -164,9 +187,17 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Créer un nouvel étudiant</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Créer un nouvel étudiant</a>
                                 {% endif %}
+
                                 </div>
                         </div>
                         <!-- Entreprise -->
@@ -195,10 +226,19 @@
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
                                                     <!-- Ajoute les boutons d'action ou de détails pour chaque entreprise -->
-                                                    {% if user.type_utilisateur == "secretaire" %}
+
+
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
-                                                    {% endif %}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
+                                                    <a href="{% url 'lesApprentiStage:modifier_entreprise' entreprise.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                    <a href="{% url 'lesApprentiStage:supprimer_entreprise' entreprise.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                {% endif %}
                                                     <!-- Ajoute d'autres boutons pour modifier ou supprimer l'entreprise si nécessaire -->
                                                 </div>
                                             </td>
@@ -232,9 +272,18 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
-                                    <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Créer une nouvelle entreprise</a>
+
+                                {% if user.type_utilisateur == "enseignant" %}
+                                    {% with enseignant_profile=user.profilenseignant %}
+                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                            <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Créer une nouvelle entreprise</a>
+                                        {% endif %}
+                                    {% endwith %}
+                                    {% elif user.type_utilisateur == "secretaire" %}
+                                        <a href="{% url 'lesApprentiStage:creer_entreprise' %}" class="btn btn-success">Créer une nouvelle entreprise</a>
                                 {% endif %}
+
+                                
                                 </div>                            
                         </div>
                         <!-- Enseignant -->
@@ -262,7 +311,16 @@
                                             <td>{{ enseignant.disciplineEnseignant }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    {% if user.type_utilisateur == "secretaire" %}
+
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer Soutenances</a>
+                                                            <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer Soutenances</a>
                                                         <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
@@ -297,9 +355,14 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Ajouter un nouvel enseignant</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-success">Ajouter un nouvel enseignant</a>
-
                                 {% endif %}
                                 </div>
                         </div>
@@ -326,7 +389,15 @@
                                             <td>{{ promo.volumeHoraire }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    {% if user.type_utilisateur == "secretaire" %}
+
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_promo' promo.pk %}"  class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_promo' promo.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -359,7 +430,13 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_promo' %}" class="btn btn-success">Ajouter une nouvelle promotion</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:creer_promo' %}" class="btn btn-success">Ajouter une nouvelle promotion</a>
                                 {% endif %}
                                 </div>
@@ -383,7 +460,14 @@
                                             <td>{{ departement.chef }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    {% if user.type_utilisateur == "secretaire" %}
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_departement' departement.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_departement' departement.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -414,7 +498,13 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_departement' %}"  class="btn btn-success">Ajouter un nouveau département</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:creer_departement' %}"  class="btn btn-success">Ajouter un nouveau département</a>
                                 {% endif %}
                                 </div>
@@ -442,7 +532,14 @@
                                             <td>{{ offre.entreprise }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    {% if user.type_utilisateur == "secretaire" %}
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_offre' offre.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_offre' offre.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -479,8 +576,14 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
-                                    <a href="{% url 'lesApprentiStage:creer_offre' %}" class="btn btn-success">Ajouter une nouvelle offre</a>
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_offre' %}" class="btn btn-success">Ajouter une nouvelle offre</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
+                                <a href="{% url 'lesApprentiStage:creer_offre' %}" class="btn btn-success">Ajouter une nouvelle offre</a>
                                 {% endif %}
                                 </div>
                         </div>
@@ -499,7 +602,14 @@
                                             <td>{{ salle.numero }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    {% if user.type_utilisateur == "secretaire" %}
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                    {% elif user.type_utilisateur == "secretaire" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_salle' salle.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_salle' salle.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -528,9 +638,17 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_salle' %}" class="btn btn-success">Ajouter une nouvelle salle</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:creer_salle' %}" class="btn btn-success">Ajouter une nouvelle salle</a>
                                 {% endif %}
+
+                                
                                 </div>
                         </div>
                         <!-- Soutenance -->
@@ -561,24 +679,25 @@
 
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-                                                    <!-- Soutenance Léo -->
-                                                    {% if user.get_user_type == "secretaire" %}
+                                                    <!-- Accessible pour le secrétariat et les enseignants chefs de promo -->
+                                                    {% if user.type_utilisateur == "secretaire" or user.type_utilisateur == "enseignant" and user.profilenseignant.roleEnseignant == "chef_departement" %}
                                                         <a href="{% url 'lesApprentiStage:modifier_soutenance' soutenance.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_soutenance' soutenance.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
-                                                    {% elif user.get_user_type == "enseignant" %}
+                                                    {% endif %}
+                                                    {% if user.type_utilisateur == "enseignant" %}
+                                                    
+                                                        <!-- Vérifier si un candidat est déjà inscrit -->
                                                         {% if soutenance.candide %}
-                                                            <!-- Un candidat est déjà inscrit -->
+                                                            <!-- L'utilisateur actuel est le candidat -->
                                                             {% if soutenance.candide == user.profilenseignant %}
-                                                                <!-- L'enseignant est candidat à la soutenance -->
                                                                 <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <!-- Aucun candidat n'est déjà inscrit -->
-                                                            <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
+                                                            {% else %}
+                                                                <!-- Aucun candidat n'est inscrit, afficher le bouton d'inscription -->
+                                                                <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
                                                         {% endif %}
                                                     {% endif %}
-
-                                                </div>
+                                                {% endif %}
+                                            </div>
                                             </td>
                                         </tr>
                                         <div class="modal fade" id="modalSoutenance{{ soutenance.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSoutenance{{ soutenance.id }}Label" aria-hidden="true">
@@ -610,9 +729,17 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
                                     <a href="{% url 'lesApprentiStage:creer_soutenance' %}" class="btn btn-success">Ajouter une nouvelle soutenance</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
+                                <a href="{% url 'lesApprentiStage:creer_soutenance' %}" class="btn btn-success">Ajouter une nouvelle soutenance</a>
                                 {% endif %}
+
                                 </div>
                         </div>
                         <!-- Document -->
@@ -630,15 +757,26 @@
                                     {% for document in filters.document_filter.qs %}
                                     <tr class="clickable-row" data-target="#modalDocument{{ document.id }}">
                                         <td>{{ document.titre }}</td>
-                                            <td>{{ document.fichier }}</td>
+                                            <td> <a href="{{ document.fichier.url }}">{{ document.titre }}</a></td>
                                             <td>{{ document.contrat }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
 
-                                                    {% if user.type_utilisateur == "secretaire" %}
-                                                        <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
-                                                        <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+
+                                                    {% if user.type_utilisateur != "etudiant" %}
+                                                    {% with enseignant_profile=user.profilenseignant %}
+                                                        {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% elif user.type_utilisateur == "secretaire" %}
+                                                            <a href="{% url 'lesApprentiStage:modifier_document' document.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                                                            <a href="{% url 'lesApprentiStage:supprimer_document' document.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                                        {% endif %}
+                                                    {% endwith %}
                                                     {% endif %}
+
+                                                    
+                                                   
                                                     </div>
                                             </td>
                                         </tr>
@@ -653,7 +791,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <p><strong>Titre :</strong> {{ document.titre }}</p>
-                                                        <p><strong>Fichier :</strong> {{ document.fichier }}</p>
+                                                        <p><strong>Fichier :</strong>  <a href="{{ document.fichier.url }}">{{ document.titre }}</a></p>
                                                         <p><strong>Contrat :</strong> {{ document.contrat }}</p>
                                                         <!-- Ajoutez d'autres détails du document si nécessaire -->
                                                     </div>
@@ -667,7 +805,14 @@
                                 </tbody>
                             </table>
                             <div class="text-center mt-4">
-                                {% if user.type_utilisateur == "secretaire" %}
+
+                                {% if user.type_utilisateur == "enseignant" %}
+                                {% with enseignant_profile=user.profilenseignant %}
+                                    {% if enseignant_profile.roleEnseignant == "chef_departement" %}
+                                        <a href="{% url 'lesApprentiStage:creer_document' %}" class="btn btn-success">Ajouter un nouveau document</a>
+                                    {% endif %}
+                                {% endwith %}
+                                {% elif user.type_utilisateur == "secretaire" %}
                                     <a href="{% url 'lesApprentiStage:creer_document' %}" class="btn btn-success">Ajouter un nouveau document</a>
                                 {% endif %}
                                 </div>
@@ -693,6 +838,7 @@
                                             <td>{{ evaluation.commentaire }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
+
                                                     {% if request.user.type_utilisateur == 'enseignant' %}
                                                     {% with enseignant=request.user.profilenseignant %}
                                                         {% if request.user.username == evaluation.enseignant.utilisateur.username %}
