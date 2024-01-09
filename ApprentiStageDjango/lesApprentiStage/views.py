@@ -1449,9 +1449,11 @@ def generer_convention_view(request, contrat_id):
     try:
         contrat = Contrat.objects.get(id=contrat_id, estValide=True, etudiant=request.user.profiletudiant)
         document_path = generer_convention(contrat)
-        with open(document_path, 'rb') as doc:
+        pdf_path = os.path.join(settings.BASE_DIR, 'documents/documents/Convention_'+contrat.etudiant.nomEtu+'.pdf')
+        convert_docx_to_pdf(document_path, pdf_path)
+        with open(pdf_path, 'rb') as doc:
             response = HttpResponse(doc.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.docx"'
+            response['Content-Disposition'] = f'attachment; filename="Convention_{contrat.etudiant.nomEtu}.pdf"'
             return response
     except Contrat.DoesNotExist:
         return HttpResponse("Contrat non valide ou inexistant.")
