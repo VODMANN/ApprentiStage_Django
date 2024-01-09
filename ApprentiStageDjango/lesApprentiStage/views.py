@@ -107,6 +107,8 @@ def signup(request):
         etudiant_form = EtudiantForm(request.POST)
         enseignant_form = EnseignantForm(request.POST)
         secretaire_form = SecretaireForm(request.POST)
+
+
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
@@ -168,11 +170,11 @@ def signup(request):
                 secretaire.utilisateur = user
                 secretaire.save()
                 return redirect('lesApprentiStage:home')
-
-    user_form = UtilisateurForm(request.POST)
-    etudiant_form = EtudiantForm()
-    enseignant_form = EnseignantForm()
-    secretaire_form = SecretaireForm()
+    else:
+        user_form = UtilisateurForm(request.POST)
+        etudiant_form = EtudiantForm()
+        enseignant_form = EnseignantForm()
+        secretaire_form = SecretaireForm()
 
     if not user_form.is_valid():
         print('Erreurs dans le formulaire UtilisateurForm:', user_form.errors)
