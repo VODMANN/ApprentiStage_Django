@@ -87,7 +87,7 @@ WSGI_APPLICATION = "ApprentiStageDjango.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'apprentistagedjango',
+        'NAME': 'apprentiStageDjango',
         'USER': config('USERBD'),
         'PASSWORD': config('PASSWORD'),
         'HOST': config('HOST'),   # Set to the address of your database
