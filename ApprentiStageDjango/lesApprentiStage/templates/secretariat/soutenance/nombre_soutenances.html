@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+  <div class="container d-flex align-items-center" style="min-height: 50vh;">
+    <div class="card mx-auto">
+      <div class="card-body">
+        <h2 class="card-title text-center">Ajouter une soutenance</h2>
+
+        <form method="post" class="form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div class="form-group">
+            <label for="{{ form.promo.id_for_label }}">Choisir une promo</label>
+            {{ form.promo|add_class:'form-control' }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.nombreSoutenancesStage.id_for_label }}">Attribuer un nombre de stage à suivre</label>
+            {{ form.nombreSoutenancesStage|add_class:'form-control' }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.nombreSoutenancesApprentissage.id_for_label }}">Attribuer un nombre d'apprentissage à suivre</label>
+            {{ form.nombreSoutenancesApprentissage|add_class:'form-control' }}
+          </div>
+
+          <button type="submit" class="btn btn-primary d-block mx-auto">Enregistrer</button>
+        </form>
+
+        {# Afficher les messages de succès ou d'erreur #}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="{% if message.tags %}alert alert-{{ message.tags }}{% endif %} mt-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

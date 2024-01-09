@@ -63,54 +63,52 @@
                         Apprentistage
                     </a>
                     <div class="collapse navbar-collapse" id="navbarText">
-                        <ul class="navbar-nav mr-auto">
+                        <ul class="navbar-nav mr-auto"> 
                             <li class="nav-item">
                                 <a class="nav-link"
                                     href="{% url 'lesApprentiStage:home' %}">Accueil</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:ajouter_offre' %}">Offres</a>
-                            </li>
-                            {% if user.type_utilisateur == "secretaire" %}
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:recherche' %}">Recherche</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
-                            </li>
-                            {% endif %}
-
                             {% if user.is_authenticated %}
-                            <li class="nav-item ms-1">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:soutenance' %}">Soutenance</a>
-                            </li>
-                            <li class="nav-item ms-1">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:contrats_non_valides' %}">valider contrat</a>
-                            </li>
-                            <li class="nav-item ms-1">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:validation_offre' %}">validation offre</a>
-                            </li>
-                            {% else %}
+                                {% if user.type_utilisateur == "secretaire" %}
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="{% url 'lesApprentiStage:liste_recherche' %}">Recherche</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="{% url 'lesApprentiStage:signup' %}">Inscription</a>
+                                </li>
+                                {% endif %}
 
-                            {% endif %}
-                            {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <form id="logoutForm" method="post" action="{% url 'lesApprentiStage:logout' %}">
-                                    {% csrf_token %}
-                                    <a id="logout" class="nav-link" href="#">Déconnexion</a>
-                                </form>                                
-                            </li>
                             {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{% url 'lesApprentiStage:login' %}">Connexion</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="{% url 'lesApprentiStage:login' %}">Connexion</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <form id="logoutForm" method="post" action="{% url 'lesApprentiStage:logout' %}">
+                                        {% csrf_token %}
+                                        <a id="logout" class="nav-link" href="#">Déconnexion</a>
+                                    </form>                                
+                                </li>
+                                {% if user.type_utilisateur == "enseignant" %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'lesApprentiStage:edit_enseignant' %}">
+                                            <i class="bi bi-person-circle"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if user.type_utilisateur == "etudiant" %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'lesApprentiStage:edit_etudiant' %}">
+                                            <i class="bi bi-person-circle"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
                             {% endif %}
                         </ul>
                     </div>

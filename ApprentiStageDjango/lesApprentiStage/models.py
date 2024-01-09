@@ -13,6 +13,9 @@ class Utilisateur(AbstractUser):
     )
     type_utilisateur = models.CharField(max_length=10, choices=TYPE_CHOICES, default='etudiant')
 
+    def get_user_type(self):
+        return self.type_utilisateur
+
 class ProfilEtudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     nomEtu = models.CharField(max_length=50,null=True)
@@ -33,7 +36,6 @@ class ProfilEtudiant(models.Model):
     villeEtu = models.CharField(max_length=100,null=True)
     promo = models.ForeignKey('Promo', on_delete=models.SET_NULL, null=True)
     idDepartement = models.ForeignKey('Departement', on_delete=models.CASCADE)
-    
     adresseParent = models.CharField(max_length=255,null=True)
     cpParent = models.IntegerField(null=True)
     villeParent = models.CharField(max_length=100,null=True)
@@ -64,19 +66,21 @@ class ProfilEnseignant(models.Model):
     numHarpege = models.CharField(max_length=20, primary_key=True)
     nomEnseignant = models.CharField(max_length=50, null=True)
     prenomEnseignant = models.CharField(max_length=50, null=True)
-    telEnseignant = models.CharField(max_length=25,null=True)
+    telEnseignant = models.CharField(max_length=25, null=True)
     mailEnseignant = models.EmailField(max_length=100, null=True)
     roleEnseignant = models.CharField(max_length=50, choices=ROLE_CHOICES, null=True)
     disciplineEnseignant = models.CharField(max_length=150, null=True)
+
     def __str__(self):
         return self.utilisateur.username
 
+
 class Promo(models.Model):
     nomPromo = models.CharField(max_length=100)
-    annee = models.IntegerField()
+    anneeScolaire = models.CharField(max_length=100)
     departement = models.ForeignKey('Departement', on_delete=models.SET_NULL, null=True)
     parcours = models.CharField(max_length=100, null=True)
-    volumeHoraire = models.IntegerField(null=True)
+    volumeHoraire = models.FloatField(null=True)
     def __str__(self):
         return self.nomPromo
 
@@ -239,9 +243,15 @@ class Etablissement(models.Model):
 
     def __str__(self):
         return self.nomEtablissement
+    
+class NombreSoutenances(models.Model):
+    enseignant = models.ForeignKey('ProfilEnseignant', on_delete=models.CASCADE)
+    promo = models.ForeignKey('Promo', on_delete=models.CASCADE)
+    nombreSoutenancesStage = models.PositiveIntegerField(default=0)
+    nombreSoutenancesApprentissage = models.PositiveIntegerField(default=0)
 
-# INSERT INTO lesApprentiStage_offre (titre, description, competences, duree, datePublication, entreprise_id, theme_id, estPublie, date)
-# VALUES ('developpement resaux', ' Venez developez des reseaux', 'apache ngnix', '3 mois', '2023-11-07', 741852, 1, 0, '2023-11-05 12:00:00');
+    class Meta:
+        unique_together = ('enseignant', 'promo')
 
-# INSERT INTO lesApprentiStage_promo (nomPromo, annee, departement_id)
-# VALUES ('1B', 2023, 1);
+    def __str__(self):
+        return f"{self.enseignant} - {self.promo} : {self.nombreSoutenancesStage} soutenances en stage, {self.nombreSoutenancesApprentissage} soutenances en apprentissage"

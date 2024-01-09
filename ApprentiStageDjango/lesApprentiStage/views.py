@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .utils import *
 
@@ -27,239 +27,79 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django_filters import FilterSet, CharFilter
 from .filters import *
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def insertion(request):
-    # Création des instances Utilisateur (Utilisateur personnalisé)
-    etudiant = Utilisateur.objects.create_user(
-        username='etudiant123',
-        email='etudiant@example.com',
-        password='etudiantpassword',
-        first_name='John',
-        last_name='Doe',
-        type_utilisateur='etudiant'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-
-    enseignant = Utilisateur.objects.create_user(
-        username='enseignant456',
-        email='enseignant@example.com',
-        password='enseignantpassword',
-        first_name='Alice',
-        last_name='Smith',
-        type_utilisateur='enseignant'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-
-    secretaire = Utilisateur.objects.create_user(
-        username='secretaire789',
-        email='secretaire@example.com',
-        password='secretairepassword',
-        first_name='Bob',
-        last_name='Johnson',
-        type_utilisateur='secretaire'  # Ajoutez le champ type_utilisateur selon votre modèle
-    )
-    
-    profil_enseignant = ProfilEnseignant.objects.create(
-        utilisateur=enseignant,
-        numHarpege='123ABC',
-        nomEnseignant='Smith',
-        prenomEnseignant='Alice',
-        mailEnseignant='enseignant@example.com',
-        roleEnseignant='chef_departement'
-    )
-    
-    # Création des instances Departement, Entreprise, Theme
-    departement_info = Departement.objects.create(
-        nomDep='Département Informatique',
-        adresseDep='123 Rue des Développeurs',
-        chef=profil_enseignant  # Vous pouvez attribuer un enseignant existant comme chef de département
-    )
-    
-    # Création des instances Promo
-    promo_info = Promo.objects.create(
-        nomPromo='1B',
-        annee=2023,
-        departement=departement_info
-    )
-    
-    # Création des instances ProfilEtudiant, ProfilEnseignant, ProfilSecretaire
-    profil_etudiant = ProfilEtudiant.objects.create(
-        utilisateur=etudiant,
-        nomEtu='Doe',
-        prenomEtu='John',
-        numEtu='E12345',
-        civiliteEtu='M.',
-        adresseEtu='789 Avenue des Étudiants',
-        cpEtu=54321,
-        villeEtu='Ville Étudiant',
-        telEtu='0123456789',
-        promo=promo_info,
-        idDepartement=departement_info
-    )
+    return insert(request)
 
 
-
-    profil_secretaire = ProfilSecretaire.objects.create(
-        utilisateur=secretaire,
-        numSec='S123'
-    )
-
-
-
-
-    entreprise_info = Entreprise.objects.create(
-        numSiret='123456789',
-        nomEnt='Entreprise XYZ',
-        adresseEnt='456 Rue des Entreprises',
-        cpEnt=12345,
-        villeEnt='Ville Entreprise'
-    )
-
-    theme_info = Theme.objects.create(
-        nomTheme='Développement Web'
-    )
-
-
-
-    
-    
-        # Création des instances EnseignantPromo
-    enseignant_promo = EnseignantPromo.objects.create(
-        enseignant=profil_enseignant,
-        promo=promo_info
-    )
-
-    # Création des instances Responsable, Tuteur, Contrat
-    responsable_entreprise = Responsable.objects.create(
-        nomResp='Nom Responsable',
-        prenomResp='Prénom Responsable',
-        emailResp='responsable@entreprise.com',
-        entreprise=entreprise_info
-    )
-
-    tuteur_entreprise = Tuteur.objects.create(
-        nomTuteur='Nom Tuteur',
-        prenomTuteur='Prénom Tuteur',
-        metierTuteur='Métier Tuteur',
-        telTuteur='9876543210',
-        emailTuteur='tuteur@entreprise.com',
-        entreprise=entreprise_info
-    )
-
-    contrat_info = Contrat.objects.create(
-        type='Type Contrat',
-        description='Description Contrat',
-        etat='État Contrat',
-        gratification='Gratification Contrat',
-        dateDeb=timezone.now(),
-        dateFin=timezone.now() + timezone.timedelta(days=90),  # Exemple : Contrat pour 90 jours
-        estValide=True,
-        etudiant=profil_etudiant,
-        enseignant=profil_enseignant,
-        tuteur=tuteur_entreprise,
-        theme=theme_info,
-        entreprise=entreprise_info,
-        enFrance=True
-    )
-
-
-    
-    # Création des instances Offre, Salle, Soutenance, Document, Evaluation
-    offre_info = Offre.objects.create(
-        titre='Titre Offre',
-        description='Description Offre',
-        mailRh='rh@entreprise.com',
-        competences='Compétences requises',
-        duree='3 mois',
-        datePublication=timezone.now(),
-        entreprise=entreprise_info,
-        theme=theme_info,
-        estPublie=False
-    )
-
-    salle_info = Salle.objects.create(
-        numero='Salle A'
-    )
-
-    soutenance_info = Soutenance.objects.create(
-        dateSoutenance=timezone.now(),
-        heureSoutenance=timezone.now().time(),
-        salle=salle_info,
-        idContrat=contrat_info,
-        candide=profil_enseignant,
-        estDistanciel=False
-    )
-
-    document_info = Document.objects.create(
-        titre='Titre Document',
-        fichier='chemin/vers/fichier.pdf',
-        contrat=contrat_info
-    )
-
-    evaluation_info = Evaluation.objects.create(
-        contrat=contrat_info,
-        enseignant=profil_enseignant,
-        note=4.5,
-        commentaire='Commentaire évaluation'
-    )
-    
-    return HttpResponse("Données insérées avec succès !")  # Modifiez la réponse en fonction de votre utilisation de la fonction
-
-
-
-
-
-def user_type_required(user_type):
+def user_type_and_role_required(allowed_user_types,role=[]):
     def decorator(view_func):
         @login_required
         def _wrapped_view(request, *args, **kwargs):
             user = request.user
-            if user.is_authenticated:
-                try:
-                    # Accéder au profil associé au type d'utilisateur
-                    profile = getattr(user, f'profil{user_type.lower()}')
-                except AttributeError:
-                    return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
-            else:
+            if not user.is_authenticated:
                 return redirect_to_login(request.get_full_path())
+
+            user_type = user.get_user_type()
+            if user_type not in allowed_user_types:
+                return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
+
+            if user_type == 'enseignant':
+                enseignant_profile = user.profilenseignant
+                if enseignant_profile.roleEnseignant not in role:
+                    return HttpResponseForbidden('Vous n\'avez pas les droits nécessaires pour accéder à cette page.')
 
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
 
 
+
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-def home(request):
+from .models import NombreSoutenances
 
+def home(request):
     offre_list = Offre.objects.all()   
     user = request.user
-
 
     if request.user.is_authenticated:
         user_type = request.user.type_utilisateur
         print(user_type)
+
         if user_type == 'etudiant':
-          offre_list = Offre.objects.filter(estPublie=1)
-          return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.filter(estPublie=1)
+            return render(request, 'etudiant/accueil_etu.html', {'offre_list': offre_list})
 
         if user_type == 'secretaire':
-          offre_list = Offre.objects.all().order_by('-pk')
-          return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
+            offre_list = Offre.objects.all().order_by('-pk')
+            return render(request, 'secretariat/accueil_sec.html', {'offre_list': offre_list})
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-            return render(request, 'enseignant/accueil_ens.html',{'user': user, 'is_responsible': is_responsible})
+
+            # Ajoutez le code pour obtenir le nombre de soutenances par promo pour cet enseignant.
+            soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
+
+            return render(request, 'enseignant/accueil_ens.html', {
+                'user': user,
+                'is_responsible': is_responsible,
+                'soutenances_par_promo': soutenances_par_promo
+            })
 
     return render(request, 'pages/accueil.html')
+
 
 def validation_offre(request):
     offre_list = Offre.objects.all().order_by('-pk')
     return render(request, 'secretariat/validation_offre.html', {'offre_list': offre_list})
 
 
-""" @login_required
-@user_type_required('secretaire') """
+@user_type_and_role_required(['enseignant','secretaire'], [ProfilEnseignant.CHEF_DEPARTEMENT])
 def signup(request):
     promos = Promo.objects.all()  
     if request.method == 'POST':
@@ -267,16 +107,31 @@ def signup(request):
         etudiant_form = EtudiantForm(request.POST)
         enseignant_form = EnseignantForm(request.POST)
         secretaire_form = SecretaireForm(request.POST)
+
+
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
             user_type = user_form.cleaned_data['type_utilisateur']  
-            # print('////////////////////////',user_type)
             if user_type == 'etudiant' and etudiant_form.is_valid():
                 user.save()
                 etudiant = etudiant_form.save(commit=False)
                 etudiant.utilisateur = user
                 etudiant.save()
+                subject = "Bienvenue sur Notre Site"
+                template = f'mail/register_valid.html'
+                context = {
+                    'date': datetime.today().date(),
+                    'username': user.username,
+                    'email': etudiant.mailEtu
+                }
+                receivers = [etudiant.mailEtu]
+                send_email_with_html_body(
+                subjet=subject,
+                receivers=receivers,
+                template=template,
+                context=context
+            )
                 return redirect('lesApprentiStage:home')
             elif user_type == 'enseignant' and enseignant_form.is_valid():
                 user.save()
@@ -293,6 +148,20 @@ def signup(request):
                 selected_promos = enseignant_form.cleaned_data.get('promos')
                 for promo in selected_promos:
                     EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
+                subject = "Bienvenue sur Notre Site"
+                template = f'mail/register_valid.html'
+                context = {
+                    'date': datetime.today().date(),
+                    'username': user.username,
+                    'email': enseignant.mailEnseignant
+                }
+                receivers = [enseignant.mailEnseignant]
+                send_email_with_html_body(
+                subjet=subject,
+                receivers=receivers,
+                template=template,
+                context=context
+            )
                 return redirect('lesApprentiStage:home')
             
             elif user_type == 'secretaire' and secretaire_form.is_valid():
@@ -301,11 +170,11 @@ def signup(request):
                 secretaire.utilisateur = user
                 secretaire.save()
                 return redirect('lesApprentiStage:home')
-
-    user_form = UtilisateurForm(request.POST)
-    etudiant_form = EtudiantForm()
-    enseignant_form = EnseignantForm()
-    secretaire_form = SecretaireForm()
+    else:
+        user_form = UtilisateurForm(request.POST)
+        etudiant_form = EtudiantForm()
+        enseignant_form = EnseignantForm()
+        secretaire_form = SecretaireForm()
 
     if not user_form.is_valid():
         print('Erreurs dans le formulaire UtilisateurForm:', user_form.errors)
@@ -320,13 +189,31 @@ def signup(request):
     })
 
 @login_required
-@user_type_required('secretaire')
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important pour garder l'utilisateur connecté
+            return JsonResponse({'status': 'success'}, status=200)
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'registration/change_password.html', {'form': form})
+
+def change_password_success(request):
+    return render(request, 'registration/change_password_success.html')
+
+
+@login_required
+@user_type_and_role_required(['secretaire'])
 def pageRecherche(request):
     return render(request, 'pages/recherche.html')
 
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def search(request):
     query = request.GET.get('query', '')
     search_type = request.GET.get('type', '')
@@ -358,14 +245,14 @@ def search(request):
     return render(request, 'pages/recherche.html', {"results": results, "search_type": search_type, "promotions": promotions})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def contrats_non_valides(request):
     contrats_non_valides = Contrat.objects.filter(estValide__isnull=True)
 
     return render(request, 'secretariat/contrats_non_valides.html', {'contrats_non_valides': contrats_non_valides})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def valider_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     contrat.estValide = True
@@ -374,7 +261,7 @@ def valider_contrat(request, contrat_id):
     return redirect('lesApprentiStage:contrats_non_valides')
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def refuser_contrat(request, contrat_id):
     contrat = get_object_or_404(Contrat, pk=contrat_id)
     contrat.estValide = False
@@ -409,8 +296,6 @@ def upload_convention(request):
     return HttpResponse("Requête invalide.", status=400)
 
 
-
-
 def liste_recherche(request):
     filters = {
         'contrat_filter': ContratFilter(request.GET, queryset=Contrat.objects.all()),
@@ -426,12 +311,16 @@ def liste_recherche(request):
         'evaluation_filter': EvaluationFilter(request.GET, queryset=Evaluation.objects.all()),
     }
 
+    selected_filter = request.GET.get('selected_filter')
+
     # Ajout des filtres au contexte
     context = {
         'filters': filters,
+        'selected_filter': selected_filter,
     }
 
     return render(request, 'secretariat/crud_master.html', context)
+
 
 
 def liste_contrats(request):
@@ -448,7 +337,9 @@ def creer_contrat(request):
         form = ContratForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_contrats')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#contrat"  
+            return redirect(nouvelle_url)
     else:
         form = ContratForm()
     return render(request, 'secretariat/contrats/creer_contrat.html', {'form': form})
@@ -456,21 +347,28 @@ def creer_contrat(request):
 # Modification d'un contrat existant
 def modifier_contrat(request, pk):
     contrat = get_object_or_404(Contrat, pk=pk)
+
     if request.method == 'POST':
         form = ContratForm(request.POST, instance=contrat)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_contrats')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#contrat"  
+            return redirect(nouvelle_url)
     else:
         form = ContratForm(instance=contrat)
+
     return render(request, 'secretariat/contrats/modifier_contrat.html', {'form': form, 'contrat': contrat})
+
 
 # Suppression d'un contrat
 def supprimer_contrat(request, pk):
     contrat = get_object_or_404(Contrat, pk=pk)
     if request.method == 'POST':
         contrat.delete()
-        return redirect('lesApprentiStage:liste_contrats')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#contrat"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/contrats/supprimer_contrat.html', {'contrat': contrat})
 
 # ///////////////////////crud etudiant ////////////////////////////
@@ -480,9 +378,11 @@ def creer_etudiant(request):
         form = EtudiantForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
-    else:
-        form = EtudiantForm()
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#etudiant"  
+            return redirect(nouvelle_url)
+        else:
+            form = EtudiantForm()
     return render(request, 'secretariat/etudiant/creer_etudiant.html', {'form': form})
 
 def modifier_etudiant(request, num_etu):
@@ -491,7 +391,9 @@ def modifier_etudiant(request, num_etu):
         form = EtudiantForm(request.POST, instance=etudiant)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
     else:
         form = EtudiantForm(instance=etudiant)
     return render(request, 'secretariat/etudiant/modifier_etudiant.html', {'form': form, 'etudiant': etudiant})
@@ -500,7 +402,9 @@ def delete_etudiant(request, num_etu):
     etudiant = get_object_or_404(ProfilEtudiant, numEtu=num_etu)
     if request.method == 'POST':
         etudiant.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/etudiant/delete_etudiant.html', {'etudiant': etudiant})
 
 
@@ -511,7 +415,9 @@ def creer_entreprise(request):
         form = EntrepriseForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
     else:
         form = EntrepriseForm()
     return render(request, 'secretariat/entreprise/creer_entreprise.html', {'form': form})
@@ -522,7 +428,9 @@ def modifier_entreprise(request,pk):
         form = EntrepriseForm(request.POST, instance=entreprise)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            return redirect(nouvelle_url)
     else:
         form = EntrepriseForm(instance=entreprise)
     return render(request, 'secretariat/entreprise/modifier_entreprise.html', {'form': form, 'entreprise': entreprise})
@@ -531,7 +439,9 @@ def delete_entreprise(request,pk):
     entreprise = get_object_or_404(Entreprise, pk=pk)
     if request.method == 'POST':
         entreprise.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/entreprise/delete_entreprise.html', {'entreprise': entreprise})
 
 
@@ -542,7 +452,9 @@ def creer_enseignant(request):
         form = EnseignantForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = EnseignantForm()
     return render(request, 'secretariat/enseignant/creer_enseignant.html', {'form': form})
@@ -557,7 +469,9 @@ def modifier_enseignant(request, num_harpege):
             EnseignantPromo.objects.filter(enseignant=enseignant).delete()
             for promo in form.cleaned_data['promos']:
                 EnseignantPromo.objects.create(enseignant=enseignant, promo=promo)
-            return redirect('lesApprentiStage:liste_recherche')
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = Enseignant_secForm(instance=enseignant)
     return render(request, 'secretariat/enseignant/modifier_enseignant.html', {'form': form, 'enseignant': enseignant})
@@ -567,7 +481,9 @@ def delete_enseignant(request, num_harpege):
     enseignant = get_object_or_404(ProfilEnseignant, numHarpege=num_harpege)
     if request.method == 'POST':
         enseignant.delete()
-        return redirect('lesApprentiStage:liste_recherche')
+        url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+        nouvelle_url = f"{url_sans_fragment}#enseignant"  
+        return redirect(nouvelle_url)
     return render(request, 'secretariat/enseignant/delete_enseignant.html', {'enseignant': enseignant})
 
 
@@ -578,19 +494,40 @@ def delete_enseignant(request, num_harpege):
 class PromoCreateView(CreateView):
     model = Promo
     template_name = 'secretariat/promo/creer_promo.html'  
-    fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
+    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+
 
 class PromoDeleteView(DeleteView):
     model = Promo
     template_name = 'secretariat/promo/delete_promo.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+    
 class PromoUpdateView(UpdateView):
     model = Promo
     template_name = 'secretariat/promo/modifier_promo.html'  
-    fields = ['nomPromo', 'annee', 'departement', 'parcours', 'volumeHoraire'] 
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
+    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
 
 # ///////////////////////crud departement ////////////////////////////
 
@@ -598,20 +535,41 @@ class DepartementCreateView(CreateView):
     model = Departement
     template_name = 'secretariat/departement/creer_departement.html'  
     fields = ['nomDep', 'adresseDep', 'chef']  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
 class DepartementUpdateView(UpdateView):
     model = Departement
     template_name = 'secretariat/departement/modifier_departement.html'  
     fields = ['nomDep', 'adresseDep', 'chef']  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
 class DepartementDeleteView(DeleteView):
     model = Departement
     template_name = 'secretariat/departement/delete_departement.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')  
 
-# ///////////////////////crud departement ////////////////////////////
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#departements"  
+        return url_with_fragment
+    
+# ///////////////////////crud offre ////////////////////////////
 
 
 def creer_offre(request):
@@ -627,11 +585,16 @@ def creer_offre(request):
                 'competences': cleaned_form.get('competences'),
                 'entreprise': cleaned_form.get('entreprise'),
                 'theme': cleaned_form.get('theme'),
-                'datePublication': date.today()
+                'datePublication': date.today(),
             }
             form = OffreFormFini(tmp_form) 
+            
             Offre = form.save()
-            return redirect('lesApprentiStage:liste_recherche')  # Redirige vers la liste des offres
+            Offre.estPublie = True
+            Offre.save()
+            url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
+            nouvelle_url = f"{url_sans_fragment}#offre"  
+            return redirect(nouvelle_url)
     else:
         form = OffreForm()
 
@@ -643,12 +606,26 @@ class OffreUpdateView(UpdateView):
     model = Offre
     template_name = 'secretariat/offre/modifier_offre.html'  
     fields = ['titre', 'description', 'mailRh', 'competences', 'duree', 'datePublication', 'entreprise', 'theme', 'estPublie'] 
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#offre"  # Remplacez "offre" par votre fragment souhaité
+            return url_with_fragment
+        
 class OffreDeleteView(DeleteView):
     model = Offre
-    template_name = 'secretariat/offre/delete_offre.html'  
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    template_name = 'secretariat/offre/delete_offre.html' 
+     
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#offre"  # Remplacez "offre" par votre fragment souhaité
+            return url_with_fragment    
 
 
 
@@ -659,38 +636,105 @@ class SalleCreateView(CreateView):
     model = Salle
     template_name = 'secretariat/salle/creer_salle.html'
     fields = ['numero']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 class SalleUpdateView(UpdateView):
     model = Salle
     template_name = 'secretariat/salle/modifier_salle.html'
     fields = ['numero']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 class SalleDeleteView(DeleteView):
     model = Salle
     template_name = 'secretariat/salle/delete_salle.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+    # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#salle"
+        return url_with_fragment
 
 
 # ///////////////////////crud soutenance ////////////////////////////
 
+class BaseSoutenanceForm(forms.ModelForm):
+    class Meta:
+        model = Soutenance
+        fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
+
+    def __init__(self, *args, **kwargs):
+        super(BaseSoutenanceForm, self).__init__(*args, **kwargs)
+        # Définir le champ candide comme optionnel
+        self.fields['candide'].required = False
+
+class SoutenanceCreateForm(BaseSoutenanceForm):
+    class Meta(BaseSoutenanceForm.Meta):
+        widgets = {
+            'dateSoutenance': forms.DateInput(attrs={'type': 'date'}),
+            'heureSoutenance': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
 class SoutenanceCreateView(CreateView):
-    model = Soutenance
+    form_class = SoutenanceCreateForm
     template_name = 'secretariat/soutenance/creer_soutenance.html'
-    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
+
+class TimePickerWidget(forms.TimeInput):
+    input_type = 'time'
+
+    def format_value(self, value):
+        if isinstance(value, str):
+            return value
+        return value.strftime('%H:%M') if value else ''
+
+class SoutenanceUpdateForm(BaseSoutenanceForm):
+    class Meta(BaseSoutenanceForm.Meta):
+        widgets = {
+            'dateSoutenance': forms.DateInput(attrs={'type': 'date'}),
+            'heureSoutenance': TimePickerWidget(attrs={'type': 'time'}),
+        }
 
 class SoutenanceUpdateView(UpdateView):
     model = Soutenance
+    form_class = SoutenanceUpdateForm
     template_name = 'secretariat/soutenance/modifier_soutenance.html'
-    fields = ['dateSoutenance', 'heureSoutenance', 'salle', 'idContrat', 'candide', 'estDistanciel']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
 
 class SoutenanceDeleteView(DeleteView):
     model = Soutenance
     template_name = 'secretariat/soutenance/delete_soutenance.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#soutenance"
+        return url_with_fragment
 
 
 # ///////////////////////crud documents ////////////////////////////
@@ -701,41 +745,137 @@ class DocumentCreateView(CreateView):
     fields = ['titre', 'fichier', 'contrat']
     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
+
 class DocumentUpdateView(UpdateView):
     model = Document
     template_name = 'secretariat/document/modifier_document.html'
     fields = ['titre', 'fichier', 'contrat']
     success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
+
 class DocumentDeleteView(DeleteView):
     model = Document
     template_name = 'secretariat/document/delete_document.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#document"
+        return url_with_fragment
 
 # ///////////////////////crud evaluation ////////////////////////////
-
 class EvaluationCreateView(CreateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/creer_evaluation.html'
-    fields = ['contrat', 'enseignant', 'note', 'commentaire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+    def get_form_class(self):
+        if self.request.user.type_utilisateur == 'enseignant':
+            class EnseignantEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'note', 'commentaire']
+            return EnseignantEvaluationForm
+        else:
+            class DefaultEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+            return DefaultEvaluationForm
+
+    def get_form(self, form_class=None):
+        form = super(EvaluationCreateView, self).get_form(form_class)
+
+        if self.request.user.type_utilisateur == 'enseignant':
+            enseignant = self.request.user.profilenseignant
+            
+            # Filtrer les choix de contrat pour les contrats liés à l'enseignant connecté
+            if 'contrat' in form.fields:
+                form.fields['contrat'].queryset = Contrat.objects.filter(enseignant=enseignant)
+
+        return form
+
+    def form_valid(self, form):
+        if self.request.user.type_utilisateur == 'enseignant':
+            # Attribuer automatiquement l'enseignant connecté à l'évaluation
+            form.instance.enseignant = self.request.user.profilenseignant
+        return super(EvaluationCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('lesApprentiStage:liste_recherche') + "#evaluation"
 
 class EvaluationUpdateView(UpdateView):
     model = Evaluation
     template_name = 'secretariat/evaluation/modifier_evaluation.html'
-    fields = ['contrat', 'enseignant', 'note', 'commentaire']
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+    def get_form_class(self):
+        # Choisir la classe de formulaire en fonction du type d'utilisateur
+        if self.request.user.type_utilisateur == 'enseignant':
+            # Classe de formulaire pour les enseignants (sans le champ 'enseignant')
+            class EnseignantEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'note', 'commentaire']
+            return EnseignantEvaluationForm
+        else:
+            # Classe de formulaire par défaut (avec le champ 'enseignant')
+            class DefaultEvaluationForm(forms.ModelForm):
+                class Meta:
+                    model = Evaluation
+                    fields = ['contrat', 'enseignant', 'note', 'commentaire']
+            return DefaultEvaluationForm
+
+    def get_form(self, form_class=None):
+        form = super(EvaluationUpdateView, self).get_form(form_class)
+
+        if self.request.user.type_utilisateur == 'enseignant':
+            enseignant = self.request.user.profilenseignant
+            
+            # Filtrer les choix de contrat pour les contrats liés à l'enseignant connecté
+            if 'contrat' in form.fields:
+                form.fields['contrat'].queryset = Contrat.objects.filter(enseignant=enseignant)
+
+            # Rendre le champ 'enseignant' caché et définir sa valeur
+            if 'enseignant' in form.fields:
+                form.fields['enseignant'].initial = enseignant.numHarpege
+                form.fields['enseignant'].widget = forms.HiddenInput()
+
+        return form
+
+    def get_success_url(self):
+        # Redirection après la mise à jour de l'évaluation
+        return reverse_lazy('lesApprentiStage:liste_recherche') + "#evaluation"
+    
 class EvaluationDeleteView(DeleteView):
     model = Evaluation
     template_name = 'secretariat/evaluation/delete_evaluation.html'
-    success_url = reverse_lazy('lesApprentiStage:liste_recherche')
+    
+    def get_success_url(self):
+            # Récupérer l'URL de base à partir du nom de l'URL
+            base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
+            # Ajouter le fragment à l'URL
+            url_with_fragment = f"{base_url}#evaluation"  # Remplacez "evaluation" par votre fragment souhaité
+            return url_with_fragment
 
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def liste_contrats_signes(request):
     contrats_signes = Contrat.objects.filter(etat='1')
     for contrat in contrats_signes:
@@ -743,7 +883,7 @@ def liste_contrats_signes(request):
     return render(request, 'secretariat/liste_contrats_signes.html', {'contrats_signes': contrats_signes})
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def telecharger_convention_secretaire(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     response = HttpResponse(document.fichier.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
@@ -751,7 +891,7 @@ def telecharger_convention_secretaire(request, document_id):
     return response
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def upload_convention_secretaire(request):
     if request.method == 'POST':
         contrat_id = request.POST.get('contrat_id')
@@ -778,6 +918,66 @@ def upload_convention_secretaire(request):
             return JsonResponse({'success': False, 'message': 'Aucun fichier fourni !'})
             
     return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
+
+# /////////////////////// Soutenances Léo ////////////////////////////
+
+def inscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+    
+    if user.get_user_type() == "enseignant" and soutenance.candide != user.profilenseignant:
+        soutenance.candide = user.profilenseignant
+        soutenance.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+
+def desinscrire_soutenance(request, soutenance_id):
+    soutenance = get_object_or_404(Soutenance, id=soutenance_id)
+    user = request.user
+
+    if user.get_user_type() == "enseignant" and soutenance.candide == user.profilenseignant:
+        soutenance.candide = None
+        soutenance.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+
+
+class NombreSoutenanceView(View):
+    template_name = 'secretariat/soutenance/nombre_soutenances.html'
+
+    def get(self, request, num_harpege=None):
+        enseignant = get_object_or_404(ProfilEnseignant, pk=num_harpege) if num_harpege else None
+        form = NombreSoutenanceForm(initial={'enseignant': enseignant})
+        return render(request, self.template_name, {'form': form, 'enseignant': enseignant})
+
+    def post(self, request, num_harpege=None):
+        form = NombreSoutenanceForm(request.POST)
+
+        if form.is_valid():
+            promo = form.cleaned_data['promo']
+            nombre_soutenances_stage = form.cleaned_data['nombreSoutenancesStage']
+            nombre_soutenances_apprentissage = form.cleaned_data['nombreSoutenancesApprentissage']
+
+            # Vérifier si une instance existe déjà pour le prof et la promo
+            try:
+                enseignant = ProfilEnseignant.objects.get(pk=num_harpege)
+                instance = NombreSoutenances.objects.get(enseignant=enseignant, promo=promo)
+                instance.nombreSoutenancesStage = nombre_soutenances_stage
+                instance.nombreSoutenancesApprentissage = nombre_soutenances_apprentissage
+                instance.save()
+            except NombreSoutenances.DoesNotExist:
+                # Si aucune instance n'existe pas, créez-en une nouvelle
+                instance = form.save(commit=False)
+                instance.promo = promo
+                instance.enseignant = enseignant
+                instance.save()
+
+            messages.success(request, 'Nombre de soutenances attribué avec succès.')
+            return redirect('lesApprentiStage:home')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+            return render(request, self.template_name, {'form': form})
+
 
 
 @login_required
@@ -855,9 +1055,8 @@ def soutenance_ens(request, user_type):
 
 
 
-
 @login_required
-@user_type_required('etudiant')
+@user_type_and_role_required(['etudiant'])
 def ajouter_contrat(request):
     if request.method == 'POST':
         form = ContratEtudiantForm(request.POST)
@@ -1060,6 +1259,27 @@ def ajouter_offre(request):
 
     return render(request, 'pages/ajouter_offre.html', {'OffreForm': form, 'EntrepriseForm': EntrepriseForm(), 'ThemeForm': ThemeForm()})
 
+
+
+@login_required
+def edit_enseignant(request):
+    if request.user.type_utilisateur != 'enseignant':
+        return redirect('page_d_erreur')
+
+    profil_enseignant, created = ProfilEnseignant.objects.get_or_create(utilisateur=request.user)
+    change_password_form = PasswordChangeForm(request.user)
+
+    if request.method == 'POST':
+        form = ProfilEnseignantForm(request.POST, instance=profil_enseignant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+            return redirect('/')
+    else:
+        form = ProfilEnseignantForm(instance=profil_enseignant)
+
+    return render(request, 'enseignant/edit_enseignant.html', {'form': form, 'change_password_form': change_password_form})
+
 @login_required
 def delete_offre(request, pk):
     instance = get_object_or_404(Offre, pk=pk)
@@ -1107,7 +1327,7 @@ def ajouter_responsable(request, contrat_id):
     return render(request, 'pages/ajouter_responsable.html', context)
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def details_etudiant(request, etudiant_id):
     etudiant = get_object_or_404(ProfilEtudiant, numEtu=etudiant_id)
     contrats_stage = Contrat.objects.filter(etudiant=etudiant, type='stage')
@@ -1121,7 +1341,7 @@ def details_etudiant(request, etudiant_id):
     return render(request, 'admin/detailsEtu.html', context)
 
 @login_required
-@user_type_required('secretaire')
+@user_type_and_role_required(['secretaire'])
 def details_entreprise(request, entreprise_id):
     entreprise = get_object_or_404(Entreprise, numSiret=entreprise_id)
 
@@ -1190,7 +1410,10 @@ def edit_etudiant(request):
         return redirect('page_d_erreur')
 
     profil_etudiant, created = ProfilEtudiant.objects.get_or_create(utilisateur=request.user)
-
+    change_password_form = PasswordChangeForm(request.user)
+    context = {
+        'change_password_form': change_password_form,
+    }
     if request.method == 'POST':
         form = EtudiantProfilForm(request.POST, instance=profil_etudiant)
         if form.is_valid():
@@ -1200,7 +1423,7 @@ def edit_etudiant(request):
     else:
         form = EtudiantProfilForm(instance=profil_etudiant)
 
-    return render(request, 'etudiant/edit_etudiant.html', {'form': form})
+    return render(request, 'etudiant/edit_etudiant.html', {'form': form, 'change_password_form': change_password_form})
 
 
 @login_required
@@ -1354,5 +1577,3 @@ def suivi_etudiants(request):
         'departements': departements,
         'themes': themes
     })
-
-

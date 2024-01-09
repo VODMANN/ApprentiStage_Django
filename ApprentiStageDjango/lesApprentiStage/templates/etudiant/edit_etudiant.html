@@ -47,11 +47,48 @@
                                 {% endif %}
                             </div>
                             {% endfor %}
-                        </div>
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary custom-btn">Sauvegarder les changements</button>
-                        </div>
+                            <div class="form-group col-md-4 d-flex align-items-end">
+                                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#changePasswordModal">Changer le mot de passe</button>
+                            </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary custom-btn">Sauvegarder les changements</button>
+                            </div>
                     </form>
+                    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="changePasswordModalLabel">Changer le mot de passe</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" action="{% url 'lesApprentiStage:change_password' %}" class="form-horizontal" id="changePasswordForm">
+                                        {% csrf_token %}
+                                        {% for field in change_password_form %}
+                                            <div class="form-group">
+                                                <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+                                                {{ field|add_class:"form-control" }}
+                                                {% if field.help_text %}
+                                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                {% endif %}
+                                                {% if field.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ field.errors|join:", " }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,6 +97,24 @@
 {% endblock %}
 {% block additional_css %}
 <style>
+
+    .modal-header.bg-primary {
+        background-color: #007bff; /* Couleur de fond de l'en-tête du modal */
+        color: #fff; /* Couleur du texte */
+    }
+    .modal-content {
+        border-radius: 0.3rem; /* Coins arrondis pour le modal */
+    }
+    .btn-primary {
+        background-color: #0056b3; /* Couleur du bouton */
+        border-color: #004b9a; /* Couleur de la bordure du bouton */
+    }
+    .btn-primary.btn-block {
+        border-radius: 4px; /* Correspond à la bordure des champs de saisie */
+        padding: .375rem .75rem; /* Ajustez le padding pour correspondre à celui des champs de saisie */
+        font-size: 1rem; /* Assurez-vous que la taille de la police correspond */
+        line-height: 1.5; /* Ajustez la hauteur de la ligne si nécessaire */
+    }
     .profile-edit-wrapper {
         padding: 2rem;
         background-color: #fff;
@@ -115,4 +170,28 @@
     }
     /* Assurez-vous d'ajouter le CDN de FontAwesome dans votre base.html ou ici pour que les icônes s'affichent */
 </style>
+
+<script>
+    $(document).ready(function() {
+        $('#changePasswordForm').on('submit', function(e) {
+            e.preventDefault();  // Empêche la soumission standard du formulaire
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'lesApprentiStage:change_password' %}",
+                data: $(this).serialize(),  // Sérialise les données du formulaire
+                success: function(response) {
+                    // Gérer la réponse ici
+                    alert("Mot de passe changé avec succès");
+                    $('#changePasswordModal').modal('hide');
+                },
+                error: function(response) {
+                    // Gérer les erreurs
+                    alert("Erreur lors du changement du mot de passe");
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock %}

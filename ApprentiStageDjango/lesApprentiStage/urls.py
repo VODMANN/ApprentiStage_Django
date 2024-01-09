@@ -10,6 +10,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('signup/', views.signup, name='signup'),
     path('recherche', views.pageRecherche, name='recherche'),
+    path('update_mdp/', views.change_password, name='change_password'),
+    path('validation_mdp/', views.change_password_success, name='change_password_success'),
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='lesApprentiStage:home'), name='logout'),
     path('search/', views.search, name='search'),
@@ -31,6 +33,7 @@ urlpatterns = [
     path('modifierSoutenance/<id>', views.modifierSoutenance, name='modifierSoutenance'),
     path('inscrireSoutenance/<id>', views.inscrireSoutenance, name='inscrireSoutenance'),
     path('desinscrireSoutenance/<id>', views.desinscrireSoutenance, name='desinscrireSoutenance'),
+    path('edit_enseignant/', views.edit_enseignant, name='edit_enseignant'),
     path('api/calendar_events/', views.calendar_events, name='calendar_events'),
     path('export_calendar/', views.export_calendar, name='export_calendar'),
     path('calendar_ens/', views.calendar_ens, name='calendar_ens'),
@@ -70,7 +73,10 @@ urlpatterns = [
     path('secretariat/creer/offre/', views.creer_offre, name='creer_offre'),
     path('secretariat/modifier/offre/<int:pk>/', views.OffreUpdateView.as_view(), name='modifier_offre'),
     path('secretariat/supprimer/offre/<int:pk>/', views.OffreDeleteView.as_view(), name='supprimer_offre'),
-        # URL pour les vues CRUD de Salle
+        # URL Soutenance Léo
+    path('inscrire_soutenance/<int:soutenance_id>/', views.inscrire_soutenance, name='inscrire_soutenance'),
+    path('desinscrire_soutenance/<int:soutenance_id>/', views.desinscrire_soutenance, name='desinscrire_soutenance'),
+    path('nombre_soutenances/<str:num_harpege>/', views.NombreSoutenanceView.as_view(), name='nombre_soutenances'),        # URL pour les vues CRUD de Salle
     path('secretariat/creer/salle/', views.SalleCreateView.as_view(), name='creer_salle'),
     path('secretariat/modifier/salle/<int:pk>/', views.SalleUpdateView.as_view(), name='modifier_salle'),
     path('secretariat/supprimer/salle/<int:pk>/', views.SalleDeleteView.as_view(), name='supprimer_salle'),

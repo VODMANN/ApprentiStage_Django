@@ -1,29 +1,47 @@
 from django import forms
 from .models import *
 from .NAF import *
+import django_filters
 
 class EtudiantForm(forms.ModelForm):
+    # Champs obligatoires
+    nomEtu = forms.CharField(max_length=255, required=True)
+    prenomEtu = forms.CharField(max_length=255, required=True)
+    numEtu = forms.CharField(max_length=35, required=True)
+    numDossier = forms.IntegerField(required=True)
+    ineEtu = forms.IntegerField(required=True)
+
+    # Champs facultatifs
+    prenom2Etu = forms.CharField(max_length=255, required=False)
+    civiliteEtu = forms.CharField(max_length=5, required=False)
+    adresseEtu = forms.CharField(max_length=255, required=False)
     mailEtu = forms.EmailField(required=False)
-    numDossier = forms.IntegerField(required=False)
-    ineEtu = forms.IntegerField(required=False)
+    telEtu = forms.CharField(max_length=25, required=False)
+    dateNEtu = forms.DateField(required=False)
+    lieuNEtu = forms.CharField(max_length=255, required=False)
+    departementNEtu = forms.CharField(max_length=100, required=False)
+    nationaliteEtu = forms.CharField(max_length=100, required=False)
+    cpEtu = forms.IntegerField(required=False)
+    villeEtu = forms.CharField(max_length=100, required=False)
+    adresseParent = forms.CharField(max_length=255, required=False)
+    cpParent = forms.IntegerField(required=False)
+    villeParent = forms.CharField(max_length=100, required=False)
+    telParent = forms.CharField(max_length=25, required=False)
+    mailParent = forms.EmailField(required=False)
+    promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
+    idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
 
     class Meta:
         model = ProfilEtudiant
-        numEtu = forms.CharField(max_length=35, required=False)
-        nomEtu = forms.CharField(max_length=255, required=False)
-        prenomEtu = forms.CharField(max_length=255, required=False)
-        civiliteEtu = forms.CharField(max_length=5, required=False)
-        cpEtu = forms.IntegerField(required=False)
-        villeEtu = forms.CharField(max_length=100, required=False)
-        telEtu = forms.CharField(max_length=25, required=False)
-        promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
-        idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
         fields = [
-                    'numEtu', 'nomEtu', 'prenomEtu', 'prenom2Etu', 'adresseEtu', 'mailEtu', 
-                    'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 
-                    'numDossier', 'ineEtu', 'cpEtu', 'villeEtu', 'promo', 'idDepartement', 
-                    'adresseParent', 'cpParent', 'villeParent', 'telParent', 'mailParent'
-                ]
+            'nomEtu', 'prenomEtu', 'numEtu', 'numDossier', 'ineEtu',
+            'prenom2Etu', 'civiliteEtu', 'adresseEtu', 'mailEtu', 
+            'telEtu', 'dateNEtu', 'lieuNEtu', 'departementNEtu', 'nationaliteEtu', 
+            'cpEtu', 'villeEtu', 'adresseParent', 'cpParent', 'villeParent', 
+            'telParent', 'mailParent', 'promo', 'idDepartement'
+        ]
+
+
 
 class EnseignantForm(forms.ModelForm):
     promos = forms.ModelMultipleChoiceField(
@@ -328,3 +346,28 @@ class ContratForm(forms.ModelForm):
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']
+
+class NombreSoutenanceForm(forms.ModelForm):
+
+    promo = django_filters.ModelChoiceFilter(
+        queryset=Promo.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Promo'
+    )
+
+    class Meta:
+        model = NombreSoutenances
+        fields = ['promo', 'nombreSoutenancesStage', 'nombreSoutenancesApprentissage']
+
+
+
+class ProfilEnseignantForm(forms.ModelForm):
+    class Meta:
+        model = ProfilEnseignant
+        fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'roleEnseignant', 'disciplineEnseignant']
+        # Ajoutez d'autres champs si nécessaire
+        labels = {
+            'nomEnseignant': 'Nom',
+            'prenomEnseignant': 'Prénom',
+            # Ajoutez d'autres étiquettes pour les champs ici
+        }
