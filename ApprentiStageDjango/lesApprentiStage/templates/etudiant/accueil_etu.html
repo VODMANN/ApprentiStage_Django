@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if messages %}
+{% for message in messages %}
+    <div id="notification"  class="alert alert-success custom-notification" >{{ message }}</div>
+{% endfor %}
+{% endif %}
 <div class="container mt-5">
+
   <div class="jumbotron">
     <h1 class="display-4">Bienvenue sur le Portail de Gestion de Stages et
       Alternances!</h1>
@@ -67,11 +73,20 @@
     </div>
   </div>
 </div>
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+<style>
+  .custom-notification {
+    position: fixed;
+    top: 5%; /* Au milieu vertical */
+    left: 35%; /* Au milieu horizontal */
+    z-index: 9999;
+  }
+</style>
+<script>
+  $(document).ready(function () {
+    setTimeout(function () {
+      $('#notification').fadeOut('fast');
+    }, 3000);
+  });
+</script>
+
 {% endblock %}

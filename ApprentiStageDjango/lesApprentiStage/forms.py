@@ -178,6 +178,10 @@ class ContratEtudiantForm(forms.ModelForm):
         required=False, 
         widget=forms.DateInput(attrs={'type': 'date'})
     )
+    dateFin = forms.DateField(
+        required=False, 
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
 
     class Meta:
         model = Contrat
@@ -373,7 +377,14 @@ ETAT_CHOICE = [
 class ContratForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
     etat = forms.ChoiceField(choices=ETAT_CHOICE, label='etat du contrat')
-
+    dateDeb = forms.DateField(
+        required=False, 
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    dateFin = forms.DateField(
+        required=False, 
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']

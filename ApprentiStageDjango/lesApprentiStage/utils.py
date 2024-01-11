@@ -20,8 +20,7 @@ import subprocess
 def convert_docx_to_pdf(input_docx, output_pdf):
     convert(input_docx, output_pdf)
 
- 
-
+    
 
 logger = logging.getLogger(__name__)
 

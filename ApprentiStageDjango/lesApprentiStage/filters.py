@@ -141,10 +141,15 @@ class SoutenanceFilter(filters.FilterSet):
     idContrat__etudiant__nomEtu = django_filters.CharFilter(lookup_expr='icontains', label='Nom de l\'étudiant')
     idContrat__etudiant__prenomEtu = django_filters.CharFilter(lookup_expr='icontains', label='Prénom de l\'étudiant')
     estDistanciel = django_filters.CharFilter(lookup_expr='icontains', label='Est distanciel')
+    idContrat__etudiant__promo = django_filters.ModelChoiceFilter(
+        queryset=Promo.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Promo'
+    )
 
     class Meta:
         model = Soutenance
-        fields = ['dateSoutenance', 'heureSoutenance', 'salle__numero', 'idContrat__etudiant__nomEtu', 'idContrat__etudiant__prenomEtu', 'estDistanciel']
+        fields = ['dateSoutenance', 'heureSoutenance', 'salle__numero', 'idContrat__etudiant__nomEtu', 'idContrat__etudiant__prenomEtu', 'estDistanciel', 'idContrat__etudiant__promo']
 
 
 class DocumentFilter(filters.FilterSet):
