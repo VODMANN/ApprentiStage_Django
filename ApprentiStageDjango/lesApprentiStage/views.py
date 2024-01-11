@@ -682,6 +682,7 @@ class BaseSoutenanceForm(forms.ModelForm):
         super(BaseSoutenanceForm, self).__init__(*args, **kwargs)
         # Définir le champ candide comme optionnel
         self.fields['candide'].required = False
+        self.fields['salle'].required = False
 
 class SoutenanceCreateForm(BaseSoutenanceForm):
     class Meta(BaseSoutenanceForm.Meta):

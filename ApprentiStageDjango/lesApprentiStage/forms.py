@@ -174,9 +174,14 @@ TYPE_CHOICES_CONTRAT = [
 class ContratEtudiantForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
     enFrance = forms.BooleanField(label='', widget=ToggleSwitchWidget, required=False)
+    dateDeb = forms.DateField(
+        required=False, 
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+
     class Meta:
         model = Contrat
-        exclude = ['etudiant', 'offre', 'tuteur', 'estValide','etat','enseignant']
+        exclude = ['etudiant', 'offre', 'tuteur', 'estValide', 'etat', 'enseignant']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -188,7 +193,9 @@ class ContratEtudiantForm(forms.ModelForm):
 
 class EntrepriseForm(forms.ModelForm):
     codeNaf = forms.ChoiceField(choices=NAF, required=False)
-    
+    formeJuridique = forms.CharField(max_length=25, required=False, label='Forme juridique :')
+    siteWeb = forms.CharField(max_length=200, required=False, label='Site Web :')
+
     class Meta:
         model = Entreprise
         fields = ['numSiret', 'nomEnt', 'adresseEnt', 'codeNaf', 'cpEnt', 'villeEnt', 'formeJuridique', 'telEnt', 'siteWeb', 'numSiren', 'mailEnt']
@@ -198,7 +205,6 @@ class EntrepriseForm(forms.ModelForm):
             'adresseEnt': 'Adresse :',
             'cpEnt': 'Code postal :',
             'villeEnt': 'Ville :',
-            'formeJuridique': 'Forme juridique :',
             'telEnt': 'Téléphone :',
             'siteWeb': 'Site Web :',
             'numSiren': 'Numéro SIREN :',
@@ -274,7 +280,20 @@ class EtudiantProfilForm(forms.ModelForm):
         self.fields['numDossier'].widget.attrs['readonly'] = True
         self.fields['ineEtu'].widget.attrs['readonly'] = True
 
-
+    prenom2Etu = forms.CharField(max_length=255, required=False)
+    adresseEtu = forms.CharField(max_length=255, required=False)
+    mailEtu = forms.EmailField(required=False)
+    telEtu = forms.CharField(max_length=25, required=False)
+    dateNEtu = forms.DateField(required=False)
+    lieuNEtu = forms.CharField(max_length=255, required=False)
+    departementNEtu = forms.CharField(max_length=100, required=False)
+    nationaliteEtu = forms.CharField(max_length=100, required=False)
+    villeEtu = forms.CharField(max_length=100, required=False)
+    adresseParent = forms.CharField(max_length=255, required=False)
+    cpParent = forms.IntegerField(required=False)
+    villeParent = forms.CharField(max_length=100, required=False)
+    telParent = forms.CharField(max_length=25, required=False)
+    mailParent = forms.EmailField(required=False)
     class Meta:
         model = ProfilEtudiant
         fields = [
@@ -342,7 +361,19 @@ class OffreFormFini(forms.ModelForm):
 class ConventionUploadForm(forms.Form):
     fichier = forms.FileField(label='Sélectionnez votre fichier')
 
+CIVILITE_CHOICES = [
+        ('M', 'Monsieur'),
+        ('Mme', 'Madame'),
+    ]
+ETAT_CHOICE = [
+        (0,'non signé'),
+        (1,'signé par etudiant et entreprise'),
+        (2,'signé par tous'),
+    ]
 class ContratForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
+    etat = forms.ChoiceField(choices=ETAT_CHOICE, label='etat du contrat')
+
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']
