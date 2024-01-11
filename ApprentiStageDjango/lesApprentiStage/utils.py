@@ -11,16 +11,15 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.http import HttpResponse
 
+from docx2pdf import convert
+
 import os
 from django.conf import settings
 import subprocess
 
 def convert_docx_to_pdf(input_docx, output_pdf):
-    try:
-        subprocess.run(["unoconv", "-f", "pdf", "-o", output_pdf, input_docx], check=True)
-        print(f"Conversion successful: {input_docx} -> {output_pdf}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error during conversion: {e}")
+    convert(input_docx, output_pdf)
+
  
 
 
