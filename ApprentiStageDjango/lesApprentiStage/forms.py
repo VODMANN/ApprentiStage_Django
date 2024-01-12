@@ -31,6 +31,11 @@ class EtudiantForm(forms.ModelForm):
     promo = forms.ModelChoiceField(queryset=Promo.objects.all(), required=False, empty_label="Sélectionnez une promo")
     idDepartement = forms.ModelChoiceField(queryset=Departement.objects.all(), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(EtudiantForm, self).__init__(*args, **kwargs)
+        # Mettre les champs numDossier et ineEtu en lecture seule
+        self.fields['numEtu'].widget.attrs['readonly'] = True
+
     class Meta:
         model = ProfilEtudiant
         fields = [
@@ -98,7 +103,6 @@ class Enseignant_secForm(forms.ModelForm):
     disciplineEnseignant = forms.CharField(max_length=150, required=False)
 
 
-
     class Meta:
         model = ProfilEnseignant
         numHarpege = forms.CharField(max_length=20, required=False)
@@ -119,6 +123,8 @@ class Enseignant_secForm(forms.ModelForm):
         super(Enseignant_secForm, self).__init__(*args, **kwargs)  # Correction ici
         if self.instance and self.instance.pk:
             self.fields['promos'].initial = [ep.promo for ep in EnseignantPromo.objects.filter(enseignant=self.instance)]
+        self.fields['numHarpege'].widget.attrs['readonly'] = True
+
 
 
 
@@ -199,6 +205,10 @@ class EntrepriseForm(forms.ModelForm):
     codeNaf = forms.ChoiceField(choices=NAF, required=False)
     formeJuridique = forms.CharField(max_length=25, required=False, label='Forme juridique :')
     siteWeb = forms.CharField(max_length=200, required=False, label='Site Web :')
+
+    def __init__(self, *args, **kwargs):
+        super(EntrepriseForm, self).__init__(*args, **kwargs)  # Correction ici
+        self.fields['numSiret'].widget.attrs['readonly'] = True
 
     class Meta:
         model = Entreprise
@@ -404,6 +414,7 @@ class NombreSoutenanceForm(forms.ModelForm):
 
 
 class ProfilEnseignantForm(forms.ModelForm):
+    
     class Meta:
         model = ProfilEnseignant
         fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'roleEnseignant', 'disciplineEnseignant']
