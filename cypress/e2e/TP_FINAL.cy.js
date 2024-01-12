@@ -2,38 +2,32 @@ describe('Connexion', () => {
   it('passes', () => {
     cy.visit('http://127.0.0.1:8000/');
     cy.get(':nth-child(3) > .nav-link').click();
-    cy.get('#id_username').type('enzo');
-    cy.get('#id_password').type('enzo');
+    cy.get('#id_username').type('etudiant123');
+    cy.get('#id_password').type('etudiantpassword');
     cy.get('#submit').click();
   })
 })
 
 describe('Création d\'une offre', () => {
-  beforeEach(() => {
-      cy.visit('http://127.0.0.1:8000/');
-      cy.get(':nth-child(3) > .nav-link').click();
-      cy.get('#id_username').type('enzo');
-      cy.get('#id_password').type('enzo');
-      cy.get('#submit').click();
-  })
   it('passes', () => {
     cy.visit('http://127.0.0.1:8000/');
-    cy.get('#cardsdefault > :nth-child(4) > .card > .card-body > .btn').click();
-    cy.get('#filtre_select').select('Offre'); 
-    cy.get('#offre_table > .text-center > .btn').click();
-    cy.get('.form-entreprise').within(() => {
-      cy.get('input[name="titre"]').type('Titre du poste');
-      cy.get('input[name="mailRh"]').type('exemple@mail.com');
-      cy.get('input[name="duree"]').type('Temps plein');
-      cy.get('textarea[name="description"]').type('Description du poste');
-      cy.get('textarea[name="competences"]').type('Python, django');
-      cy.get('select[name="entreprise"]').select('Entreprise XYZ');
-      cy.get('select[name="theme"]').select('Développement Web');
+    cy.get(':nth-child(2) > .nav-link').click();
+    cy.get('#form-offre').within(() => {
+
     });
   
-    cy.get('.form-actions').within(() => {
-      cy.get('button[type="submit"]').click();
-    });
+    cy.get('#id_titre').type('Offre développement web')
+    cy.get('#id_mailRh').type('exemple@mail.com')
+    cy.get('#id_duree').type('3 mois')
+    cy.get('#id_description').type('Description de l\'offre')
+    cy.get('#id_competences').type('Compétences requises')
+    cy.get('#id_entreprise').select('Entreprise XYZ - 456 Rue des Entreprises - 12345 - Ville Entreprise')
+    cy.get('#id_theme').select('Développement Web')
+    cy.get('#form-offre > [type="submit"]').click()
     
+    cy.get(':nth-child(3) > .nav-link').click();
+    cy.get('#id_username').type('secretaire789');
+    cy.get('#id_password').type('secretairepassword');
+    cy.get('#submit').click();
   })
 })

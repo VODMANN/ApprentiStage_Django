@@ -6,7 +6,7 @@
 {% block content %}
     <div class="card border-0 shadow p-4 mt-3" style="margin: 0 18%" > 
         <h2>Publier une offre</h2>
-        <form method="post" class="row">
+        <form method="post" id="form-offre" class="row">
             {% csrf_token %}
             {% for field in OffreForm %}
                 {% if field.name == "entreprise" %}
