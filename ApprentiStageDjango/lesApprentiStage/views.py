@@ -1476,17 +1476,21 @@ def upload_csv(request):
         fields = line.split(",")
         if fields and len(fields) > 1:
             # Utilisez les nouvelles informations pour les étudiants
-            annee = fields[0]
+            numEtu = fields[0]
             nom = fields[1]
             prenom = fields[2]
-            numEtu = fields[3]
-            civilite = fields[4]
-            adresse = fields[5]
-            cp = fields[6]
-            ville = fields[7]
-            tel = fields[8]
-            promo_nom = fields[9]
-            departement_id = fields[10]
+            civilite = fields[3]
+            adresse = fields[4]
+            cp = fields[5]
+            ville = fields[6]
+            tel = fields[7]
+            mail = fields[8]
+            dateN = fields[9]
+            lieuN = fields[10]
+            departementN = fields[11]
+            nationalite = fields[12]
+            promo_nom = fields[13]
+            departement_id = fields[14]
 
             try:
                 departement = Departement.objects.get(id=departement_id)
@@ -1497,7 +1501,7 @@ def upload_csv(request):
             password = make_password('password_par_defaut')
             user, created = Utilisateur.objects.get_or_create(username=username, defaults={'password': password, 'type_utilisateur': 'etudiant'})
             
-            promo, created = Promo.objects.get_or_create(nomPromo=promo_nom, annee=annee, departement=departement)
+            promo, created = Promo.objects.get_or_create(nomPromo=promo_nom, departement=departement)
 
             ProfilEtudiant.objects.update_or_create(
                 utilisateur=user,
@@ -1514,6 +1518,84 @@ def upload_csv(request):
             )
 
     return redirect('lesApprentiStage:home')
+# csv forme :numEtu,nom,prenom,civilite,adresse,cp,ville,tel,mail,dateN,lieuN,departementN,nationalite,promo_nom,departement_id
+# def upload_csv(request):
+#     if request.method == "GET":
+#         return render(request, 'secretariat/upload_csv.html')
+
+#     try:
+#         csv_file = request.FILES['file']
+#         if not csv_file.name.endswith('.csv'):
+#             return HttpResponse("Le fichier n'est pas un CSV")
+
+#         file_data = csv_file.read().decode("utf-8")
+#         lines = file_data.split("\n")
+
+#         for line in lines:
+#             fields = line.split(",")
+#             if fields and len(fields) > 1:
+#                 # Exemple de champs obligatoires - ajustez selon le format de votre CSV
+#                 numEtu = fields[0]
+#                 nom = fields[1]
+#                 prenom = fields[2]
+#                 civilite = fields[3]
+#                 adresse = fields[4]
+#                 cp = int(fields[5])
+#                 ville = fields[6]
+#                 tel = fields[7]
+#                 mail = fields[8]
+#                 dateN = fields[9]
+#                 lieuN = fields[10]
+#                 departementN = fields[11]
+#                 nationalite = fields[12]
+#                 promo_nom = fields[13]
+#                 departement_id = fields[14]
+
+#                 try:
+#                     departement = Departement.objects.get(id=departement_id)
+#                 except Departement.DoesNotExist:
+#                     return HttpResponse(f"Erreur : le département avec l'ID {departement_id} n'existe pas", status=400)
+
+#                 promo, created = Promo.objects.get_or_create(
+#                     nomPromo=promo_nom,
+#                     # Ajoutez d'autres champs de Promo si nécessaire
+#                     defaults={'departement': departement}
+#                 )
+
+#                 username = nom + '_' + prenom
+#                 password = make_password('password_par_defaut')
+#                 user, created = Utilisateur.objects.get_or_create(
+#                     username=username, 
+#                     defaults={'password': password, 'type_utilisateur': 'etudiant'}
+#                 )
+
+#                 ProfilEtudiant.objects.update_or_create(
+#                     utilisateur=user,
+#                     numEtu=numEtu,
+#                     defaults={
+#                         'nomEtu': nom,
+#                         'prenomEtu': prenom,
+#                         'civiliteEtu': civilite,
+#                         'adresseEtu': adresse,
+#                         'cpEtu': cp,
+#                         'villeEtu': ville,
+#                         'telEtu': tel,
+#                         'mailEtu': mail,
+#                         'dateNEtu': dateN,
+#                         'lieuNEtu': lieuN,
+#                         'departementNEtu': departementN,
+#                         'nationaliteEtu': nationalite,
+#                         'promo': promo,
+#                         'idDepartement': departement,
+#                         # Ajoutez d'autres champs si nécessaire
+#                         }
+#                 )
+#                 return redirect('lesApprentiStage:home')
+#     except Exception as e:
+#         print(f"Erreur lors du traitement du fichier CSV: {e}")
+#         return HttpResponse(f"Erreur lors du traitement du fichier CSV: {e}", status=500)
+
+
 
 def suivi_etudiants(request):
     user = request.user
