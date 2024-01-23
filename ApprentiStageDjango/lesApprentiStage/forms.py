@@ -387,17 +387,30 @@ ETAT_CHOICE = [
 class ContratForm(forms.ModelForm):
     type = forms.ChoiceField(choices=TYPE_CHOICES_CONTRAT, label='Type de Contrat')
     etat = forms.ChoiceField(choices=ETAT_CHOICE, label='etat du contrat')
+
     dateDeb = forms.DateField(
-        required=False, 
+        required=False,
         widget=forms.DateInput(attrs={'type': 'date'})
     )
     dateFin = forms.DateField(
         required=False, 
         widget=forms.DateInput(attrs={'type': 'date'})
     )
+    
+    enseignant = forms.ModelChoiceField(queryset=ProfilEnseignant.objects.all(), required=False, empty_label="Sélectionnez un enseignant")
     class Meta:
         model = Contrat
         fields = ['type', 'titre', 'description', 'etat', 'gratification', 'dateDeb', 'dateFin', 'etudiant', 'enseignant', 'tuteur', 'theme', 'entreprise', 'enFrance']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Formatage des dates au format YYYY-MM-DD
+        if self.instance and self.instance.dateDeb:
+            self.initial['dateDeb'] = self.instance.dateDeb.strftime('%Y-%m-%d')
+
+        if self.instance and self.instance.dateFin:
+            self.initial['dateFin'] = self.instance.dateFin.strftime('%Y-%m-%d')
 
 class NombreSoutenanceForm(forms.ModelForm):
 

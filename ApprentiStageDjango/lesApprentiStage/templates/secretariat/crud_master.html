@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 
-<div style="margin: 0 4%;">
+<div style="margin: 0 3%;" class="mb-3">
     <h2 class="mb-4 mt-4">Recherche</h2>
     <div class="row">
         <div class="col-md-auto">
@@ -18,7 +18,7 @@
                         <option value='departements'>Departement</option>
                         <option value='offre'>Offre</option>
                         <option value='salle'>Salle</option>
-                        <option {% if selected_filter == 'soutenance' %}selected{% endif %} value='soutenance'>Soutenance</option>
+                        <option value='soutenance'>Soutenance</option>
                         <option value='document'>Document</option>
                         <option value='evaluation'>Evaluation</option>
                     </select>
@@ -49,6 +49,7 @@
                                         <th>Type</th>
                                         <th>Etudiant</th>
                                         <th>Entreprise</th>
+                                        <th>Enseignant</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -59,6 +60,12 @@
                                         <td>{{ contrat.type }}</td>
                                         <td>{{ contrat.etudiant.prenomEtu }} {{ contrat.etudiant.nomEtu }}</td>
                                         <td>{{ contrat.entreprise }}</td>
+
+                                        {% if contrat.enseignant %}
+                                        <td>{{ contrat.enseignant }}</td>
+                                        {% else %}
+                                        <td style="color: black; font-weight: 600 ">Non attribué</td>
+                                        {% endif %}
                                         <td class="text-right">
                                             <div class="btn-group ml-2" role="group">
 
@@ -73,6 +80,17 @@
                                             {% elif user.type_utilisateur == "secretaire" %}
                                                 <a href="{% url 'lesApprentiStage:modifier_contrat' contrat.id %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                 <a href="{% url 'lesApprentiStage:supprimer_contrat' contrat.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                            {% endif %}
+                                            {% if user.type_utilisateur == "enseignant" %}    
+                                                {% if contrat.enseignant %}
+                                                    {% if contrat.enseignant == user.profilenseignant %}
+                                                        <a href="{% url 'lesApprentiStage:desinscrire_contrat' contrat.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
+                                                    {% else %}
+                                                        <button disabled class="btn btn-secondary btn-sm">Non disponible</button>
+                                                    {% endif %}
+                                                {% else %}
+                                                        <a href="{% url 'lesApprentiStage:inscrire_contrat' contrat.id %}" class="btn btn-success btn-sm">Suivre</a>
+                                                {% endif %}
                                             {% endif %}
                                             </div>
                                         </td>
@@ -656,9 +674,10 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Date de Soutenance</th>
+                                        <th>Date</th>
                                         <th>Salle</th>
                                         <th>nom prenom</th>
+                                        <th>Enseignant</th>
                                         <th>Candide</th>
                                         <th>competence</th>
                                         <th class="text-right">Actions</th>
@@ -674,6 +693,7 @@
                                                 <td>Distanciel</td>
                                             {% endif %}
                                             <td>{{ soutenance.idContrat.etudiant.nomEtu }} {{ soutenance.idContrat.etudiant.prenomEtu }}</td>
+                                            <td>{{ soutenance.idContrat.enseignant }}</td>
                                             <td>{{ soutenance.candide }}</td>
                                             <td>{{ soutenance.idContrat.competences }}</td>
 
@@ -691,12 +711,12 @@
                                                             <!-- L'utilisateur actuel est le candidat -->
                                                             {% if soutenance.candide == user.profilenseignant %}
                                                                 <a href="{% url 'lesApprentiStage:desinscrire_soutenance' soutenance.id %}" class="btn btn-danger btn-sm">Désinscrire</a>
-                                                            {% else %}
+                                                            {% endif %}
+                                                        {% else %}
                                                                 <!-- Aucun candidat n'est inscrit, afficher le bouton d'inscription -->
                                                                 <a href="{% url 'lesApprentiStage:inscrire_soutenance' soutenance.id %}" class="btn btn-success btn-sm">S'inscrire</a>
                                                         {% endif %}
                                                     {% endif %}
-                                                {% endif %}
                                             </div>
                                             </td>
                                         </tr>
@@ -713,7 +733,8 @@
                                                         <p><strong>Date de Soutenance :</strong> {{ soutenance.dateSoutenance }}</p>
                                                         <p><strong>Heure de Soutenance :</strong> {{ soutenance.heureSoutenance }}</p>
                                                         <p><strong>Salle :</strong> {{ soutenance.salle }}</p>
-                                                        <p><strong>ID Contrat :</strong> {{ soutenance.idContrat. }}</p>
+                                                        <p><strong>Etudiant :</strong> {{ soutenance.idContrat.etudiant.nomEtu }} {{ soutenance.idContrat.etudiant.prenomEtu }}</p>
+                                                        <p><strong>Enseignant :</strong> {{ soutenance.idContrat.enseignant }}</p>
                                                         <p><strong>Candidat :</strong> {{ soutenance.candide }}</p>
                                                         <p><strong>entreprise :</strong> {{ soutenance.idContrat.entreprise }}</p>
 

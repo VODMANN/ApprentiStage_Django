@@ -311,12 +311,10 @@ def liste_recherche(request):
         'evaluation_filter': EvaluationFilter(request.GET, queryset=Evaluation.objects.all()),
     }
 
-    selected_filter = request.GET.get('selected_filter')
 
     # Ajout des filtres au contexte
     context = {
         'filters': filters,
-        'selected_filter': selected_filter,
     }
 
     return render(request, 'secretariat/crud_master.html', context)
@@ -930,7 +928,7 @@ def inscrire_soutenance(request, soutenance_id):
         soutenance.candide = user.profilenseignant
         soutenance.save()
 
-    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '#soutenance')
 
 def desinscrire_soutenance(request, soutenance_id):
     soutenance = get_object_or_404(Soutenance, id=soutenance_id)
@@ -940,7 +938,28 @@ def desinscrire_soutenance(request, soutenance_id):
         soutenance.candide = None
         soutenance.save()
 
-    return redirect(reverse('lesApprentiStage:liste_recherche') + '?selected_filter=soutenance')
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '#soutenance')
+
+# /////////////////////// Contrat inscription ////////////////////////////
+def inscrire_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, id=contrat_id)
+    user = request.user
+    
+    if user.get_user_type() == "enseignant" and contrat.enseignant != user.profilenseignant:
+        contrat.enseignant = user.profilenseignant
+        contrat.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '#contrat')
+
+def desinscrire_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, id=contrat_id)
+    user = request.user
+
+    if user.get_user_type() == "enseignant" and contrat.enseignant == user.profilenseignant:
+        contrat.enseignant = None
+        contrat.save()
+
+    return redirect(reverse('lesApprentiStage:liste_recherche') + '#contrat')
 
 
 class NombreSoutenanceView(View):
@@ -1515,6 +1534,8 @@ def upload_csv(request):
                 telEtu=tel,
                 promo=promo,
                 idDepartement=departement,
+                mailEtu=mail,
+                dateNEtu=dateN,
             )
 
     return redirect('lesApprentiStage:home')

@@ -81,6 +81,11 @@ urlpatterns = [
     path('secretariat/modifier/salle/<int:pk>/', views.SalleUpdateView.as_view(), name='modifier_salle'),
     path('secretariat/supprimer/salle/<int:pk>/', views.SalleDeleteView.as_view(), name='supprimer_salle'),
 
+    # URL Contrat
+    path('inscrire_contrat/<int:contrat_id>/', views.inscrire_contrat, name='inscrire_contrat'),
+    path('desinscrire_contrat/<int:contrat_id>/', views.desinscrire_contrat, name='desinscrire_contrat'),
+
+
     # URL pour les vues CRUD de Soutenance
     path('secretariat/creer/soutenance/', views.SoutenanceCreateView.as_view(), name='creer_soutenance'),
     path('secretariat/modifier/soutenance/<int:pk>/', views.SoutenanceUpdateView.as_view(), name='modifier_soutenance'),
