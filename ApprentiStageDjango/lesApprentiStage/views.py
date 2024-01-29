@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .utils import *
-
+from django.db.models import Count
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed, JsonResponse
@@ -29,6 +29,7 @@ from django_filters import FilterSet, CharFilter
 from .filters import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.forms.widgets import Select
 
 def insertion(request):
     return insert(request)
@@ -61,7 +62,6 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-from .models import NombreSoutenances
 
 def home(request):
     offre_list = Offre.objects.all()   
@@ -81,15 +81,97 @@ def home(request):
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
+            if(datetime.today().month < 9):
+                annee_scolaire = str(datetime.today().year-1)+'-'+str(datetime.today().year)
+            else:
+                annee_scolaire = str(datetime.today().year)+'-'+str(int(datetime.today().year)+1)
+            promo_actuelles = Promo.objects.filter(
+                anneeScolaire__contains=annee_scolaire
+            ).order_by('nomPromo')
+            
+            for promo in promo_actuelles:
+                if isinstance(promo, Promo):
+                    nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                        enseignant=user.profilenseignant, 
+                        etudiant__promo=promo
+                    ).count()
+                    promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                    
+                if isinstance(promo, Promo):
+                    soutenances_par_promo = Soutenance.objects.filter(
+                        idContrat__etudiant__promo=promo,
+                        candide=user.profilenseignant
+                    ).count()
+                    promo.soutenances_par_promo = soutenances_par_promo
+                    
+                if isinstance(promo, Promo):
+                    nb_soutenance = NombreSoutenances.objects.filter(
+                        promo=promo,
+                        enseignant=user.profilenseignant
+                    ).first()
+                    if nb_soutenance:
+                        promo.nb_secretariat = nb_soutenance.nombreSoutenancesStage
+                    else:
+                        promo.nb_secretariat = 0
+                
+                if promo.nb_secretariat < promo.nb_eleves_suivis:
+                    promo.reel = promo.nb_eleves_suivis
+                else:
+                    promo.reel = promo.nb_secretariat
 
-            # Ajoutez le code pour obtenir le nombre de soutenances par promo pour cet enseignant.
-            soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
-
+            nombre_contrat=0
+            nombre_soutenance=0
+            promo_ens={}
+            count_ttl=0
+            if user.profilenseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
+                promo_ens = EnseignantPromo.objects.filter(enseignant=user.profilenseignant).first().promo
+                count_ttl = ProfilEtudiant.objects.filter(promo=promo_ens).count()
+                nombre_contrat = Contrat.objects.filter(
+                    etudiant__promo=promo_ens).count()
+                nombre_soutenance = Soutenance.objects.filter(
+                    idContrat__etudiant__promo=promo_ens).count()
+            
+            promo_totales = Promo.objects.all()
+            if user.profilenseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+                for promo in promo_totales:
+                    if isinstance(promo, Promo):
+                        nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                            etudiant__promo=promo
+                        ).count()
+                        promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                        
+                    if isinstance(promo, Promo):
+                        soutenances_par_promo = Soutenance.objects.filter(
+                            idContrat__etudiant__promo=promo,
+                        ).count()
+                        promo.soutenances_par_promo = soutenances_par_promo
+                    
+                    if isinstance(promo, Promo):
+                        nb_eleves = ProfilEtudiant.objects.filter(
+                            promo=promo
+                        ).count()
+                        promo.nb_eleves = nb_eleves 
+                
+            for promo in promo_actuelles:
+                if promo.nb_eleves_suivis == 0 and promo.soutenances_par_promo == 0 and promo.nb_secretariat==0:
+                    promo_actuelles = promo_actuelles.exclude(pk=promo.pk)
+                    
             return render(request, 'enseignant/accueil_ens.html', {
                 'user': user,
                 'is_responsible': is_responsible,
-                'soutenances_par_promo': soutenances_par_promo
+                # 'soutenances_par_promo': soutenances_par_promo,
+                # 'candide_count_par_promo': candide_count_par_promo,
+                # 'contrats_par_promo': contrats_par_promo,
+                'promo_actuelles': promo_actuelles,
+                'annee': annee_scolaire,
+                'nombre_contrat_promo': nombre_contrat,
+                'nombre_soutenance_promo': nombre_soutenance,
+                'promo_ens': promo_ens,
+                'count_ttl': count_ttl,
+                'promo_totales': promo_totales,
             })
+
+
 
     return render(request, 'pages/accueil.html')
 
@@ -390,7 +472,7 @@ def modifier_etudiant(request, num_etu):
         if form.is_valid():
             form.save()
             url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
-            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            nouvelle_url = f"{url_sans_fragment}#etudiant"  
             return redirect(nouvelle_url)
     else:
         form = EtudiantForm(instance=etudiant)
@@ -401,7 +483,7 @@ def delete_etudiant(request, num_etu):
     if request.method == 'POST':
         etudiant.delete()
         url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
-        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        nouvelle_url = f"{url_sans_fragment}#etudiant"  
         return redirect(nouvelle_url)
     return render(request, 'secretariat/etudiant/delete_etudiant.html', {'etudiant': etudiant})
 
@@ -489,10 +571,55 @@ def delete_enseignant(request, num_harpege):
 
 # ///////////////////////crud Promo ////////////////////////////
 
+class YearSelect(Select):
+    def __init__(self, years, *args, **kwargs):
+        # Créer une liste de choix pour les années
+        choices = [(year, year) for year in years]
+        super().__init__(choices=choices, *args, **kwargs)
+
+class PromoForm(forms.ModelForm):
+    class Meta:
+        model = Promo
+        fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+        widgets = {
+            'anneeScolaire': forms.TextInput(attrs={'class': 'year-only-picker'}),
+        }
+
+        labels = {
+            'nomPromo': 'Nom de la promo',
+            'anneeScolaire': 'Année scolaire',
+            'departement': 'Département',
+            'parcours': 'Parcours',
+            'volumeHoraire': 'Volume horaire'
+        }
+    def __init__(self, *args, **kwargs):
+        super(PromoForm, self).__init__(*args, **kwargs)
+        self.fields['anneeScolaire'].initial = datetime.now().year
+
+# 2. Utiliser le formulaire personnalisé dans les vues CreateView et UpdateView
 class PromoCreateView(CreateView):
     model = Promo
-    template_name = 'secretariat/promo/creer_promo.html'  
-    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+    form_class = PromoForm
+    template_name = 'secretariat/promo/creer_promo.html'
+
+    def form_valid(self, form):
+        annee = form.cleaned_data['anneeScolaire']
+        if "-" not in annee:
+            annee_scolaire_formattee = f"{annee}-{int(annee)+1}"
+        else:
+            annee_scolaire_formattee = annee
+
+        nom_promo = form.cleaned_data['nomPromo']
+        departement_id = form.cleaned_data['departement'].id 
+        if Promo.objects.filter(nomPromo=nom_promo, anneeScolaire=annee_scolaire_formattee, departement=departement_id).exists():
+            form.add_error(None, "Une promo avec le même nom, année scolaire et département existe déjà.")
+            return self.form_invalid(form)
+
+        form.instance.anneeScolaire = annee_scolaire_formattee
+        return super().form_valid(form)
+
+
+
 
     def get_success_url(self):
         # Récupérer l'URL de base à partir du nom de l'URL
@@ -500,6 +627,49 @@ class PromoCreateView(CreateView):
         # Ajouter le fragment à l'URL
         url_with_fragment = f"{base_url}#promo"
         return url_with_fragment
+    
+class PromoUpdateView(UpdateView):
+    model = Promo
+    form_class = PromoForm
+    template_name = 'secretariat/promo/modifier_promo.html'
+    
+    def form_valid(self, form):
+        annee = form.cleaned_data['anneeScolaire']
+        if "-" not in annee:
+            annee_scolaire_formattee = f"{annee}-{int(annee)+1}"
+        else:
+            annee_scolaire_formattee = annee
+
+        nom_promo = form.cleaned_data['nomPromo']
+        departement_id = form.cleaned_data['departement'].id  
+        if Promo.objects.filter(nomPromo=nom_promo, anneeScolaire=annee_scolaire_formattee, departement=departement_id).exclude(pk=self.object.pk).exists():
+            form.add_error(None, "Une promo avec le même nom, année scolaire et département existe déjà.")
+            return self.form_invalid(form)
+
+        form.instance.anneeScolaire = annee_scolaire_formattee
+        return super().form_valid(form)
+
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+
+
+# class PromoCreateView(CreateView):
+#     model = Promo
+#     template_name = 'secretariat/promo/creer_promo.html'  
+#     fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+
+#     def get_success_url(self):
+#         # Récupérer l'URL de base à partir du nom de l'URL
+#         base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+#         # Ajouter le fragment à l'URL
+#         url_with_fragment = f"{base_url}#promo"
+#         return url_with_fragment
 
 
 class PromoDeleteView(DeleteView):
@@ -514,18 +684,18 @@ class PromoDeleteView(DeleteView):
         url_with_fragment = f"{base_url}#promo"
         return url_with_fragment
     
-class PromoUpdateView(UpdateView):
-    model = Promo
-    template_name = 'secretariat/promo/modifier_promo.html'  
-    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
+# class PromoUpdateView(UpdateView):
+#     model = Promo
+#     template_name = 'secretariat/promo/modifier_promo.html'  
+#     fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
 
-    def get_success_url(self):
-        # Récupérer l'URL de base à partir du nom de l'URL
-        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+#     def get_success_url(self):
+#         # Récupérer l'URL de base à partir du nom de l'URL
+#         base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-        # Ajouter le fragment à l'URL
-        url_with_fragment = f"{base_url}#promo"
-        return url_with_fragment
+#         # Ajouter le fragment à l'URL
+#         url_with_fragment = f"{base_url}#promo"
+#         return url_with_fragment
 
 # ///////////////////////crud departement ////////////////////////////
 

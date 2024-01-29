@@ -2,117 +2,188 @@
 {% load static %}
 {% block content %}
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-
-
-<div class="container mt-4 mb-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center">Bienvenue, {{ user.profilenseignant.prenomEnseignant }} {{ user.profilenseignant.nomEnseignant }}</h1>
-            <p class="lead text-center">Espace enseignant - Gestion des Stages / Apprentissages</p>
-        </div>
-    </div>
-
-    <div class="row mt-4 pb-3">
-      <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Nombre de soutenance</h5>
-                {% for soutenance in soutenances_par_promo %}
-                    <p>Pour la promo {{ soutenance.promo.nomPromo }}, {{ soutenance.nombreSoutenancesStage }} soutenances tuteur.</p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Recherche / Candidater</h5>
-                    <p class="card-text">Effectuez une recherche et candidatez aux soutenances.</p>
-                    <a href="{% url 'lesApprentiStage:liste_recherche' %}#soutenance" class="btn btn-success">Recherche</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Offres</h5>
-                    <p class="card-text">Partagez une offre de stage ou d'apprentissage.</p>
-                        <a href="{% url 'lesApprentiStage:ajouter_offre' %}"
-                        class="btn btn-info">Partager offre</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-12 p-3 card">
-        <div id='calendar' style="max-height: 500px; overflow-y: auto;"></div>
-    </div>
-    
-</div>
-
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales/fr.js'></script>
 
+<div class="accueil mt-4 mb-4">
+  <div class="row">
+      <div class="col-md-12 text-center">
+          <h1>Bienvenue, {{ user.profilenseignant.prenomEnseignant }} {{ user.profilenseignant.nomEnseignant }}</h1>
+          <p class="lead">
+          {% if  user.profilenseignant.roleEnseignant == "enseignant_promo" %}
+             Responsable: {{ promo_ens }}<br>
+          {% endif %}
+          Espace enseignant - Gestion des Stages / Apprentissages</p>
+      </div>
+  </div>
+
+  <div class="row mt-4">
+    {% if promo_actuelles %}
+
+    <div class="col">
+        <style>
+            .carousel-control-next,
+            .carousel-control-prev  {
+                filter: invert(100%);
+            }
+        </style>
+
+        <div id="promo-carousel" class="carousel slide h-100" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner h-100">
+                    {% for promo_actuelle in promo_actuelles %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %} h-100 ">
+                            <div class="card text-center h-100 ">
+                                <div class="card-body">
+                                    <h5>{{ promo_actuelle.nomPromo }} </h5>
+                                    <p>Tuteur: {{ promo_actuelle.nb_eleves_suivis }} 
+                                    {% if promo_actuelle.nb_secretariat %}
+                                        / {{promo_actuelle.nb_secretariat}} </p>
+                                    {% endif %}
+                                    <p>Candide: {{ promo_actuelle.soutenances_par_promo }}
+                                        {% if promo_actuelle.reel %}
+                                        / {{promo_actuelle.reel}} </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            </div>
+
+            <a class="carousel-control-prev" href="#promo-carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#promo-carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        </div>
+        {% endif %}
+
+
+        {% if  user.profilenseignant.roleEnseignant == "enseignant_promo" %}
+
+        <div class="col">
+            <div class="card text-center h-100">
+                <div class="card-body h-100">
+                    <h5>{{ promo_ens }} </h5>
+                    <p>Contrats: {{ nombre_contrat_promo }} / {{ count_ttl }} </p>
+                    <p>Soutenance: {{ nombre_soutenance_promo }}/ {{ count_ttl }} </p>
+                </div>
+            </div>
+        </div>
+        {% elif user.profilenseignant.roleEnseignant == "chef_departement" %}
+        <div class="col">
+            <style>
+                .carousel-control-next,
+                .carousel-control-prev  {
+                    filter: invert(100%);
+                }
+            </style>
+        <div id="promo-carousel2" class="carousel slide h-100" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner h-100">
+                {% for promo_actuelle in promo_totales %}
+                {% if promo_actuelle.nb_eleves_suivis is not None or promo_actuelle.soutenances_par_promo is not None or promo_actuelle.reel is not None %}                    <div class="carousel-item {% if forloop.first %}active{% endif %} h-100 ">
+                        <div class="card text-center h-100 ">
+                            <div class="card-body">
+                                <h5>{{ promo_actuelle.nomPromo }} </h5>
+                                <p>Tuteur: {{ promo_actuelle.nb_eleves_suivis }} 
+                                    / {{promo_actuelle.nb_eleves}} </p>
+                                <p>Candide: {{ promo_actuelle.soutenances_par_promo }}
+                                    / {{promo_actuelle.nb_eleves}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#promo-carousel2" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#promo-carousel2" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        </div>
+        {% endif %}
+
+    
+      <div class="col">
+          <div class="card text-center h-100">
+              <div class="card-body h-100">
+                  <h5 class="card-title">Recherche / Candidater</h5>
+                  <p>Effectuez une recherche et candidatez aux soutenances.</p>
+                  <a href="{% url 'lesApprentiStage:liste_recherche' %}#soutenance" class="btn btn-success">Recherche</a>
+              </div>
+          </div>
+      </div>
+
+      <div class="col">
+          <div class="card text-center h-100">
+              <div class="card-body h-100">
+                  <h5 class="card-title">Offres</h5>
+                  <p>Partagez une offre de stage ou d'apprentissage.</p>
+                  <a href="{% url 'lesApprentiStage:ajouter_offre' %}" class="btn btn-info">Partager offre</a>
+              </div>
+          </div>
+      </div>
+
+      
+  </div>
+
+  <div class="row mt-4">
+      <div class="col-md-12">
+          <div class="card">
+              <div class="card-body">
+                  <div id='calendar'></div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-  
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'fr',
-      headerToolbar: {
-        left: 'prevButton,nextButton today',
-        center: 'title',
-        right: 'timeGridWeek,timeGridDay,customButton' // Ajout du bouton personnalisé
-      },
-      initialView: 'timeGridWeek',
-      events: '/api/calendar_events/',
-      buttonText: {
-        today: 'Aujourd\'hui',
-      },
-      views: {
-        timeGridWeek: {
-          buttonText: 'Semaine'
-        },
-        timeGridDay: {
-          buttonText: 'Jour'
-        }
-      },
-      customButtons: {
-        prevButton: {
-          text: '',
-          click: function() {
-            calendar.prev();
-          },
-          icon: 'bi bi-caret-left-fill'
-        },
-        nextButton: {
-          text: '', 
-          click: function() {
-            calendar.next();
-          },
-          icon: 'bi bi-caret-right-fill'
-        },
-        customButton: {
-          text: 'Exporter le calendrier',
-          click: function() {
-            // Redirige vers l'URL associée au bouton export_calendar
-            window.location.href = "{% url 'lesApprentiStage:export_calendar' %}";
-          },
-          icon: 'bi bi-box-arrow-up-right',
-          // Ajoute la classe Bootstrap pour rendre le bouton vert
-          bootstrapFontAwesome: {
-            class: 'btn-success'
-          }
-        }
-      },
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'fr',
+            headerToolbar: {
+                left: 'prevButton,nextButton today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay,customButton'
+            },
+            initialView: 'timeGridWeek',
+            events: '/api/calendar_events/',
+            buttonText: {
+                today: 'Aujourd\'hui',
+                week: 'Semaine',
+                day: 'Jour'
+            },
+            customButtons: {
+                prevButton: {
+                    text: '',
+                    click: function() { calendar.prev(); },
+                    icon: 'bi bi-caret-left-fill'
+                },
+                nextButton: {
+                    text: '',
+                    click: function() { calendar.next(); },
+                    icon: 'bi bi-caret-right-fill'
+                },
+                customButton: {
+                    text: 'Exporter le calendrier',
+                    click: function() { window.location.href = "{% url 'lesApprentiStage:export_calendar' %}"; },
+                    icon: 'bi bi-box-arrow-up-right',
+                    bootstrapFontAwesome: { class: 'btn-success' }
+                }
+            }
+        });
+        calendar.render();
     });
-  
-    calendar.render();
-  });  
 </script>
-
-
 
 {% endblock %}
