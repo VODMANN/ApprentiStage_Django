@@ -90,28 +90,25 @@ def home(request):
             ).order_by('nomPromo')
             
             for promo in promo_actuelles:
-                if isinstance(promo, Promo):
-                    nb_eleves_suivis_par_promo = Contrat.objects.filter(
-                        enseignant=user.profilenseignant, 
-                        etudiant__promo=promo
-                    ).count()
-                    promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
-                    
-                if isinstance(promo, Promo):
-                    soutenances_par_promo = Soutenance.objects.filter(
-                        idContrat__etudiant__promo=promo,
-                        candide=user.profilenseignant
-                    ).count()
-                    promo.soutenances_par_promo = soutenances_par_promo
-                    
-                if isinstance(promo, Promo):
-                    nb_soutenance = NombreSoutenances.objects.filter(
-                        promo=promo,
-                        enseignant=user.profilenseignant
-                    ).first()
-                    if nb_soutenance:
-                        promo.nb_secretariat = nb_soutenance.nombreSoutenancesStage
-                    else:
+                nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                    enseignant=user.profilenseignant, 
+                    etudiant__promo=promo
+                ).count()
+                promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                
+                soutenances_par_promo = Soutenance.objects.filter(
+                    idContrat__etudiant__promo=promo,
+                    candide=user.profilenseignant
+                ).count()
+                promo.soutenances_par_promo = soutenances_par_promo
+                
+                nb_soutenance = NombreSoutenances.objects.filter(
+                    promo=promo,
+                    enseignant=user.profilenseignant
+                ).first()
+                if nb_soutenance:
+                    promo.nb_secretariat = nb_soutenance.nombreSoutenancesStage
+                else:
                         promo.nb_secretariat = 0
                 
                 if promo.nb_secretariat < promo.nb_eleves_suivis:

@@ -13,6 +13,8 @@
           <p class="lead">
           {% if  user.profilenseignant.roleEnseignant == "enseignant_promo" %}
              Responsable: {{ promo_ens }}<br>
+          {% elif user.profilenseignant.roleEnseignant == "chef_departement" %}
+                Chef de département<br>
           {% endif %}
           Espace enseignant - Gestion des Stages / Apprentissages</p>
       </div>
