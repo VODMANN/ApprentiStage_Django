@@ -81,48 +81,94 @@ def home(request):
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-            contrats_par_promo = None
-            soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
-
-            if not soutenances_par_promo.exists():
-                soutenances_par_promo = NombreSoutenances.objects.none()
-                contrats_par_promo = Contrat.objects.filter(
-                    enseignant=user.profilenseignant
-                ).values(
-                    'etudiant__promo__nomPromo'
-                ).annotate(
-                    nb_contrats=Count('id')
-                ).order_by(
-                    'etudiant__promo__nomPromo'
-                )
-
-
+            if(datetime.today().month < 9):
+                annee_scolaire = str(datetime.today().year-1)+'-'+str(datetime.today().year)
+            else:
+                annee_scolaire = str(datetime.today().year)+'-'+str(int(datetime.today().year)+1)
+            promo_actuelles = Promo.objects.filter(
+                anneeScolaire__contains=annee_scolaire
+            ).order_by('nomPromo')
             
-            candide_count_par_promo = Soutenance.objects.filter(
-                candide=user.profilenseignant
-            ).values(
-                'idContrat__etudiant__promo__nomPromo'
-            ).annotate(
-                nb_candide=Count('id')
-            ).order_by(
-                'idContrat__etudiant__promo__nomPromo'
-            )
-
-            for soutenance in soutenances_par_promo:
-                # Vérifiez le type de soutenance pour éviter des erreurs
-                if isinstance(soutenance, NombreSoutenances):
+            for promo in promo_actuelles:
+                if isinstance(promo, Promo):
                     nb_eleves_suivis_par_promo = Contrat.objects.filter(
                         enseignant=user.profilenseignant, 
-                        etudiant__promo=soutenance.promo
+                        etudiant__promo=promo
                     ).count()
-                    soutenance.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                    promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                    
+                if isinstance(promo, Promo):
+                    soutenances_par_promo = Soutenance.objects.filter(
+                        idContrat__etudiant__promo=promo,
+                        candide=user.profilenseignant
+                    ).count()
+                    promo.soutenances_par_promo = soutenances_par_promo
+                    
+                if isinstance(promo, Promo):
+                    nb_soutenance = NombreSoutenances.objects.filter(
+                        promo=promo,
+                        enseignant=user.profilenseignant
+                    ).first()
+                    if nb_soutenance:
+                        promo.nb_secretariat = nb_soutenance.nombreSoutenancesStage
+                    else:
+                        promo.nb_secretariat = 0
+                
+                if promo.nb_secretariat < promo.nb_eleves_suivis:
+                    promo.reel = promo.nb_eleves_suivis
+                else:
+                    promo.reel = promo.nb_secretariat
 
+            nombre_contrat=0
+            nombre_soutenance=0
+            promo_ens={}
+            count_ttl=0
+            if user.profilenseignant.roleEnseignant == ProfilEnseignant.ENSEIGNANT_PROMO:
+                promo_ens = EnseignantPromo.objects.filter(enseignant=user.profilenseignant).first().promo
+                count_ttl = ProfilEtudiant.objects.filter(promo=promo_ens).count()
+                nombre_contrat = Contrat.objects.filter(
+                    etudiant__promo=promo_ens).count()
+                nombre_soutenance = Soutenance.objects.filter(
+                    idContrat__etudiant__promo=promo_ens).count()
+            
+            promo_totales = Promo.objects.all()
+            if user.profilenseignant.roleEnseignant == ProfilEnseignant.CHEF_DEPARTEMENT:
+                for promo in promo_totales:
+                    if isinstance(promo, Promo):
+                        nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                            etudiant__promo=promo
+                        ).count()
+                        promo.nb_eleves_suivis = nb_eleves_suivis_par_promo
+                        
+                    if isinstance(promo, Promo):
+                        soutenances_par_promo = Soutenance.objects.filter(
+                            idContrat__etudiant__promo=promo,
+                        ).count()
+                        promo.soutenances_par_promo = soutenances_par_promo
+                    
+                    if isinstance(promo, Promo):
+                        nb_eleves = ProfilEtudiant.objects.filter(
+                            promo=promo
+                        ).count()
+                        promo.nb_eleves = nb_eleves 
+                
+            for promo in promo_actuelles:
+                if promo.nb_eleves_suivis == 0 and promo.soutenances_par_promo == 0 and promo.nb_secretariat==0:
+                    promo_actuelles = promo_actuelles.exclude(pk=promo.pk)
+                    
             return render(request, 'enseignant/accueil_ens.html', {
                 'user': user,
                 'is_responsible': is_responsible,
-                'soutenances_par_promo': soutenances_par_promo,
-                'candide_count_par_promo': candide_count_par_promo,
-                'contrats_par_promo': contrats_par_promo,
+                # 'soutenances_par_promo': soutenances_par_promo,
+                # 'candide_count_par_promo': candide_count_par_promo,
+                # 'contrats_par_promo': contrats_par_promo,
+                'promo_actuelles': promo_actuelles,
+                'annee': annee_scolaire,
+                'nombre_contrat_promo': nombre_contrat,
+                'nombre_soutenance_promo': nombre_soutenance,
+                'promo_ens': promo_ens,
+                'count_ttl': count_ttl,
+                'promo_totales': promo_totales,
             })
 
 

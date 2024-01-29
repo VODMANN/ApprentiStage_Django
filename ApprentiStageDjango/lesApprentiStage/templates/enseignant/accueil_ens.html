@@ -10,47 +10,111 @@
   <div class="row">
       <div class="col-md-12 text-center">
           <h1>Bienvenue, {{ user.profilenseignant.prenomEnseignant }} {{ user.profilenseignant.nomEnseignant }}</h1>
-          <p class="lead">Espace enseignant - Gestion des Stages / Apprentissages</p>
+          <p class="lead">
+          {% if  user.profilenseignant.roleEnseignant == "enseignant_promo" %}
+             Responsable: {{ promo_ens }}<br>
+          {% endif %}
+          Espace enseignant - Gestion des Stages / Apprentissages</p>
       </div>
   </div>
 
   <div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Nombre de soutenance</h5>
-                {% for soutenance in soutenances_par_promo %}
-                    <p>Pour la promo {{ soutenance.promo.nomPromo }}</p>
-                    <p>Nombre d'élèves suivis: {{ soutenance.nb_eleves_suivis }}/{{ soutenance.nombreSoutenancesStage }}</p>
-                {% endfor %}
-                {% if contrats_par_promo %}
-                
-                  {% for contrat in contrats_par_promo %}
-                      <p>Promo {{ contrat.etudiant__promo__nomPromo }}: {{ contrat.nb_contrats }} contrats</p>
-                  {% endfor %}
+    {% if promo_actuelles %}
 
-                {% endif %}
-                {% for candide_par_promo in candide_count_par_promo %}
-                  <p>Promo {{ candide_par_promo.idContrat__etudiant__promo__nomPromo }}: {{ candide_par_promo.nb_candide }} soutenances en tant que candide</p>
-                {% endfor %}
+    <div class="col">
+        <style>
+            .carousel-control-next,
+            .carousel-control-prev  {
+                filter: invert(100%);
+            }
+        </style>
 
+        <div id="promo-carousel" class="carousel slide h-100" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner h-100">
+                    {% for promo_actuelle in promo_actuelles %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %} h-100 ">
+                            <div class="card text-center h-100 ">
+                                <div class="card-body">
+                                    <h5>{{ promo_actuelle.nomPromo }} </h5>
+                                    <p>Tuteur: {{ promo_actuelle.nb_eleves_suivis }} 
+                                    {% if promo_actuelle.nb_secretariat %}
+                                        / {{promo_actuelle.nb_secretariat}} </p>
+                                    {% endif %}
+                                    <p>Candide: {{ promo_actuelle.soutenances_par_promo }}
+                                        {% if promo_actuelle.reel %}
+                                        / {{promo_actuelle.reel}} </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            </div>
+
+            <a class="carousel-control-prev" href="#promo-carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#promo-carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        </div>
+        {% endif %}
+
+
+        {% if  user.profilenseignant.roleEnseignant == "enseignant_promo" %}
+
+        <div class="col">
+            <div class="card text-center h-100">
+                <div class="card-body h-100">
+                    <h5>{{ promo_ens }} </h5>
+                    <p>Contrats: {{ nombre_contrat_promo }} / {{ count_ttl }} </p>
+                    <p>Soutenance: {{ nombre_soutenance_promo }}/ {{ count_ttl }} </p>
+                </div>
             </div>
         </div>
-    </div>
-
-
-      <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Nouvelle Fonctionnalité</h5>
-                <p>Informations sur la nouvelle fonctionnalité ou contenu additionnel.</p>
+        {% elif user.profilenseignant.roleEnseignant == "chef_departement" %}
+        <div class="col">
+            <style>
+                .carousel-control-next,
+                .carousel-control-prev  {
+                    filter: invert(100%);
+                }
+            </style>
+        <div id="promo-carousel2" class="carousel slide h-100" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner h-100">
+                {% for promo_actuelle in promo_totales %}
+                {% if promo_actuelle.nb_eleves_suivis is not None or promo_actuelle.soutenances_par_promo is not None or promo_actuelle.reel is not None %}                    <div class="carousel-item {% if forloop.first %}active{% endif %} h-100 ">
+                        <div class="card text-center h-100 ">
+                            <div class="card-body">
+                                <h5>{{ promo_actuelle.nomPromo }} </h5>
+                                <p>Tuteur: {{ promo_actuelle.nb_eleves_suivis }} 
+                                    / {{promo_actuelle.nb_eleves}} </p>
+                                <p>Candide: {{ promo_actuelle.soutenances_par_promo }}
+                                    / {{promo_actuelle.nb_eleves}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
             </div>
+            <a class="carousel-control-prev" href="#promo-carousel2" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#promo-carousel2" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
-    </div>
+        </div>
+        {% endif %}
+
     
-      <div class="col-md-3">
-          <div class="card text-center">
-              <div class="card-body">
+      <div class="col">
+          <div class="card text-center h-100">
+              <div class="card-body h-100">
                   <h5 class="card-title">Recherche / Candidater</h5>
                   <p>Effectuez une recherche et candidatez aux soutenances.</p>
                   <a href="{% url 'lesApprentiStage:liste_recherche' %}#soutenance" class="btn btn-success">Recherche</a>
@@ -58,9 +122,9 @@
           </div>
       </div>
 
-      <div class="col-md-3">
-          <div class="card text-center">
-              <div class="card-body">
+      <div class="col">
+          <div class="card text-center h-100">
+              <div class="card-body h-100">
                   <h5 class="card-title">Offres</h5>
                   <p>Partagez une offre de stage ou d'apprentissage.</p>
                   <a href="{% url 'lesApprentiStage:ajouter_offre' %}" class="btn btn-info">Partager offre</a>
