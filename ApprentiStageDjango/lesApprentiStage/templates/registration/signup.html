@@ -10,7 +10,7 @@
 
         <div class="row mb-2">
           <label class="col-md-3" for="{{ user_form.type_utilisateur.id_for_label }}">Type
-            d'utilisateur :</label>
+            d'utilisateur </label>
           <select class="col-md-3 form-control"
             id="{{ user_form.type_utilisateur.id_for_label }}"
             name="{{ user_form.type_utilisateur.name }}" >
@@ -22,15 +22,14 @@
 
         <div class="row">
           <div class="row col">
-            <label class="col-md-6" for="{{ user_form.username.id_for_label }}">Nom d'utilisateur
-              :</label>
+            <label class="col-md-6" for="{{ user_form.username.id_for_label }}">Nom d'utilisateur*
+              </label>
             <input class="col-md-6 form-control" id="{{ user_form.username.id_for_label }}"
               type="text" name="{{ user_form.username.name }}" >
           </div>
 
           <div class="row col">
-            <label class="col-md-6" for="{{ user_form.password.id_for_label }}">Mot de
-              passe :</label>
+            <label class="col-md-6" for="{{ user_form.password.id_for_label }}">Mot de passe* </label>
             <input class="col-md-6 form-control" id="{{ user_form.password.id_for_label }}"
               type="password" name="{{ user_form.password.name }}" >
           </div>
@@ -42,10 +41,17 @@
     <hr>
 
     <div id="etudiant_fields" style="display:none;margin: 0 3%">
+      <div class="row hider" boite="hide-1" >
+        <i class="bi bi-dash-circle-fill col-md-auto" style="color: #CED4DA"></i>
+        <hr class="col border border-dark-subtle border-2 opacity-50">
+        <p class="text-secondary" >Informations personnelles</p>
+        <hr class="col border border-dark-subtle border-2 opacity-50">
+      </div>
       <!-- Début div étudiant -->
+      <div class="hide-box" id="hide-1">
           <div class="row mb-3">
             <div class="col-md-3">
-              <label for="{{ etudiant_form.civiliteEtu.id_for_label }}">Civilité étudiant :</label>
+              <label for="{{ etudiant_form.civiliteEtu.id_for_label }}">Civilité étudiant </label>
               <select class="form-control" id="{{ etudiant_form.civiliteEtu.id_for_label }}" name="{{ etudiant_form.civiliteEtu.name }}" >
                 <option value="M.">M.</option>
                 <option value="Mme.">Mme.</option>
@@ -53,17 +59,17 @@
             </div>
       
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.nomEtu.id_for_label }}">Nom :</label>
+              <label for="{{ etudiant_form.nomEtu.id_for_label }}">Nom* </label>
               <input class="form-control" id="{{ etudiant_form.nomEtu.id_for_label }}" type="text" name="{{ etudiant_form.nomEtu.name }}" >
             </div>
             
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.prenomEtu.id_for_label }}">Prénom :</label>
+              <label for="{{ etudiant_form.prenomEtu.id_for_label }}">Prénom* </label>
               <input class="form-control" id="{{ etudiant_form.prenomEtu.id_for_label }}" type="text" name="{{ etudiant_form.prenomEtu.name }}" >
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.prenom2Etu.id_for_label }}">Deuxième Prénom :</label>
+              <label for="{{ etudiant_form.prenom2Etu.id_for_label }}">Deuxième Prénom </label>
               <input class="form-control" id="{{ etudiant_form.prenom2Etu.id_for_label }}" type="text" name="{{ etudiant_form.prenom2Etu.name }}">
             </div>
       
@@ -73,42 +79,50 @@
 
       
             <div class="col-md-6 mb-2 ms-1">
-              <label for="{{ etudiant_form.adresseEtu.id_for_label }}">Adresse postale étudiant :</label>
+              <label for="{{ etudiant_form.adresseEtu.id_for_label }}">Adresse postale étudiant </label>
               <input class="form-control" id="{{ etudiant_form.adresseEtu.id_for_label }}" type="text" name="{{ etudiant_form.adresseEtu.name }}" >
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.cpEtu.id_for_label }}">Code Postal :</label>
+              <label for="{{ etudiant_form.cpEtu.id_for_label }}">Code Postal </label>
               <input class="form-control" id="{{ etudiant_form.cpEtu.id_for_label }}" type="text" name="{{ etudiant_form.cpEtu.name }}" pattern="[0-9]{5}" title="Le code postal doit comporter 5 chiffres" >
             </div>
       
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.villeEtu.id_for_label }}">Ville :</label>
+              <label for="{{ etudiant_form.villeEtu.id_for_label }}">Ville </label>
               <input class="form-control" id="{{ etudiant_form.villeEtu.id_for_label }}" type="text" name="{{ etudiant_form.villeEtu.name }}" >
             </div>
             
           </div>
-      
+        </div>
+        <!-- fin hide-1 -->
+        <div class="row hider" boite="hide-2" >
+          <i class="bi bi-plus-circle-fill col-md-auto" style="color: #CED4DA"></i>
+          <hr class="col border border-dark-subtle border-2 opacity-50">
+          <p class="text-secondary" >Informations étudiant</p>
+          <hr class="col border border-dark-subtle border-2 opacity-50">  
+        </div>
+        <div class="hide-box" id="hide-2">
           <div class="row mb-3">
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.numEtu.id_for_label }}">Numéro étudiant :</label>
+              <label for="{{ etudiant_form.numEtu.id_for_label }}">Numéro étudiant* </label>
               <input class="form-control" id="{{ etudiant_form.numEtu.id_for_label }}" type="text" name="{{ etudiant_form.numEtu.name }}" >
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.ineEtu.id_for_label }}">Numéro INE :</label>
+              <label for="{{ etudiant_form.ineEtu.id_for_label }}">Numéro INE* </label>
               <input class="form-control" id="{{ etudiant_form.ineEtu.id_for_label }}" type="number" name="{{ etudiant_form.ineEtu.name }}">
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.numDossier.id_for_label }}">Numéro de Dossier :</label>
+              <label for="{{ etudiant_form.numDossier.id_for_label }}">Numéro de Dossier* </label>
               <input class="form-control" id="{{ etudiant_form.numDossier.id_for_label }}" type="number" name="{{ etudiant_form.numDossier.name }}">
             </div>
 
 
             <div class="col-md-auto mb-2 ms-1">
-              <label for="{{ etudiant_form.idDepartement.id_for_label }}">Département :</label>
+              <label for="{{ etudiant_form.idDepartement.id_for_label }}">Département </label>
               <select class="form-control" id="{{ etudiant_form.idDepartement.id_for_label }}" name="{{ etudiant_form.idDepartement.name }}" >
                 {% for departement in etudiant_form.idDepartement.field.queryset %}
                 <option value="{{ departement.pk }}">{{ departement.nomDep }}</option>
@@ -117,7 +131,7 @@
             </div>
 
             <div class="col-md-auto mb-2 ms-1">
-              <label for="{{ etudiant_form.promo.id_for_label }}">Promo :</label>
+              <label for="{{ etudiant_form.promo.id_for_label }}">Promo </label>
               <select class="form-control" id="{{ etudiant_form.promo.id_for_label }}" name="{{ etudiant_form.promo.name }}" >
                 {% for promo in etudiant_form.promo.field.queryset %}
                 <option value="{{ promo.pk }}">{{ promo.nomPromo }}</option>
@@ -126,62 +140,77 @@
             </div>
 
           </div>
+        </div>
       
-
+          <div class="row hider" boite="hide-3" >
+            <i class="bi bi-plus-circle-fill col-md-auto" style="color: #CED4DA"></i>
+            <hr class="col border border-dark-subtle border-2 opacity-50">
+            <p class="text-secondary" >Informations complémentaires</p>
+            <hr class="col border border-dark-subtle border-2 opacity-50">    
+          </div>
+          <div class="hide-box" id="hide-3">
       
           <div class="row mb-3">
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.dateNEtu.id_for_label }}">Date de Naissance :</label>
+              <label for="{{ etudiant_form.dateNEtu.id_for_label }}">Date de Naissance </label>
               <input class="form-control" id="{{ etudiant_form.dateNEtu.id_for_label }}" type="date" name="{{ etudiant_form.dateNEtu.name }}">
             </div>
       
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.nationaliteEtu.id_for_label }}">Nationalité :</label>
+              <label for="{{ etudiant_form.nationaliteEtu.id_for_label }}">Nationalité </label>
               <input class="form-control" id="{{ etudiant_form.nationaliteEtu.id_for_label }}" type="text" name="{{ etudiant_form.nationaliteEtu.name }}">
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.lieuNEtu.id_for_label }}">Lieu de Naissance :</label>
+              <label for="{{ etudiant_form.lieuNEtu.id_for_label }}">Lieu de Naissance </label>
               <input class="form-control" id="{{ etudiant_form.lieuNEtu.id_for_label }}" type="text" name="{{ etudiant_form.lieuNEtu.name }}">
             </div>
       
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.departementNEtu.id_for_label }}">Département de Naissance :</label>
+              <label for="{{ etudiant_form.departementNEtu.id_for_label }}">Département de Naissance </label>
               <input class="form-control" id="{{ etudiant_form.departementNEtu.id_for_label }}" type="text" name="{{ etudiant_form.departementNEtu.name }}">
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.mailEtu.id_for_label }}">E-mail étudiant :</label>
+              <label for="{{ etudiant_form.mailEtu.id_for_label }}">E-mail étudiant </label>
               <input class="form-control" id="{{ etudiant_form.mailEtu.id_for_label }}" type="email" name="{{ etudiant_form.mailEtu.name }}">
             </div>
       
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.telEtu.id_for_label }}">Numéro de téléphone :</label>
+              <label for="{{ etudiant_form.telEtu.id_for_label }}">Numéro de téléphone </label>
               <input class="form-control" id="{{ etudiant_form.telEtu.id_for_label }}" type="text" name="{{ etudiant_form.telEtu.name }}" pattern="^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$" title="Le numéro de téléphone doit être au format français" >
             </div>
 
           </div>
+        </div>
 
-          <hr style="padding: 0">
-      
+          <div class="row hider" boite="hide-4" >
+            <i class="bi bi-plus-circle-fill col-md-auto" style="color: #CED4DA"></i>
+            <hr class="col border border-dark-subtle border-2 opacity-50">
+            <p class="text-secondary" >Informations parents</p>
+            <hr class="col border border-dark-subtle border-2 opacity-50">
+    
+          </div>
+          <div class="hide-box" id="hide-4">
+
           <div class="row mb-3">
 
       
             <div class="col-md-6 mb-2 ms-1">
-              <label for="{{ etudiant_form.adresseParent.id_for_label }}">Adresse des Parents :</label>
+              <label for="{{ etudiant_form.adresseParent.id_for_label }}">Adresse des Parents </label>
               <input class="form-control" id="{{ etudiant_form.adresseParent.id_for_label }}" type="text" name="{{ etudiant_form.adresseParent.name }}">
             </div>
       
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.cpParent.id_for_label }}">Code Postal des Parents :</label>
+              <label for="{{ etudiant_form.cpParent.id_for_label }}">Code Postal des Parents </label>
               <input class="form-control" id="{{ etudiant_form.cpParent.id_for_label }}" type="text" name="{{ etudiant_form.cpParent.name }}">
             </div>
 
             <div class="col-md-3 mb-2 ms-1">
-              <label for="{{ etudiant_form.villeParent.id_for_label }}">Ville des Parents :</label>
+              <label for="{{ etudiant_form.villeParent.id_for_label }}">Ville des Parents </label>
               <input class="form-control" id="{{ etudiant_form.villeParent.id_for_label }}" type="text" name="{{ etudiant_form.villeParent.name }}">
             </div>
           </div>
@@ -190,14 +219,15 @@
 
       
             <div class="col-4 mb-2 ms-1">
-              <label for="{{ etudiant_form.telParent.id_for_label }}">Téléphone des Parents :</label>
+              <label for="{{ etudiant_form.telParent.id_for_label }}">Téléphone des Parents </label>
               <input class="form-control" id="{{ etudiant_form.telParent.id_for_label }}" type="text" name="{{ etudiant_form.telParent.name }}">
             </div>
       
             <div class="col-4 mb-2 ms-1">
-              <label for="{{ etudiant_form.mailParent.id_for_label }}">E-mail des Parents :</label>
+              <label for="{{ etudiant_form.mailParent.id_for_label }}">E-mail des Parents </label>
               <input class="form-control" id="{{ etudiant_form.mailParent.id_for_label }}" type="email" name="{{ etudiant_form.mailParent.name }}">
             </div>
+          </div>
           </div>
      
       {% if etudiant_form.errors %}
@@ -212,22 +242,22 @@
 
       <div class="row mb-3">
         <div class="col-md-3 mb-2 ms-1">
-          <label for="{{ enseignant_form.numHarpege.id_for_label }}">Numéro Harpège :</label>
+          <label for="{{ enseignant_form.numHarpege.id_for_label }}">Numéro Harpège </label>
           <input class="form-control" id="{{ enseignant_form.numHarpege.id_for_label }}" type="text" name="{{ enseignant_form.numHarpege.name }}" >
         </div>
 
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.nomEnseignant.id_for_label }}">Nom :</label>
+          <label  for="{{ enseignant_form.nomEnseignant.id_for_label }}">Nom </label>
           <input class="form-control" id="{{ enseignant_form.nomEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.nomEnseignant.name }}" >
         </div>
     
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.prenomEnseignant.id_for_label }}">Prénom :</label>
+          <label  for="{{ enseignant_form.prenomEnseignant.id_for_label }}">Prénom </label>
           <input class="form-control" id="{{ enseignant_form.prenomEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.prenomEnseignant.name }}" >
         </div>
     
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.mailEnseignant.id_for_label }}">Email de l'enseignant :</label>
+          <label  for="{{ enseignant_form.mailEnseignant.id_for_label }}">Email de l'enseignant </label>
           <input class="form-control" id="{{ enseignant_form.mailEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.mailEnseignant.name }}" >
         </div>
 
@@ -236,7 +266,7 @@
 
       <div class="row mb-3">
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle :</label>
+          <label  for="{{ enseignant_form.roleEnseignant.id_for_label }}">Rôle </label>
           <select class="form-control" id="{{ enseignant_form.roleEnseignant.id_for_label }}" name="{{ enseignant_form.roleEnseignant.name }}" >
             {% for role in enseignant_form.roleEnseignant.field.choices %}
             <option value="{{ role.0 }}">{{ role.1 }}</option>
@@ -245,7 +275,7 @@
         </div>
     
         <div class="col-md-3 mb-2 ms-1" id="enseignant_promo_select" style="display:none;">
-          <label class="col col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos :</label>
+          <label class="col col-form-label" for="{{ enseignant_form.promos.id_for_label }}">Promos </label>
           <div >
             {{ enseignant_form.promos }}
           </div>
@@ -259,12 +289,12 @@
         </div>
     
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.telEnseignant.id_for_label }}">Numéro de Téléphone :</label>
+          <label  for="{{ enseignant_form.telEnseignant.id_for_label }}">Numéro de Téléphone </label>
           <input class="form-control" id="{{ enseignant_form.telEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.telEnseignant.name }}">
         </div>
     
         <div class="col-md-3 mb-2 ms-1">
-          <label  for="{{ enseignant_form.disciplineEnseignant.id_for_label }}">Discipline :</label>
+          <label  for="{{ enseignant_form.disciplineEnseignant.id_for_label }}">Discipline </label>
           <input class="form-control" id="{{ enseignant_form.disciplineEnseignant.id_for_label }}" type="text" name="{{ enseignant_form.disciplineEnseignant.name }}">
         </div>
 
@@ -288,7 +318,7 @@
 
         <div class="col-md-3 mb-2 ms-1">
           <label  for="{{ secretaire_form.numSec.id_for_label }}">Numéro
-            Secrétaire :</label>
+            Secrétaire </label>
           <input class="col form-control"
             id="{{ secretaire_form.numSec.id_for_label }}" type="text"
             name="{{ secretaire_form.numSec.name }}" >
@@ -311,7 +341,7 @@
       {% csrf_token %}
 
       <div class="row p-2">
-        <label class="col" for="csv_file">Fichier CSV :</label>
+        <label class="col" for="csv_file">Fichier CSV </label>
         <input class="col form-control" id="csv_file" type="file" name="file"
           accept=".csv" >
       </div>
@@ -392,5 +422,18 @@
       $(document).ready(function() {
         $('.selectpicker').selectpicker();
     });   
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.hide-box').hide();
+    $('#hide-1').show("slow");
+
+    $('.hider').click(function() {
+      var boite = $(this).attr('boite');
+      $(this).find('i').toggleClass('bi-dash-circle-fill bi-plus-circle-fill');
+      $('#' + boite).toggle("slow");
+    });
+  });
 </script>
 {% endblock %}
