@@ -414,7 +414,7 @@ def modifier_etudiant(request, num_etu):
         if form.is_valid():
             form.save()
             url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
-            nouvelle_url = f"{url_sans_fragment}#entreprise"  
+            nouvelle_url = f"{url_sans_fragment}#etudiant"  
             return redirect(nouvelle_url)
     else:
         form = EtudiantForm(instance=etudiant)
@@ -425,7 +425,7 @@ def delete_etudiant(request, num_etu):
     if request.method == 'POST':
         etudiant.delete()
         url_sans_fragment = reverse('lesApprentiStage:liste_recherche')
-        nouvelle_url = f"{url_sans_fragment}#entreprise"  
+        nouvelle_url = f"{url_sans_fragment}#etudiant"  
         return redirect(nouvelle_url)
     return render(request, 'secretariat/etudiant/delete_etudiant.html', {'etudiant': etudiant})
 
