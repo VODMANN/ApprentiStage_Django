@@ -81,12 +81,21 @@ def home(request):
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-            contrats = None
+            contrats_par_promo = None
             soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
 
             if not soutenances_par_promo.exists():
                 soutenances_par_promo = NombreSoutenances.objects.none()
-                contrats = Contrat.objects.filter(enseignant=user.profilenseignant).count()
+                contrats_par_promo = Contrat.objects.filter(
+                    enseignant=user.profilenseignant
+                ).values(
+                    'etudiant__promo__nomPromo'
+                ).annotate(
+                    nb_contrats=Count('id')
+                ).order_by(
+                    'etudiant__promo__nomPromo'
+                )
+
 
             
             candide_count_par_promo = Soutenance.objects.filter(
@@ -113,7 +122,7 @@ def home(request):
                 'is_responsible': is_responsible,
                 'soutenances_par_promo': soutenances_par_promo,
                 'candide_count_par_promo': candide_count_par_promo,
-                'contrats': contrats,
+                'contrats_par_promo': contrats_par_promo,
             })
 
 

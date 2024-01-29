@@ -20,11 +20,15 @@
             <div class="card-body">
                 <h5 class="card-title">Nombre de soutenance</h5>
                 {% for soutenance in soutenances_par_promo %}
-                    <p>Pour la promo {{ soutenance.promo.nomPromo }}, {{ soutenance.nombreSoutenancesStage }} soutenances tuteur.</p>
+                    <p>Pour la promo {{ soutenance.promo.nomPromo }}</p>
                     <p>Nombre d'élèves suivis: {{ soutenance.nb_eleves_suivis }}/{{ soutenance.nombreSoutenancesStage }}</p>
                 {% endfor %}
-                {% if contrats %}
-                    nombres d'eleves suivies: {{ contrats }}
+                {% if contrats_par_promo %}
+                
+                  {% for contrat in contrats_par_promo %}
+                      <p>Promo {{ contrat.etudiant__promo__nomPromo }}: {{ contrat.nb_contrats }} contrats</p>
+                  {% endfor %}
+
                 {% endif %}
                 {% for candide_par_promo in candide_count_par_promo %}
                   <p>Promo {{ candide_par_promo.idContrat__etudiant__promo__nomPromo }}: {{ candide_par_promo.nb_candide }} soutenances en tant que candide</p>
