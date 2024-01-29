@@ -23,10 +23,12 @@
                     <p>Pour la promo {{ soutenance.promo.nomPromo }}, {{ soutenance.nombreSoutenancesStage }} soutenances tuteur.</p>
                     <p>Nombre d'élèves suivis: {{ soutenance.nb_eleves_suivis }}/{{ soutenance.nombreSoutenancesStage }}</p>
                 {% endfor %}
-                <p>{{ candide }} candidatures</p>
+                {% if contrats %}
+                    nombres d'eleves suivies: {{ contrats }}
+                {% endif %}
                 {% for candide_par_promo in candide_count_par_promo %}
-    <p>Promo {{ candide_par_promo.idContrat__etudiant__promo__nomPromo }}: {{ candide_par_promo.nb_candide }} soutenances en tant que candide</p>
-{% endfor %}
+                  <p>Promo {{ candide_par_promo.idContrat__etudiant__promo__nomPromo }}: {{ candide_par_promo.nb_candide }} soutenances en tant que candide</p>
+                {% endfor %}
 
             </div>
         </div>

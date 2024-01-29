@@ -81,36 +81,39 @@ def home(request):
 
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
-
+            contrats = None
             soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
-            nb_soutenance_valid = Soutenance.objects.filter(idContrat__enseignant=user.profilenseignant).count()
-            candide = Soutenance.objects.filter(candide=user.profilenseignant).count()
 
-            # Modifier le comptage des élèves suivis par promo
+            if not soutenances_par_promo.exists():
+                soutenances_par_promo = NombreSoutenances.objects.none()
+                contrats = Contrat.objects.filter(enseignant=user.profilenseignant).count()
+
+            
+            candide_count_par_promo = Soutenance.objects.filter(
+                candide=user.profilenseignant
+            ).values(
+                'idContrat__etudiant__promo__nomPromo'
+            ).annotate(
+                nb_candide=Count('id')
+            ).order_by(
+                'idContrat__etudiant__promo__nomPromo'
+            )
+
             for soutenance in soutenances_par_promo:
-                nb_eleves_suivis_par_promo = Contrat.objects.filter(
-                    enseignant=user.profilenseignant, 
-                    etudiant__promo=soutenance.promo
-                ).count()
-                soutenance.nb_eleves_suivis = nb_eleves_suivis_par_promo
-
-                candide_count_par_promo = Soutenance.objects.filter(
-                    candide=user.profilenseignant
-                ).values(
-                    'idContrat__etudiant__promo__nomPromo'
-                ).annotate(
-                    nb_candide=Count('id')
-                ).order_by(
-                    'idContrat__etudiant__promo__nomPromo'
-                )
+                # Vérifiez le type de soutenance pour éviter des erreurs
+                if isinstance(soutenance, NombreSoutenances):
+                    nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                        enseignant=user.profilenseignant, 
+                        etudiant__promo=soutenance.promo
+                    ).count()
+                    soutenance.nb_eleves_suivis = nb_eleves_suivis_par_promo
 
             return render(request, 'enseignant/accueil_ens.html', {
                 'user': user,
                 'is_responsible': is_responsible,
                 'soutenances_par_promo': soutenances_par_promo,
-                'nb_soutenance_valid': nb_soutenance_valid,
-                'candide': candide,
                 'candide_count_par_promo': candide_count_par_promo,
+                'contrats': contrats,
             })
 
 
