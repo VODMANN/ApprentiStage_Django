@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
 from .utils import *
-
+from django.db.models import Count
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed, JsonResponse
@@ -29,6 +29,7 @@ from django_filters import FilterSet, CharFilter
 from .filters import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.forms.widgets import Select
 
 def insertion(request):
     return insert(request)
@@ -61,7 +62,6 @@ class UserLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-from .models import NombreSoutenances
 
 def home(request):
     offre_list = Offre.objects.all()   
@@ -82,14 +82,38 @@ def home(request):
         if user_type == 'enseignant':
             is_responsible = user.profilenseignant.roleEnseignant in ['chef_departement', 'enseignant_promo']
 
-            # Ajoutez le code pour obtenir le nombre de soutenances par promo pour cet enseignant.
             soutenances_par_promo = NombreSoutenances.objects.filter(enseignant=user.profilenseignant)
+            nb_soutenance_valid = Soutenance.objects.filter(idContrat__enseignant=user.profilenseignant).count()
+            candide = Soutenance.objects.filter(candide=user.profilenseignant).count()
+
+            # Modifier le comptage des élèves suivis par promo
+            for soutenance in soutenances_par_promo:
+                nb_eleves_suivis_par_promo = Contrat.objects.filter(
+                    enseignant=user.profilenseignant, 
+                    etudiant__promo=soutenance.promo
+                ).count()
+                soutenance.nb_eleves_suivis = nb_eleves_suivis_par_promo
+
+                candide_count_par_promo = Soutenance.objects.filter(
+                    candide=user.profilenseignant
+                ).values(
+                    'idContrat__etudiant__promo__nomPromo'
+                ).annotate(
+                    nb_candide=Count('id')
+                ).order_by(
+                    'idContrat__etudiant__promo__nomPromo'
+                )
 
             return render(request, 'enseignant/accueil_ens.html', {
                 'user': user,
                 'is_responsible': is_responsible,
-                'soutenances_par_promo': soutenances_par_promo
+                'soutenances_par_promo': soutenances_par_promo,
+                'nb_soutenance_valid': nb_soutenance_valid,
+                'candide': candide,
+                'candide_count_par_promo': candide_count_par_promo,
             })
+
+
 
     return render(request, 'pages/accueil.html')
 
@@ -489,10 +513,55 @@ def delete_enseignant(request, num_harpege):
 
 # ///////////////////////crud Promo ////////////////////////////
 
+class YearSelect(Select):
+    def __init__(self, years, *args, **kwargs):
+        # Créer une liste de choix pour les années
+        choices = [(year, year) for year in years]
+        super().__init__(choices=choices, *args, **kwargs)
+
+class PromoForm(forms.ModelForm):
+    class Meta:
+        model = Promo
+        fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+        widgets = {
+            'anneeScolaire': forms.TextInput(attrs={'class': 'year-only-picker'}),
+        }
+
+        labels = {
+            'nomPromo': 'Nom de la promo',
+            'anneeScolaire': 'Année scolaire',
+            'departement': 'Département',
+            'parcours': 'Parcours',
+            'volumeHoraire': 'Volume horaire'
+        }
+    def __init__(self, *args, **kwargs):
+        super(PromoForm, self).__init__(*args, **kwargs)
+        self.fields['anneeScolaire'].initial = datetime.now().year
+
+# 2. Utiliser le formulaire personnalisé dans les vues CreateView et UpdateView
 class PromoCreateView(CreateView):
     model = Promo
-    template_name = 'secretariat/promo/creer_promo.html'  
-    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+    form_class = PromoForm
+    template_name = 'secretariat/promo/creer_promo.html'
+
+    def form_valid(self, form):
+        annee = form.cleaned_data['anneeScolaire']
+        if "-" not in annee:
+            annee_scolaire_formattee = f"{annee}-{int(annee)+1}"
+        else:
+            annee_scolaire_formattee = annee
+
+        nom_promo = form.cleaned_data['nomPromo']
+        departement_id = form.cleaned_data['departement'].id 
+        if Promo.objects.filter(nomPromo=nom_promo, anneeScolaire=annee_scolaire_formattee, departement=departement_id).exists():
+            form.add_error(None, "Une promo avec le même nom, année scolaire et département existe déjà.")
+            return self.form_invalid(form)
+
+        form.instance.anneeScolaire = annee_scolaire_formattee
+        return super().form_valid(form)
+
+
+
 
     def get_success_url(self):
         # Récupérer l'URL de base à partir du nom de l'URL
@@ -500,6 +569,49 @@ class PromoCreateView(CreateView):
         # Ajouter le fragment à l'URL
         url_with_fragment = f"{base_url}#promo"
         return url_with_fragment
+    
+class PromoUpdateView(UpdateView):
+    model = Promo
+    form_class = PromoForm
+    template_name = 'secretariat/promo/modifier_promo.html'
+    
+    def form_valid(self, form):
+        annee = form.cleaned_data['anneeScolaire']
+        if "-" not in annee:
+            annee_scolaire_formattee = f"{annee}-{int(annee)+1}"
+        else:
+            annee_scolaire_formattee = annee
+
+        nom_promo = form.cleaned_data['nomPromo']
+        departement_id = form.cleaned_data['departement'].id  
+        if Promo.objects.filter(nomPromo=nom_promo, anneeScolaire=annee_scolaire_formattee, departement=departement_id).exclude(pk=self.object.pk).exists():
+            form.add_error(None, "Une promo avec le même nom, année scolaire et département existe déjà.")
+            return self.form_invalid(form)
+
+        form.instance.anneeScolaire = annee_scolaire_formattee
+        return super().form_valid(form)
+
+
+    def get_success_url(self):
+        # Récupérer l'URL de base à partir du nom de l'URL
+        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+
+        # Ajouter le fragment à l'URL
+        url_with_fragment = f"{base_url}#promo"
+        return url_with_fragment
+
+
+# class PromoCreateView(CreateView):
+#     model = Promo
+#     template_name = 'secretariat/promo/creer_promo.html'  
+#     fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire']
+
+#     def get_success_url(self):
+#         # Récupérer l'URL de base à partir du nom de l'URL
+#         base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+#         # Ajouter le fragment à l'URL
+#         url_with_fragment = f"{base_url}#promo"
+#         return url_with_fragment
 
 
 class PromoDeleteView(DeleteView):
@@ -514,18 +626,18 @@ class PromoDeleteView(DeleteView):
         url_with_fragment = f"{base_url}#promo"
         return url_with_fragment
     
-class PromoUpdateView(UpdateView):
-    model = Promo
-    template_name = 'secretariat/promo/modifier_promo.html'  
-    fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
+# class PromoUpdateView(UpdateView):
+#     model = Promo
+#     template_name = 'secretariat/promo/modifier_promo.html'  
+#     fields = ['nomPromo', 'anneeScolaire', 'departement', 'parcours', 'volumeHoraire'] 
 
-    def get_success_url(self):
-        # Récupérer l'URL de base à partir du nom de l'URL
-        base_url = reverse_lazy('lesApprentiStage:liste_recherche')
+#     def get_success_url(self):
+#         # Récupérer l'URL de base à partir du nom de l'URL
+#         base_url = reverse_lazy('lesApprentiStage:liste_recherche')
 
-        # Ajouter le fragment à l'URL
-        url_with_fragment = f"{base_url}#promo"
-        return url_with_fragment
+#         # Ajouter le fragment à l'URL
+#         url_with_fragment = f"{base_url}#promo"
+#         return url_with_fragment
 
 # ///////////////////////crud departement ////////////////////////////
 

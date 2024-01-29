@@ -5,6 +5,7 @@
     <h2 class="mb-4">Créer une nouvelle promo</h2>
     <form method="post" class="form-entreprise">
       {% csrf_token %}
+      {{ form.non_field_errors }}
       {% for field in form %}
         <div class="form-group">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -21,6 +22,7 @@
         <button type="submit" class="btn btn-success">Créer</button>
         <a href="{% url 'lesApprentiStage:liste_recherche' %}" class="btn btn-secondary">Annuler</a>
       </div>
+      
     </form>
   </div>
 
@@ -82,4 +84,35 @@
       border-color: #545b62;
     }
   </style>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script>
+$(document).ready(function() {
+    $('.year-only-picker').datepicker({
+        changeYear: true,
+        dateFormat: 'yy',
+        yearRange: "-100:+20",
+        beforeShow: function(input) {
+            $(input).datepicker('option', 'defaultDate', new Date(new Date().getFullYear(), 0, 1));
+            $(input).datepicker('setDate', new Date(new Date().getFullYear(), 0, 1));
+        },
+        onClose: function(dateText, instance) {
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).val(year);
+        }
+    });
+
+    $('.year-only-picker').focus(function() {
+        $('.ui-datepicker-month').hide();
+    }).click(function() {
+        $('.ui-datepicker-month').hide();
+    });
+});
+</script>
+
+  
+
 {% endblock %}

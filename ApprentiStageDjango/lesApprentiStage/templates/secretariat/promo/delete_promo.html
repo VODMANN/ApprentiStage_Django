@@ -3,7 +3,7 @@
 {% block content %}
   <div class="container mt-4 mb-4">
     <h2 class="mb-4">Supprimer la promo</h2>
-    <p>Êtes-vous sûr de vouloir supprimer l'entreprise "{{ entreprise.nomEnt }}" ?</p>
+    <p>Êtes-vous sûr de vouloir supprimer la promo "{{ promo.nomPromo }}" ?</p>
     <form method="post">
       {% csrf_token %}
       <button type="submit" class="btn btn-danger">Supprimer</button>

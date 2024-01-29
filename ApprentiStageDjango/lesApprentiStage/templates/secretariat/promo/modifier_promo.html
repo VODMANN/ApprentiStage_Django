@@ -6,6 +6,8 @@
     <h2 class="mb-4">Modifier la promo</h2>
     <form method="post" class="form-entreprise">
       {% csrf_token %}
+      {{ form.non_field_errors }}
+
       {% for field in form %}
         <div class="form-group">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>

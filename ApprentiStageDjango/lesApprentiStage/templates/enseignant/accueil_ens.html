@@ -2,117 +2,118 @@
 {% load static %}
 {% block content %}
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales/fr.js'></script>
 
+<div class="accueil mt-4 mb-4">
+  <div class="row">
+      <div class="col-md-12 text-center">
+          <h1>Bienvenue, {{ user.profilenseignant.prenomEnseignant }} {{ user.profilenseignant.nomEnseignant }}</h1>
+          <p class="lead">Espace enseignant - Gestion des Stages / Apprentissages</p>
+      </div>
+  </div>
 
-<div class="container mt-4 mb-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center">Bienvenue, {{ user.profilenseignant.prenomEnseignant }} {{ user.profilenseignant.nomEnseignant }}</h1>
-            <p class="lead text-center">Espace enseignant - Gestion des Stages / Apprentissages</p>
-        </div>
-    </div>
-
-    <div class="row mt-4 pb-3">
-      <div class="col-md-4">
+  <div class="row mt-4">
+    <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
                 <h5 class="card-title">Nombre de soutenance</h5>
                 {% for soutenance in soutenances_par_promo %}
                     <p>Pour la promo {{ soutenance.promo.nomPromo }}, {{ soutenance.nombreSoutenancesStage }} soutenances tuteur.</p>
+                    <p>Nombre d'élèves suivis: {{ soutenance.nb_eleves_suivis }}/{{ soutenance.nombreSoutenancesStage }}</p>
                 {% endfor %}
-            </div>
-        </div>
-    </div>
-    
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Recherche / Candidater</h5>
-                    <p class="card-text">Effectuez une recherche et candidatez aux soutenances.</p>
-                    <a href="{% url 'lesApprentiStage:liste_recherche' %}#soutenance" class="btn btn-success">Recherche</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Offres</h5>
-                    <p class="card-text">Partagez une offre de stage ou d'apprentissage.</p>
-                        <a href="{% url 'lesApprentiStage:ajouter_offre' %}"
-                        class="btn btn-info">Partager offre</a>
-                </div>
+                <p>{{ candide }} candidatures</p>
+                {% for candide_par_promo in candide_count_par_promo %}
+    <p>Promo {{ candide_par_promo.idContrat__etudiant__promo__nomPromo }}: {{ candide_par_promo.nb_candide }} soutenances en tant que candide</p>
+{% endfor %}
+
             </div>
         </div>
     </div>
 
-    <div class="col-md-12 p-3 card">
-        <div id='calendar' style="max-height: 500px; overflow-y: auto;"></div>
+
+      <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Nouvelle Fonctionnalité</h5>
+                <p>Informations sur la nouvelle fonctionnalité ou contenu additionnel.</p>
+            </div>
+        </div>
     </div>
     
+      <div class="col-md-3">
+          <div class="card text-center">
+              <div class="card-body">
+                  <h5 class="card-title">Recherche / Candidater</h5>
+                  <p>Effectuez une recherche et candidatez aux soutenances.</p>
+                  <a href="{% url 'lesApprentiStage:liste_recherche' %}#soutenance" class="btn btn-success">Recherche</a>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class="card text-center">
+              <div class="card-body">
+                  <h5 class="card-title">Offres</h5>
+                  <p>Partagez une offre de stage ou d'apprentissage.</p>
+                  <a href="{% url 'lesApprentiStage:ajouter_offre' %}" class="btn btn-info">Partager offre</a>
+              </div>
+          </div>
+      </div>
+
+      
+  </div>
+
+  <div class="row mt-4">
+      <div class="col-md-12">
+          <div class="card">
+              <div class="card-body">
+                  <div id='calendar'></div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales/fr.js'></script>
-
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-  
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'fr',
-      headerToolbar: {
-        left: 'prevButton,nextButton today',
-        center: 'title',
-        right: 'timeGridWeek,timeGridDay,customButton' // Ajout du bouton personnalisé
-      },
-      initialView: 'timeGridWeek',
-      events: '/api/calendar_events/',
-      buttonText: {
-        today: 'Aujourd\'hui',
-      },
-      views: {
-        timeGridWeek: {
-          buttonText: 'Semaine'
-        },
-        timeGridDay: {
-          buttonText: 'Jour'
-        }
-      },
-      customButtons: {
-        prevButton: {
-          text: '',
-          click: function() {
-            calendar.prev();
-          },
-          icon: 'bi bi-caret-left-fill'
-        },
-        nextButton: {
-          text: '', 
-          click: function() {
-            calendar.next();
-          },
-          icon: 'bi bi-caret-right-fill'
-        },
-        customButton: {
-          text: 'Exporter le calendrier',
-          click: function() {
-            // Redirige vers l'URL associée au bouton export_calendar
-            window.location.href = "{% url 'lesApprentiStage:export_calendar' %}";
-          },
-          icon: 'bi bi-box-arrow-up-right',
-          // Ajoute la classe Bootstrap pour rendre le bouton vert
-          bootstrapFontAwesome: {
-            class: 'btn-success'
-          }
-        }
-      },
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'fr',
+            headerToolbar: {
+                left: 'prevButton,nextButton today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay,customButton'
+            },
+            initialView: 'timeGridWeek',
+            events: '/api/calendar_events/',
+            buttonText: {
+                today: 'Aujourd\'hui',
+                week: 'Semaine',
+                day: 'Jour'
+            },
+            customButtons: {
+                prevButton: {
+                    text: '',
+                    click: function() { calendar.prev(); },
+                    icon: 'bi bi-caret-left-fill'
+                },
+                nextButton: {
+                    text: '',
+                    click: function() { calendar.next(); },
+                    icon: 'bi bi-caret-right-fill'
+                },
+                customButton: {
+                    text: 'Exporter le calendrier',
+                    click: function() { window.location.href = "{% url 'lesApprentiStage:export_calendar' %}"; },
+                    icon: 'bi bi-box-arrow-up-right',
+                    bootstrapFontAwesome: { class: 'btn-success' }
+                }
+            }
+        });
+        calendar.render();
     });
-  
-    calendar.render();
-  });  
 </script>
-
-
 
 {% endblock %}
