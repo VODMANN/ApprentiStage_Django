@@ -2,7 +2,22 @@
 
 {% block content %}
 
-<div class="container mt-3">
+<div class="accueil mt-5" id="boite" style="margin: 7%">
+    <div class="jumbotron">
+        <h1 class="display-4">Bienvenue sur le Portail de Gestion de Stages et Alternances!</h1>
+        <p class="lead">
+            Trouvez et gérez vos opportunités de stage et d'alternance.
+        </p>
+    </div>
+
+  
+    
 
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#boite').hide().fadeIn(1000);
+    });
+</script>
 {% endblock %}
