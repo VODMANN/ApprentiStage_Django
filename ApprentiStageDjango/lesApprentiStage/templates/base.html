@@ -92,10 +92,6 @@
                                     <a class="nav-link"
                                         href="{% url 'lesApprentiStage:ajouter_offre' %}">Offre</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                        href="{% url 'lesApprentiStage:login' %}">Connexion</a>
-                                </li>
                             {% endif %}
                         </ul>
                         <ul class="navbar-nav ml-auto">
@@ -120,6 +116,12 @@
                                         </a>
                                     </li>
                                 {% endif %}
+                            {% endif %}
+                            {% if not user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="{% url 'lesApprentiStage:login' %}">Connexion</a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
