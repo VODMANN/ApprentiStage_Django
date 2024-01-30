@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class='card container mt-5 p-4' style="width: 30rem;">
+
+  {% if messages %}
+    {% for message in messages %}
     <div class="row">
-      <h4>Connexion</h4>
+      <div id="notification"  class="alert alert-danger custom-notification container mt-1 col-md-auto" >{{ message }}</div>
     </div>
+    {% endfor %}
+  {% endif %}
+  <div class='card container mt-3 p-4' style="width: 30rem;">
+    <h4>Connexion</h4>
     <form method="post">
       {% csrf_token %}
       <div class="row p-2">
@@ -20,4 +26,27 @@
       </div>
     </form>
   </div>
+
+
+  <script>
+    $(document).ready(function () {
+      setTimeout(function () {
+        $('#notification').fadeOut('fast');
+      }, 3000);
+
+      checkNotification();
+    });
+
+    function checkNotification() {
+      if ($('#notification').length) {
+        $('.form-control').addClass('is-invalid');
+      }
+    }
+
+    $('.form-control').on('input', function () {
+      $('.form-control').removeClass('is-invalid');
+    });
+  </script>
+
+
 {% endblock %}

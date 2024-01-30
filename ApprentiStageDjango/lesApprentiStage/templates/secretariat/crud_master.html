@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-md">
             <div class="card shadow" style="overflow-y: auto;">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -333,13 +333,13 @@
                                                     {% if user.type_utilisateur == "enseignant" %}
                                                     {% with enseignant_profile=user.profilenseignant %}
                                                         {% if enseignant_profile.roleEnseignant == "chef_departement" %}
-                                                            <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer Soutenances</a>
+                                                            <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer élèves</a>
                                                             <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                             <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                         {% endif %}
                                                     {% endwith %}
                                                     {% elif user.type_utilisateur == "secretaire" %}
-                                                        <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer Soutenances</a>
+                                                        <a href="{% url 'lesApprentiStage:nombre_soutenances' enseignant.pk %}" class="btn btn-warning btn-sm">Attribuer élèves</a>
                                                         <a href="{% url 'lesApprentiStage:modifier_enseignant' enseignant.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
                                                         <a href="{% url 'lesApprentiStage:supprimer_enseignant' enseignant.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
                                                     {% endif %}
@@ -967,6 +967,15 @@
     });
     
     
+</script>
+
+<script>
+    $(".reset_button").click(function() {
+        fragment = $("#filtre_select").val();
+        $(".input-filtrer").val("");
+        window.location.href = "{% url 'lesApprentiStage:liste_recherche' %}#" + fragment;
+        window.location.reload();
+    });
 </script>
 <style>
     .clickable-row {

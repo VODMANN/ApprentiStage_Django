@@ -60,6 +60,15 @@ def user_type_and_role_required(allowed_user_types,role=[]):
 
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse_lazy('lesApprentiStage:home')
+
+    def form_invalid(self,form):
+        messages.error(self.request,'Identifiant ou mot de passe incorrect.')
+        return self.render_to_response(self.get_context_data(form=form))
+        
 
 
 
@@ -156,9 +165,6 @@ def home(request):
             return render(request, 'enseignant/accueil_ens.html', {
                 'user': user,
                 'is_responsible': is_responsible,
-                # 'soutenances_par_promo': soutenances_par_promo,
-                # 'candide_count_par_promo': candide_count_par_promo,
-                # 'contrats_par_promo': contrats_par_promo,
                 'promo_actuelles': promo_actuelles,
                 'annee': annee_scolaire,
                 'nombre_contrat_promo': nombre_contrat,
@@ -879,6 +885,12 @@ class SoutenanceUpdateForm(BaseSoutenanceForm):
             'dateSoutenance': forms.DateInput(attrs={'type': 'date'}),
             'heureSoutenance': TimePickerWidget(attrs={'type': 'time'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Formatage des dates au format YYYY-MM-DD
+        if self.instance and self.instance.dateSoutenance:
+            self.initial['dateSoutenance'] = self.instance.dateSoutenance.strftime('%Y-%m-%d')
 
 class SoutenanceUpdateView(UpdateView):
     model = Soutenance
