@@ -27,10 +27,12 @@ class ContratFilter(filters.FilterSet):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='Promo'
     )
+    
+    dateDeb__year = django_filters.DateFilter(field_name='dateDeb', label='Année')
 
     class Meta:
         model = Contrat
-        fields = ['type', 'etat', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'entreprise__nomEnt', 'theme__nomTheme', 'etudiant__promo']
+        fields = ['dateDeb__year','type', 'etat', 'etudiant__nomEtu', 'etudiant__prenomEtu', 'entreprise__nomEnt', 'theme__nomTheme', 'etudiant__promo']
 
 class ProfilEtudiantFilter(filters.FilterSet):
     nomEtu = django_filters.CharFilter(lookup_expr='icontains', label='Nom Etudiant')

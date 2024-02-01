@@ -42,10 +42,10 @@
 
     <div id="etudiant_fields" style="display:none;margin: 0 3%">
       <div class="row hider" boite="hide-1" >
-        <i class="bi bi-dash-circle-fill col-md-auto" style="color: #CED4DA"></i>
-        <hr class="col border border-dark-subtle border-2 opacity-50">
-        <p class="text-secondary" >Informations personnelles</p>
-        <hr class="col border border-dark-subtle border-2 opacity-50">
+        <i class="bi rond1 bi-dash-circle-fill col-md-auto" style="color: #CED4DA"></i>
+        <hr class="col hide1 border border-dark-subtle border-2 opacity-50">
+        <p class="text1 text-secondary" >Informations personnelles</p>
+        <hr class="col hide1 border border-dark-subtle border-2 opacity-50">
       </div>
       <!-- Début div étudiant -->
       <div class="hide-box" id="hide-1">
@@ -97,10 +97,10 @@
         </div>
         <!-- fin hide-1 -->
         <div class="row hider" boite="hide-2" >
-          <i class="bi bi-plus-circle-fill col-md-auto" style="color: #CED4DA"></i>
-          <hr class="col border border-dark-subtle border-2 opacity-50">
-          <p class="text-secondary" >Informations étudiant</p>
-          <hr class="col border border-dark-subtle border-2 opacity-50">  
+          <i class="bi rond2 bi-plus-circle-fill col-md-auto" style="color: #CED4DA"></i>
+          <hr class="col hide2 border border-dark-subtle border-2 opacity-50">
+          <p class="text2 text-secondary" >Informations étudiant</p>
+          <hr class="col hide2 border border-dark-subtle border-2 opacity-50">  
         </div>
         <div class="hide-box" id="hide-2">
           <div class="row mb-3">
@@ -434,6 +434,45 @@
       $(this).find('i').toggleClass('bi-dash-circle-fill bi-plus-circle-fill');
       $('#' + boite).toggle("slow");
     });
+
+
+    $("#id_nomEtu, #id_prenomEtu").on("change", function() {
+      var nom = $("#id_nomEtu").val();
+      var prenom = $("#id_prenomEtu").val();
+      if(nom && prenom){
+        $(".hide1").removeClass("border-dark-subtle").addClass("border-success");
+        $(".rond1").removeClass("bi-dash-circle-fill").addClass("bi-check-circle-fill");
+        $(".rond1").css("color", "#198754");
+        $(".text1").removeClass("text-secondary");
+      }
+      else{
+
+        $(".hide1").removeClass("border-success").addClass("border-dark-subtle");
+        $(".rond1").removeClass("bi-check-circle-fill").addClass("bi-dash-circle-fill");
+        $(".rond1").css("color", "#CED4DA");
+        $(".text1").addClass("text-secondary"); 
+      }
+    })
   });
+
+  $("#id_numEtu, #id_ineEtu, #id_numDossier").on("change", function() {
+      var num = $("#id_numEtu").val();
+      var ine = $("#id_ineEtu").val();
+      var dossier = $("#id_numDossier").val();
+      if(num && ine && dossier){
+        $(".hide2").removeClass("border-dark-subtle").addClass("border-success");
+        $(".rond2").removeClass("bi-dash-circle-fill").addClass("bi-check-circle-fill");
+        $(".rond2").css("color", "#198754");
+        $(".text2").removeClass("text-secondary");
+      }
+      else{
+        $(".hide2").removeClass("border-success").addClass("border-dark-subtle");
+        $(".rond2").removeClass("bi-check-circle-fill").addClass("bi-dash-circle-fill");
+        $(".rond2").css("color", "#CED4DA");
+        $(".text2").addClass("text-secondary");  
+      }
+    });
+
+
 </script>
 {% endblock %}

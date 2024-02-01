@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5" id="boite" style="display:none">
+        <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="bg-dark p-4 text-white rounded bg-gradient">
+                <h1 class="display-4">À propos du site</h1>
+                <hr class="border-light">
+                <p class="lead">
+                Bienvenue sur l'application ApprentiStage !<br> Ce projet a été réalisé par Erdmann Enzo, Rochdi Sami et Vodable Léo, des étudiants en 3ème année de BUT informatique.
+                </p>
+            </div>
+            <section class="mt-4">
+            <h2>Contexte du Projet</h2>
+            <p>
+                Nous avons conçu ce site dans le cadre de notre 3ème année d'études, mettant en œuvre nos compétences pour créer une plateforme web fonctionnelle et conviviale.
+            </p>
+            </section>
+            <hr>
+            <section class="mt-4">
+            <h2>Explorez le Site</h2>
+            <p>
+                Explorez les différentes fonctionnalités du site et n'hésitez pas à nous faire part de vos retours. <br>Votre feedback est important pour nous améliorer.
+            </p>
+            </section>
+            <hr>
+            <section class="mt-4">
+            <h2>Merci de votre Visite</h2>
+            <p>
+                Nous vous remercions de visiter notre site. <br>Si vous avez des questions ou des commentaires, n'hésitez pas à nous contacter.
+            </p>
+            </section>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#boite').fadeIn(750);
+        });
+    </script>
+{% endblock %}

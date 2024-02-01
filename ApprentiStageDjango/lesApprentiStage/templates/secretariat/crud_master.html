@@ -782,8 +782,6 @@
                                             <td>{{ document.contrat }}</td>
                                             <td class="text-right">
                                                 <div class="btn-group ml-2" role="group">
-
-
                                                     {% if user.type_utilisateur != "etudiant" %}
                                                     {% with enseignant_profile=user.profilenseignant %}
                                                         {% if enseignant_profile.roleEnseignant == "chef_departement" %}
@@ -795,10 +793,7 @@
                                                         {% endif %}
                                                     {% endwith %}
                                                     {% endif %}
-
-                                                    
-                                                   
-                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         <div class="modal fade" id="modalDocument{{ document.id }}" tabindex="-1" role="dialog" aria-labelledby="modalDocument{{ document.id }}Label" aria-hidden="true">
@@ -939,32 +934,24 @@
             $('#' + $(this).val() + "_table").show("slow");
         });
 
+        $('.clickable-row').click(function() {
+            var modalId = $(this).data('target');
+            $(modalId).modal('show');
+        });
+
         $(".input-filtrer").on("input",function() {
-            $('#' + $('#filtre_select').val() + "_table" ).load("{% url 'lesApprentiStage:liste_recherche' %} #"+$('#filtre_select').val()+"_table table", $(this).closest('form').serialize());
+            $('#' + $('#filtre_select').val() + "_table" ).load("{% url 'lesApprentiStage:liste_recherche' %} #"+$('#filtre_select').val()+"_table table", $(this).closest('form').serialize(), function() {
+                $('.clickable-row').click(function() {
+                    var modalId = $(this).data('target');
+                    $(modalId).modal('show');
+                });
+            });
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Ajoute un gestionnaire d'événement 'click' à chaque ligne clickable
-        document.querySelectorAll('.clickable-row').forEach(function(row) {
-            row.addEventListener('click', function() {
-                var modalId = this.dataset.target;
-                $(modalId).modal('show');
-            });
-        });
-    });
-    function applyClickableRows() {
-        document.querySelectorAll('.clickable-row').forEach(function(row) {
-            row.addEventListener('click', function() {
-                var modalId = this.dataset.target;
-                $(modalId).modal('show');
-            });
-        });
-    }
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        applyClickableRows();
-    });
+
+
+
     
     
 </script>
