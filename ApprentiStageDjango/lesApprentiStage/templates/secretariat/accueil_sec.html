@@ -75,97 +75,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="additionalCards" style="display: none;">
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100 ">
-                            <div class="card-body">
-                                <h5 class="card-title">Gestion des Contrats</h5>
-                                <p class="card-text">Creer,modifiez ou supprimez des offres de stage.</p>
-                                <a href="{% url 'lesApprentiStage:liste_contrats' %}" class="btn btn-sm btn-outline-secondary">Gérer les Contrats</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Suivi des Contrats -->
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Suivi des étudiants</h5>
-                                <p class="card-text">Consultez et validez les contrats de stage.</p>
-                                <a href="{% url 'lesApprentiStage:contrats_non_valides' %}" class="btn btn-sm btn-outline-secondary">Suivi des Contrats</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Calendrier des Soutenances -->
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Calendrier des Soutenances</h5>
-                                <p class="card-text">Gérez le calendrier des soutenances des étudiants.</p>
-                                <a href="{% url 'lesApprentiStage:soutenance' %}" class="btn btn-sm btn-outline-secondary">Voir le Calendrier</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Recherches</h5>
-                                <p class="card-text">Effectuez des recherches dans la base de données.</p>
-                                <a href="{% url 'lesApprentiStage:recherche' %}" class="btn btn-sm btn-outline-secondary">Rechercher</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Inscription des Utilisateurs -->
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Inscription des Utilisateurs</h5>
-                                <p class="card-text">Inscrivez de nouveaux utilisateurs au système.</p>
-                                <a href="{% url 'lesApprentiStage:signup' %}" class="btn btn-sm btn-outline-secondary">Inscrire Utilisateurs</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Validation des Contrats -->
-                    <div class="col-md-4 pb-3">
-                        <div class="card mb-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Validation des Contrats</h5>
-                                <p class="card-text">Validez ou refusez les contrats de stage.</p>
-                                <a href="{% url 'lesApprentiStage:contrats_non_valides' %}" class="btn btn-sm btn-outline-secondary">Gérer Contrats</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
-            <div class="col-md-auto d-flex align-items-center">
-                <div id="showMoreBtn"><i id='icon-fleche' class="bi bi-arrow-up h3"></i></div>
-            </div>
-
+           
         </div>
 
     </div>
 </div>
 
-<script>
-    $("#showMoreBtn").on("click", function() {
-        $("#cardsdefault").animate({
-    height: "toggle"
-  }, 500, function() {
-    // Animation complete.
-  });
-        $("#additionalCards").animate({
-    height: "toggle"
-  }, 500, function() {
-    // Animation complete.
 
-  });
-  $( "#icon-fleche" ).toggleClass( "bi-arrow-down" );
-  $( "#icon-fleche" ).toggleClass( "bi-arrow-up" );
-    });
-</script>
 
 <style>
     .card-spacing {

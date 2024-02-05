@@ -432,7 +432,7 @@ class ProfilEnseignantForm(forms.ModelForm):
     
     class Meta:
         model = ProfilEnseignant
-        fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'roleEnseignant', 'disciplineEnseignant']
+        fields = ['nomEnseignant', 'prenomEnseignant', 'telEnseignant', 'mailEnseignant', 'disciplineEnseignant']
         # Ajoutez d'autres champs si nécessaire
         labels = {
             'nomEnseignant': 'Nom',
