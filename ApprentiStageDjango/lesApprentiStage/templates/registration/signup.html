@@ -427,12 +427,19 @@
 <script>
   $(document).ready(function() {
     $('.hide-box').hide();
-    $('#hide-1').show("slow");
+    $('#hide-1').show();
 
     $('.hider').click(function() {
       var boite = $(this).attr('boite');
       $(this).find('i').toggleClass('bi-dash-circle-fill bi-plus-circle-fill');
-      $('#' + boite).toggle("slow");
+
+      $('#' + boite).animate({
+        opacity: 1,
+        left: "+=50",
+        height: "toggle"
+      }, 600, function() {
+        // Animation complete.
+      });
     });
 
 
@@ -446,7 +453,6 @@
         $(".text1").removeClass("text-secondary");
       }
       else{
-
         $(".hide1").removeClass("border-success").addClass("border-dark-subtle");
         $(".rond1").removeClass("bi-check-circle-fill").addClass("bi-dash-circle-fill");
         $(".rond1").css("color", "#CED4DA");
