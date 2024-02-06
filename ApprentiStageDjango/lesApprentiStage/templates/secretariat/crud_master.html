@@ -922,8 +922,20 @@
         }
 
 
-        $('#' + $("#filtre_select").val() + "_filter").show("");
-        $('#' + $("#filtre_select").val() + "_table").show("");
+        $('#' + $("#filtre_select").val() + "_filter").animate({
+                opacity: 1,
+                left: "+=50",
+                height: "toggle"
+            }, 600, function() {
+                // Animation complete.
+            });
+        $('#' + $("#filtre_select").val() + "_table").animate({
+                opacity: 1,
+                left: "+=50",
+                height: "toggle"
+            }, 600, function() {
+                // Animation complete.
+            });
 
 
         $('#filtre_select').change(function() {
