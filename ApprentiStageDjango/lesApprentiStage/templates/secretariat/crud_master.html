@@ -927,11 +927,23 @@
 
 
         $('#filtre_select').change(function() {
-            $('.filtres-hidden').hide("slow");
-            $(".table-hidden").hide("slow");
+            $('.filtres-hidden').hide();
+            $(".table-hidden").hide();
 
-            $('#' + $(this).val() + "_filter").show("slow");
-            $('#' + $(this).val() + "_table").show("slow");
+            $('#' + $(this).val() + "_filter").animate({
+                opacity: 1,
+                left: "+=50",
+                height: "toggle"
+            }, 600, function() {
+                // Animation complete.
+            });
+            $('#' + $(this).val() + "_table").animate({
+                opacity: 1,
+                left: "+=50",
+                height: "toggle"
+            }, 600, function() {
+                // Animation complete.
+            });
         });
 
         $('.clickable-row').click(function() {
