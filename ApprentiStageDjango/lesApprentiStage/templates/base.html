@@ -30,7 +30,7 @@
 
             <link rel="icon" type="image/x-icon" href="/logo.png" />
         </head>
-        <body style="background-color: #F5F7FB">
+        <body style="background-color: #F5F7FB;" >
 
           <!-- jQuery (Necessary for Bootstrap's JavaScript plugins) -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -129,10 +129,23 @@
             </header>
 
 
-            <main>
+            <main style="min-height: 90vh;">
                 {% block content %}
                 {% endblock %}
             </main>
+
+
+            <footer class="sticky-bottom">
+                <div class="container mt-5">
+                    <footer class="py-2 my-3">
+                    <ul class="nav justify-content-center border-bottom pb-1 mb-1">
+                        <li class="nav-item"><a href="https://github.com/VODMANN" class="nav-link px-2 text-muted">Github</a></li>
+                        <li class="nav-item"><a id="about" href="{% url 'lesApprentiStage:informations' %}" class="nav-link px-2 text-muted">Informations</a></li>
+                    </ul>
+                    <p class="text-center text-muted">© 2024 Vodmann, Erdmann Enzo, Rochdi Sami, Vodable Léo</p>
+                    </footer>
+                </div>
+            </footer>
 
             <script type="text/javascript">
                 function zoom() {

@@ -1860,3 +1860,6 @@ def suivi_etudiants(request):
         'departements': departements,
         'themes': themes
     })
+    
+def information(request):
+    return render(request, 'pages/information.html')

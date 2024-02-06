@@ -100,5 +100,7 @@ urlpatterns = [
     path('secretariat/creer/evaluation/', views.EvaluationCreateView.as_view(), name='creer_evaluation'),
     path('secretariat/modifier/evaluation/<int:pk>/', views.EvaluationUpdateView.as_view(), name='modifier_evaluation'),
     path('secretariat/supprimer/evaluation/<int:pk>/', views.EvaluationDeleteView.as_view(), name='supprimer_evaluation'),
+    
+    path('pages/info/', views.information, name='informations'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
