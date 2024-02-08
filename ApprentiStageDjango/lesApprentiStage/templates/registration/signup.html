@@ -328,7 +328,7 @@
     </div>
 
     <div class="row" style="margin: 0 3%">
-      <button class="col btn btn-primary" type="submit">Inscrire</button>
+      <button class="col btn btn-primary" type="submit" id="inscrire" >Inscrire</button>
     </div>
   </form>
 </div>
@@ -414,8 +414,6 @@
   
   roleEnseignantSelect.addEventListener('change', toggleDepartementSelect);
   toggleDepartementSelect();
-      
-        // Afficher/masquer les champs au chargement de la page
         toggleFields();
       });
       
@@ -438,7 +436,6 @@
         left: "+=50",
         height: "toggle"
       }, 600, function() {
-        // Animation complete.
       });
     });
 
@@ -479,6 +476,23 @@
       }
     });
 
+    $('#inscrire').on('click', function() {
+      var username = $("#id_username").val();
+      var mdp = $("#id_password").val();
+      if(!username && !mdp ){
+        alert("Veuillez remplir tous les nom d'utilisateur et mot de passe obligatoires");
+        return false;
+      }
+      else if(!username){
+        alert("Veuillez remplir le nom d'utilisateur");
+        return false;
+      }
+      else if(!mdp){
+        alert("Veuillez remplir le mot de passe");
+        return false;
+      }
+
+    });
 
 </script>
 {% endblock %}

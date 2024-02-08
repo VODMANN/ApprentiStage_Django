@@ -1,0 +1,35 @@
+1,Dupont,Jean,M.,123 Rue de la Liberté,75001,Paris,0123456789,jean.dupont@email.com,1990-01-01,Paris,75,Française,3A,1
+2,Durand,Marie,Mme.,456 Avenue de l'Égalité,69002,Lyon,0987654321,marie.durand@email.com,1992-03-15,Lyon,69,Française,3A,1
+3,Martin,Pierre,M.,789 Boulevard Fraternité,31000,Toulouse,1122334455,pierre.martin@email.com,1988-07-05,Toulouse,31,Française,3A,1
+4,Lefevre,Isabelle,Mme.,101 Rue de la Paix,67000,Strasbourg,9876543210,isabelle.lefevre@email.com,1995-09-20,Strasbourg,67,Française,3A,1
+5,Roux,Philippe,M.,202 Avenue des Arts,13003,Marseille,5678901234,philippe.roux@email.com,1987-11-12,Marseille,13,Française,3A,1
+6,Fournier,Sophie,Mme.,303 Chemin des Sciences,69001,Lyon,6789012345,sophie.fournier@email.com,1993-04-08,Lyon,69,Française,3A,1
+7,Lemoine,Thomas,M.,404 Boulevard Technologie,75015,Paris,7890123456,thomas.lemoine@email.com,1985-06-25,Paris,75,Française,3A,1
+8,Dubois,Julie,Mme.,505 Avenue Innovation,33000,Bordeaux,8901234567,julie.dubois@email.com,1998-02-14,Bordeaux,33,Française,3A,1
+9,Girard,Nicolas,M.,606 Rue de la Connaissance,59000,Lille,9012345678,nicolas.girard@email.com,1994-09-03,Lille,59,Française,3A,1
+10,Moreau,Caroline,Mme.,707 Boulevard Savoir,13001,Marseille,1234567890,caroline.moreau@email.com,1996-12-18,Marseille,13,Française,3A,1
+11,Leroy,Mathieu,M.,808 Avenue Intelligence,69003,Lyon,2345678901,mathieu.leroy@email.com,1989-05-07,Lyon,69,Française,3A,1
+12,Dufour,Amélie,Mme.,909 Chemin Réflexion,75020,Paris,3456789012,amelie.dufour@email.com,1991-02-22,Paris,75,Française,3A,1
+13,Charpentier,Paul,M.,1010 Rue Sagesse,33001,Bordeaux,4567890123,paul.charpentier@email.com,1997-11-08,Bordeaux,33,Française,3A,1
+14,Perrin,Sylvie,Mme.,1111 Avenue Raison,54000,Nancy,5678901234,sylvie.perrin@email.com,1986-04-29,Nancy,54,Française,3A,1
+15,Leclerc,Louis,M.,1212 Boulevard Logique,69004,Lyon,6789012345,louis.leclerc@email.com,1990-06-10,Lyon,69,Française,3A,1
+16,Guerin,Chloé,Mme.,1313 Rue Analyse,59001,Lille,7890123456,chloe.guerin@email.com,1999-08-14,Lille,59,Française,2A,1
+17,Roussel,David,M.,1414 Avenue Calcul,13004,Marseille,5678901234,david.roussel@email.com,1984-12-03,Marseille,13,Française,2A,1
+18,Lecomte,Isaac,M.,1515 Boulevard Algorithmes,69005,Lyon,6789012345,isaac.lecomte@email.com,1992-02-28,Lyon,69,Française,2A,1
+19,Legrand,Charlotte,Mme.,1616 Chemin Programmation,75010,Paris,8901234567,charlotte.legrand@email.com,1987-07-22,Paris,75,Française,2A,1
+20,Petit,Adrien,M.,1717 Rue Intelligence Artificielle,33002,Bordeaux,0123456789,adrien.petit@email.com,1994-04-17,Bordeaux,33,Française,2A,1
+21,Morel,Léa,Mme.,1818 Avenue Big Data,69006,Lyon,2345678901,lea.morel@email.com,1989-09-11,Lyon,69,Française,2A,1
+22,Leroux,Théo,M.,1919 Boulevard Réseaux,59002,Lille,3456789012,theo.leroux@email.com,1996-01-25,Lille,59,Française,2A,1
+23,Adam,Eva,Mme.,2020 Rue Sécurité,13005,Marseille,4567890123,eva.adam@email.com,1985-03-19,Marseille,13,Française,2A,1
+24,Blanc,Victor,M.,2121 Avenue Logiciel,69007,Lyon,5678901234,victor.blanc@email.com,1991-06-08,Lyon,69,Française,2A,1
+25,Martin,Emma,Mme.,2222 Chemin Données,75011,Paris,6789012345,emma.martin@email.com,1988-10-02,Paris,75,Française,2A,1
+26,Leroux,Hugo,M.,2323 Rue Code,33003,Bordeaux,7890123456,hugo.leroux@email.com,1997-04-26,Bordeaux,33,Française,2A,1
+27,Dupuis,Clara,Mme.,2424 Boulevard Cloud,59003,Lille,9012345678,clara.dupuis@email.com,1993-12-15,Lille,59,Française,2A,1
+28,Blanchard,Antoine,M.,2525 Avenue Virtualisation,13006,Marseille,1234567890,antoine.blanchard@email.com,1986-05-28,Marseille,13,Française,2A,1
+29,Caron,Léna,Mme.,2626 Rue Séquence,69008,Lyon,2345678901,lena.caron@email.com,1990-09-30,Lyon,69,Française,2A,1
+30,Lefevre,Romain,M.,2727 Chemin Matrices,75012,Paris,3456789012,romain.lefevre@email.com,1987-02-09,Paris,75,Française,2A,1
+31,Picard,Eléna,Mme.,2828 Boulevard Linux,33004,Bordeaux,4567890123,elena.picard@email.com,1994-07-23,Bordeaux,33,Française,2A,1
+32,Leclercq,Maxime,M.,2929 Avenue Git,59004,Lille,5678901234,maxime.leclercq@email.com,1989-11-11,Lille,59,Française,2A,1
+33,Dubois,Lola,Mme.,3030 Rue DevOps,13007,Marseille,6789012345,lola.dubois@email.com,1996-03-05,Marseille,13,Française,2A,1
+34,Colin,Sarah,Mme.,3131 Avenue Cybersécurité,69009,Lyon,7890123456,sarah.colin@email.com,1991-08-18,Lyon,69,Française,2A,1
+35,Garnier,Nathan,M.,3232 Chemin Intelligence Collective,75013,Paris,9012345678,nathan.garnier@email.com,1988-01-14,Paris,75,Française,2A,1
