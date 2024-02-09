@@ -10,4 +10,5 @@ docker-compose up -d
 
 Ces commandes vont construire les images Docker nécessaires et lancer les deux conteneurs.
 
-Une fois les conteneurs lancés, vous pourrez accéder à l'application en utilisant le navigateur à l'adresse `http://localhost:8000`.
+Une fois les conteneurs lancés, vous pourrez accéder à l'application 
+en utilisant le navigateur à l'adresse `http://localhost:8000`.
